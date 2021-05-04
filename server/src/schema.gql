@@ -1,0 +1,26 @@
+type Query {
+  dataSources(urls: [String!]!): [DataSource]!
+}
+
+type DataSource {
+  url: String!
+  databases(name: String): [Database]!
+}
+
+type Database {
+  url: String!
+  name: String!
+  schemas: [Schema]!
+}
+
+type Schema {
+  url: String!
+  name: String!
+  tables: [Table]!
+}
+
+type Table {
+  url: String!
+  schemaName: String!
+  name: String!
+}

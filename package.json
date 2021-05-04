@@ -1,0 +1,10 @@
+{
+  "name": "database-viewer",
+  "workspaces": [
+    "frontend",
+    "server"
+  ],
+  "devDependencies": {
+    "@types/node": "^15.0.1"
+  }
+}

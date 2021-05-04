@@ -1,0 +1,29 @@
+{
+  "name": "server",
+  "scripts": {
+    "start": "concurrently -r -k \"NODE_PATH=src ts-node-dev --respawn ./src/server\" \"yarn watch:schema\"",
+    "build": "NODE_PATH=src NODE_ENV=production tsup ./src/server.ts",
+    "watch:schema": "node watch.js",
+    "start:prod": "NODE_ENV=production NODE_PATH=build/src node ./dist/src/server"
+  },
+  "dependencies": {
+    "@types/node": "^15.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "app": "link:./src/app",
+    "concurrently": "^6.0.2",
+    "dotenv": "^8.2.0",
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "fastify": "^3.15.1",
+    "graphql": "^15.5.0",
+    "knex": "^0.95.4",
+    "mercurius": "^7.6.0",
+    "mercurius-codegen": "^1.5.0",
+    "pg": "^8.6.0",
+    "prettier": "^2.2.1",
+    "ts-node-dev": "^1.1.6",
+    "typescript": "^4.2.4"
+  }
+}

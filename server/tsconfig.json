@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2019", // Node 12
+    "module": "commonjs",
+    "lib": ["ES2019"],
+    "outDir": "build",
+    "strict": true,
+    "baseUrl": "./src",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+  }
+}
