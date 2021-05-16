@@ -2,28 +2,17 @@ import { useEffect, useState } from 'react';
 import { GetDataTreeQuery, useGetDataTreeQuery } from 'generated/graphql';
 import { DataSourceInLocalStoreWithDriver } from 'components/DataSource/types';
 import { useObserver } from 'mobx-react-lite';
-import { SearchState } from 'components/DataTree/search.state';
 import {
-  createOpenState,
-  loadStateFromLocalStorage,
-  saveStateToLocalStorage,
-} from 'components/DataTree/open.state';
+  DataTreeState,
+  noSearchOpenState,
+  searchOpenState,
+} from 'components/DataTree/dataTree.state';
 import { dataSourcesStore } from 'components/DataSource/dataSource.store';
 
 const lowerCache: Record<string, string> = {};
 
 const toLower = (string: string) =>
   lowerCache[string] || (lowerCache[string] = string.toLocaleLowerCase());
-
-const noSearchOpenState = createOpenState({
-  defaultOpen: false,
-  items: loadStateFromLocalStorage(),
-  onChange: saveStateToLocalStorage,
-});
-
-const searchOpenState = createOpenState({
-  defaultOpen: true,
-});
 
 const mapDataTree = (
   dataSourcesLocal: DataSourceInLocalStoreWithDriver[],
@@ -177,7 +166,7 @@ export const useDataTreeForSidebar = () => {
   const { dataSourcesLocal, tree: loadedTree } = useDataTree();
 
   const [prevSearch, setPrevSearch] = useState('');
-  const search = useObserver(() => SearchState.search);
+  const search = useObserver(() => DataTreeState.search);
 
   useEffect(() => {
     if (search && search !== prevSearch) {

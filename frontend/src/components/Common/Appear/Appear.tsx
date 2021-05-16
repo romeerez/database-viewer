@@ -7,64 +7,28 @@ export default function Appear({
   onClose,
   children,
   className,
-  slide = false,
+  animate = true,
+  animateClose = true,
   ...props
 }: {
   open: boolean;
   onClose(): void;
-  slide?: boolean;
   children: React.ReactNode;
+  animate?: boolean;
+  animateClose?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const [isOpen, setOpen] = React.useState(open);
-
-  slide = false;
 
   const [ref] = React.useState<{ current: HTMLDivElement | null }>({
     current: null,
   });
 
-  const setRef = (el: HTMLDivElement | null) => {
-    const { current } = ref;
-    ref.current = el;
-
-    if (!current && el && open) {
-      if (slide) {
-        el.style.zIndex = '-1';
-        el.classList.remove(style.transition);
-        el.classList.add(style.appearTo);
-        const height = el.getBoundingClientRect().height;
-        el.style.marginTop = `-${height}px`;
-        el.classList.remove(style.appearTo);
-
-        el.addEventListener('transitionend', () => (el.style.zIndex = '0'), {
-          once: true,
-        });
-      }
-
-      el.getBoundingClientRect();
-
-      if (slide) {
-        el.classList.add(style.transition);
-        el.style.marginTop = '0';
-        Object.assign(el.style);
-      }
-
-      el.classList.add(style.appearTo);
-    }
-  };
-
   React.useEffect(() => {
     const el = ref.current;
     if (open) {
       setOpen(true);
-    } else if (el) {
+    } else if (animateClose && el) {
       el.classList.remove(style.appearTo);
-
-      if (slide) {
-        const height = el.offsetHeight;
-        el.style.marginTop = `-${height}px`;
-        el.style.zIndex = '-1';
-      }
 
       el.addEventListener(
         'transitionend',
@@ -74,21 +38,35 @@ export default function Appear({
         },
         { once: true },
       );
+    } else {
+      setOpen(false);
     }
   }, [open]);
 
   if (!isOpen) return null;
 
+  if (!animate) {
+    return (
+      <div className={className} {...props}>
+        {children}
+      </div>
+    );
+  }
+
+  const setRef = (el: HTMLDivElement | null) => {
+    const { current } = ref;
+    ref.current = el;
+
+    if (!current && el && open) {
+      el.getBoundingClientRect();
+      el.classList.add(style.appearTo);
+    }
+  };
+
   return (
     <div
       ref={setRef}
-      className={cn(
-        style.transition,
-        style.appearFrom,
-        className,
-        slide && 'relative',
-      )}
-      style={slide ? { zIndex: -1 } : undefined}
+      className={cn(style.transition, style.appearFrom, className)}
       {...props}
     >
       {children}

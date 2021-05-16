@@ -4,6 +4,7 @@ import { ChevronRight, DotsHorizontalRounded, RightArrowAlt } from 'icons';
 import cn from 'classnames';
 import Menu from 'components/Common/Menu/Menu';
 import { Link, useRouteMatch } from 'react-router-dom';
+import { DataTreeState } from 'components/DataTree/dataTree.state';
 
 export default function TreeItem({
   open,
@@ -120,7 +121,11 @@ export default function TreeItem({
         </div>
       </div>
       {open !== undefined && close && (
-        <Appear open={open} onClose={close} slide>
+        <Appear
+          open={open}
+          onClose={close}
+          animateClose={!DataTreeState.openChangedOnSearch}
+        >
           {children}
         </Appear>
       )}
