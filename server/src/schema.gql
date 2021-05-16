@@ -1,26 +1,96 @@
 type Query {
-  dataSources(urls: [String!]!): [DataSource]!
+  dataSources(urls: [String!]!): [DataSource!]!
+  executeQuery(url: String!, query: String!): QueryResult!
+}
+
+type Mutation {
+  checkConnection(url: String!): Boolean!
 }
 
 type DataSource {
   url: String!
-  databases(name: String): [Database]!
+  databases(name: String): [Database!]!
+  types: [Type]!
 }
 
 type Database {
   url: String!
   name: String!
-  schemas: [Schema]!
+  schemas: [Schema!]!
 }
 
 type Schema {
   url: String!
   name: String!
-  tables: [Table]!
+  tables: [Table!]!
+  types: [Type]!
 }
 
 type Table {
   url: String!
   schemaName: String!
   name: String!
+  columns: [Column!]!
+  indices: [Index!]!
+  foreignKeys: [ForeignKey!]!
+  constraints: [Constraint!]!
+}
+
+type Column {
+  schemaName: String!
+  tableName: String!
+  name: String!
+  type: String!
+  default: String
+  isNullable: Boolean!
+}
+
+type Index {
+  schemaName: String!
+  tableName: String!
+  columnNames: [String!]!
+  name: String!
+  isUnique: Boolean!
+  isPrimary: Boolean!
+}
+
+type ForeignKey {
+  schemaName: String!
+  tableName: String!
+  foreignTableSchemaName: String!
+  foreignTableName: String!
+  name: String!
+  columnNames: [String!]!
+  foreignColumnNames: [String!]!
+}
+
+type Constraint {
+  schemaName: String!
+  tableName: String!
+  name: String!
+  type: ConstraintType!
+  columnNames: [String!]!
+}
+
+enum ConstraintType {
+  PRIMARY_KEY
+  UNIQUE
+  CHECK
+  EXCLUDE
+}
+
+type Type {
+  schemaName: String!
+  id: Int!
+  name: String!
+}
+
+type QueryResult {
+  fields: [Field!]!
+  rows: [[String!]!]!
+}
+
+type Field {
+  name: String!
+  type: Int!
 }

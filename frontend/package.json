@@ -5,15 +5,18 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@apollo/client": "^3.3.16",
     "@craco/craco": "^6.1.2",
     "@styled-icons/feather": "^10.18.0",
     "@styled-icons/remix-editor": "^10.33.0",
     "@styled-icons/remix-line": "^10.18.0",
     "@styled-icons/simple-icons": "^10.33.0",
+    "@styled-icons/styled-icon": "^10.6.3",
+    "@tailwindcss/postcss7-compat": "^2.1.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -24,6 +27,7 @@
     "@types/yup": "^0.29.11",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
+    "autoprefixer": "^9",
     "babel-eslint": "10.x",
     "clsx": "^1.1.1",
     "components": "link:./src/components",
@@ -31,21 +35,27 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-react-app": "^6.0.0",
     "eslint-plugin-import": "2.x",
+    "eslint-plugin-jest": "^24.3.6",
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-testing-library": "^4.1.2",
+    "generated": "link:./src/generated",
     "icons": "link:./src/icons",
+    "lib": "link:./src/lib",
+    "postcss": "^7",
     "prettier": "^2.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-is": "^17.0.2",
     "react-scripts": "4.0.3",
+    "sql-autocomplete": "file:./vendor/sql-autocomplete",
     "styled-components": "^5.2.3",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "typescript": "^4.2.4",
     "web-vitals": "^1.0.1",
-    "yup": "^0.32.9"
+    "yup": "^0.29.3"
   },
   "eslintConfig": {
     "extends": [
@@ -65,11 +75,31 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "@tailwindcss/postcss7-compat": "^2.1.2",
-    "autoprefixer": "^9",
-    "eslint-plugin-jest": "^24.3.6",
-    "eslint-plugin-testing-library": "^4.1.2",
-    "postcss": "^7"
+  "dependencies": {
+    "@hookform/error-message": "^2.0.0",
+    "@popperjs/core": "^2.9.2",
+    "@styled-icons/boxicons-regular": "^10.23.0",
+    "@styled-icons/fa-solid": "^10.32.0",
+    "@styled-icons/fluentui-system-regular": "^10.33.0",
+    "@styled-icons/material-rounded": "^10.28.0",
+    "@styled-icons/typicons": "^10.18.0",
+    "@types/history": "^4.7.8",
+    "@types/react-custom-scrollbars": "^4.0.7",
+    "@types/react-router-dom": "^5.1.7",
+    "classnames": "^2.3.1",
+    "downshift": "^6.1.3",
+    "gethue": "^4.9.8",
+    "history": "^4.9.0",
+    "mobx": "^6.3.0",
+    "mobx-react-lite": "^3.2.0",
+    "monaco-editor": "^0.23.0",
+    "react-custom-scrollbars": "^4.2.1",
+    "react-hook-form": "^6.15.5",
+    "react-popper": "^2.2.5",
+    "react-router-dom": "^5.2.0",
+    "react-toastify": "^7.0.4",
+    "react-use": "^17.2.4",
+    "rollup": "^2.48.0",
+    "rollup-plugin-uglify": "^6.0.4"
   }
 }

@@ -1,0 +1,3 @@
+mutation CheckConnection($url: String!) {
+  checkConnection(url: $url)
+}

@@ -1,0 +1,202 @@
+import { useEffect, useState } from 'react';
+import { GetDataTreeQuery, useGetDataTreeQuery } from 'generated/graphql';
+import { DataSourceInLocalStoreWithDriver } from 'components/DataSource/types';
+import { useObserver } from 'mobx-react-lite';
+import { SearchState } from 'components/DataTree/search.state';
+import {
+  createOpenState,
+  loadStateFromLocalStorage,
+  saveStateToLocalStorage,
+} from 'components/DataTree/open.state';
+import { dataSourcesStore } from 'components/DataSource/dataSource.store';
+
+const lowerCache: Record<string, string> = {};
+
+const toLower = (string: string) =>
+  lowerCache[string] || (lowerCache[string] = string.toLocaleLowerCase());
+
+const noSearchOpenState = createOpenState({
+  defaultOpen: false,
+  items: loadStateFromLocalStorage(),
+  onChange: saveStateToLocalStorage,
+});
+
+const searchOpenState = createOpenState({
+  defaultOpen: true,
+});
+
+const mapDataTree = (
+  dataSourcesLocal: DataSourceInLocalStoreWithDriver[],
+  data: GetDataTreeQuery,
+  search: string,
+) => {
+  if (!data) return undefined;
+
+  const tree = data.dataSources.map((source) => ({
+    ...source,
+    name:
+      dataSourcesLocal?.find((local) => local.url === source.url)?.name ||
+      source.url,
+  }));
+
+  if (!search) return tree;
+
+  const lower = search.toLocaleLowerCase();
+
+  const filterSources: Record<string, boolean> = {};
+  const filterDatabases: Record<string, boolean> = {};
+  const filterSchemas: Record<string, boolean> = {};
+  const filterTables: Record<string, boolean> = {};
+
+  tree.forEach((source) => {
+    if (toLower(source.name).includes(lower))
+      filterSources[source.name] = false;
+
+    source.databases.forEach((database) => {
+      if (toLower(database.name).includes(lower)) {
+        filterSources[source.name] = true;
+        filterDatabases[database.name] = false;
+      }
+
+      database.schemas.forEach((schema) => {
+        if (toLower(schema.name).includes(lower)) {
+          filterSources[source.name] = true;
+          filterDatabases[database.name] = true;
+          filterSchemas[schema.name] = false;
+        }
+
+        schema.tables.forEach((table) => {
+          if (toLower(table.name).includes(lower)) {
+            filterSources[source.name] = true;
+            filterDatabases[database.name] = true;
+            filterSchemas[schema.name] = true;
+            filterTables[table.name] = false;
+          }
+        });
+      });
+    });
+  });
+
+  return tree.reduce((sources: typeof tree, source) => {
+    const open = filterSources[source.name];
+    if (open !== undefined) {
+      sources.push({
+        ...source,
+        databases: !open
+          ? []
+          : source.databases.reduce(
+              (databases: typeof tree[0]['databases'], database) => {
+                const open = filterDatabases[database.name];
+                if (open !== undefined) {
+                  databases.push({
+                    ...database,
+                    schemas: !open
+                      ? []
+                      : database.schemas.reduce(
+                          (
+                            schemas: typeof tree[0]['databases'][0]['schemas'],
+                            schema,
+                          ) => {
+                            const open = filterSchemas[schema.name];
+                            if (open !== undefined) {
+                              schemas.push({
+                                ...schema,
+                                tables: !open
+                                  ? []
+                                  : schema.tables.reduce(
+                                      (
+                                        tables: typeof tree[0]['databases'][0]['schemas'][0]['tables'],
+                                        table,
+                                      ) => {
+                                        const open = filterTables[table.name];
+                                        if (open !== undefined) {
+                                          tables.push(table);
+                                        }
+
+                                        return tables;
+                                      },
+                                      [],
+                                    ),
+                              });
+                            }
+
+                            return schemas;
+                          },
+                          [],
+                        ),
+                  });
+                }
+
+                return databases;
+              },
+              [],
+            ),
+      });
+    }
+
+    return sources;
+  }, []);
+};
+
+export type DataSourceTree = Exclude<
+  ReturnType<typeof mapDataTree>,
+  undefined
+>[number];
+
+export type DatabaseTree = DataSourceTree['databases'][number];
+
+export type SchemaTree = DatabaseTree['schemas'][number];
+
+export type TableTree = SchemaTree['tables'][number];
+
+export type Column = TableTree['columns'][number];
+
+export type Index = TableTree['indices'][number];
+
+export type Constraint = TableTree['constraints'][number];
+
+export type ForeignKey = TableTree['foreignKeys'][number];
+
+export const useDataTree = () => {
+  const dataSourcesLocal = useObserver(() => dataSourcesStore.dataSources);
+
+  const { data: tree } = useGetDataTreeQuery({
+    skip: !dataSourcesLocal,
+    variables: {
+      urls: dataSourcesLocal?.map((item) => item.url) || [],
+    },
+  });
+
+  return {
+    dataSourcesLocal,
+    tree,
+  };
+};
+
+export const useDataTreeForSidebar = () => {
+  const { dataSourcesLocal, tree: loadedTree } = useDataTree();
+
+  const [prevSearch, setPrevSearch] = useState('');
+  const search = useObserver(() => SearchState.search);
+
+  useEffect(() => {
+    if (search && search !== prevSearch) {
+      searchOpenState.reset();
+      setPrevSearch(search);
+    }
+  }, [search, prevSearch]);
+
+  const tree =
+    (dataSourcesLocal &&
+      loadedTree &&
+      (!search || search === prevSearch) &&
+      mapDataTree(dataSourcesLocal, loadedTree, search)) ||
+    undefined;
+
+  const openState = search ? searchOpenState : noSearchOpenState;
+
+  return {
+    tree,
+    openState,
+  };
+};

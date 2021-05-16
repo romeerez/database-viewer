@@ -1,0 +1,9 @@
+overwrite: true
+schema: server/src/schema.gql
+documents: "frontend/src/**/*.gql"
+generates:
+  frontend/src/generated/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"

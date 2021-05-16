@@ -1,3 +1,0 @@
-[
-  "type Query {\n  dataSources(urls: [String!]!): [DataSource]!\n}\n\ntype DataSource {\n  url: String!\n  databases(name: String): [Database]!\n}\n\ntype Database {\n  url: String!\n  name: String!\n  schemas: [Schema]!\n}\n\ntype Schema {\n  url: String!\n  name: String!\n  tables: [Table]!\n}\n\ntype Table {\n  url: String!\n  schemaName: String!\n  name: String!\n}"
-]

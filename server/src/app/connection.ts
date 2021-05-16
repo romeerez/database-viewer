@@ -1,41 +1,75 @@
-import knex, { Knex } from 'knex';
 import { MercuriusContext } from 'mercurius';
-import { ConnectionPool } from 'types';
+import { ConnectionPool, DB } from 'types';
+import { Client } from 'pg';
 
-const globalPool: Record<
-  string,
-  { connection: Knex<any, unknown[]>; counter: number }
-> = {};
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import Result from 'pg/lib/result';
 
-export const getConnection = (ctx: MercuriusContext, url: string) => {
+// eslint-disable-next-line
+Result.prototype._parseRowAsArray = (row: any) => row
+
+type Connection = { db: DB; connect?: Promise<void> };
+
+const globalPool: Record<string, { connection: Connection; counter: number }> =
+  {};
+
+export const getConnection = async (ctx: MercuriusContext, url: string) => {
   if (!ctx.connectionPool[url]) {
     if (globalPool[url]) {
       globalPool[url].counter++;
     } else {
+      const db = new Client({
+        connectionString: url,
+      });
+
+      const connection: Connection = { db };
+
+      const cb = () => {
+        connection.connect = undefined;
+      };
+
+      connection.connect = db.connect().then(cb, cb);
+
       globalPool[url] = {
-        connection: knex({
-          client: 'pg',
-          connection: url,
-          log: console,
-          pool: { min: 1, max: 1 },
-        }),
+        connection,
         counter: 1,
       };
     }
+
     ctx.connectionPool[url] = globalPool[url].connection;
   }
 
-  return ctx.connectionPool[url];
+  const connection = ctx.connectionPool[url];
+  if (connection.connect) await connection.connect;
+  return connection.db;
 };
 
-// eslint-disable-next-line
-export const stopRequestConnections = (connectionPool: ConnectionPool) => {
-  Object.keys(connectionPool).forEach((url) => {
-    if (!connectionPool[url] || !globalPool[url]) throw new Error('No way!');
+export const stopRequestConnections = async (
+  connectionPool: ConnectionPool,
+) => {
+  if (!connectionPool) return;
 
-    globalPool[url].counter--;
-    if (globalPool[url].counter === 0) {
-      delete globalPool[url];
-    }
-  });
+  await Promise.all(
+    Object.keys(connectionPool).map(async (url) => {
+      if (!connectionPool[url] || !globalPool[url]) throw new Error('No way!');
+
+      const { connection } = globalPool[url];
+      if (connection.connect) await connection.connect;
+      await connection.db.end();
+      globalPool[url].counter--;
+      if (globalPool[url].counter === 0) {
+        delete globalPool[url];
+      }
+    }),
+  );
+};
+
+export const checkConnection = async (db: DB) => {
+  try {
+    await db.query('SELECT 1');
+    return true;
+  } catch (_) {
+    return false;
+  }
 };

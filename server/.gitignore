@@ -1,2 +1,4 @@
 .env
 test.js
+graphql-schema.json
+mercurius-schema.json

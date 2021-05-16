@@ -1,0 +1,8 @@
+.menu {
+  transform: scale(0.95, 0.95);
+}
+
+.menuOpen {
+  opacity: 1;
+  transform: scale(1, 1);
+}

@@ -1,7 +1,12 @@
-import { Knex } from 'knex';
+import { MercuriusLoaders } from 'mercurius';
+import { Client } from 'pg';
 
-// eslint-disable-next-line
-export type ConnectionPool = Record<string, Knex<any, unknown>>;
+export type DB = Client;
+
+export type ConnectionPool = Record<
+  string,
+  { db: DB; connect?: Promise<void> }
+>;
 
 declare module 'fastify' {
   export interface FastifyRequest {
@@ -16,3 +21,14 @@ declare module 'mercurius' {
     connectionPool: ConnectionPool
   }
 }
+
+export type Loaders<Key extends keyof MercuriusLoaders> = Exclude<
+  MercuriusLoaders[Key],
+  undefined
+>;
+
+export type Await<T> = T extends {
+  then(onfulfilled?: (value: infer U) => unknown): unknown;
+}
+  ? U
+  : T;

@@ -1,12 +1,14 @@
 import React from 'react';
 import Sidebar from 'components/Sidebar/Sidebar';
-import HomePage from 'components/HomePage';
+import Router from 'components/Router';
 
 export default function Layout() {
   return (
-    <div className="flex h-full text-secondary">
+    <div className="flex h-full">
       <Sidebar className="flex-shrink-0" />
-      <HomePage className="flex-grow" />
+      <div className="flex-grow w-0">
+        <Router />
+      </div>
     </div>
   );
 }

@@ -1,7 +1,53 @@
 @tailwind base;
 
+:root {
+  --color-lighter: rgba(255, 255, 255, .03);
+  --color-lighter-5: rgba(255, 255, 255, .15);
+  --color-darker: rgba(0, 0, 0, .03);
+  --color-darker-5: rgba(0, 0, 0, .15);
+  --color-dark: #202124;
+  --color-dark-2: #27282b;
+  --color-dark-3: #2d2e31;
+  --color-dark-4: #343538;
+  --color-dark-5: #3b3c3f;
+  --color-light-5: #aaabae;
+  --color-light-4: #cbcecf;
+  --color-light-3: #d6d6d6;
+  --color-light-2: #f0f0f0;
+  --color-light: #f7f8f8;
+  --color-accent: #2196f3;
+  --color-accent-dark: #073e69;
+  --color-blue: #3f51b5;
+  --color-blue-darker: #324191;
+  --color-error: #f87171;
+  --color-yellow: #f2c94c;
+}
+
+.light-mode {
+  --color-lighter: rgba(0, 0, 0, .03);
+  --color-lighter-5: rgba(0, 0, 0, .15);
+  --color-darker: rgba(255, 255, 255, .03);
+  --color-darker-5: rgba(255, 255, 255, .15);
+  --color-dark: #ffffff;
+  --color-dark-2: #f0f0f0;
+  --color-dark-3: #eeeeee;
+  --color-dark-4: #e5e5e5;
+  --color-dark-5: #b2b2b2;
+  --color-light-5: #555451;
+  --color-light-4: #343130;
+  --color-light-3: #292929;
+  --color-light-2: #0f0f0f;
+  --color-light: #080707;
+  --color-accent: #2196f3;
+  --color-accent-dark: #b7dbf7;
+  --color-blue: #3f51b5;
+  --color-blue-darker: #324191;
+  --color-error: #f87171;
+  --color-yellow: #f2c94c;
+}
+
 html {
-  @apply bg-primary-20;
+  @apply bg-dark text-light-5;
 }
 
 html, body, #root {
@@ -22,6 +68,34 @@ code {
     monospace;
 }
 
+input:focus, button:focus, textarea:focus {
+  outline: none;
+}
+
+button:focus-visible {
+  box-shadow: inset var(--color-accent) 0 0 2px 1px;
+}
+
 @tailwind components;
 
+@layer components {
+  .btn-primary {
+    @apply cursor-pointer text-light py-1 px-5 border-b-2 border-blue-darker rounded-md bg-blue font-bold relative flex items-center justify-center;
+  }
+}
+
 @tailwind utilities;
+
+@layer utilities {
+  .bg-primary-gradient {
+    background: linear-gradient(136.61deg, var(--color-dark-2) 13.72%, var(--color-dark-3) 74.3%);
+  }
+
+  .bg-primary-gradient-lighter {
+    background: linear-gradient(136.61deg, var(--color-dark-3) 13.72%, var(--color-dark-4) 74.3%);
+  }
+
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+}

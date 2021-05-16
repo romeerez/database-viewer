@@ -1,0 +1,50 @@
+query GetDataTree($urls: [String!]!) {
+  dataSources(urls: $urls) {
+    url
+    types {
+      id
+      name
+      schemaName
+    }
+    databases {
+      name
+      schemas {
+        name
+        types {
+          id
+          name
+          schemaName
+        }
+        tables {
+          name
+          columns {
+            name
+            type
+            default
+            isNullable
+          }
+          indices {
+            columnNames
+            name
+            isUnique
+            isPrimary
+          }
+          foreignKeys {
+            foreignTableSchemaName
+            foreignTableName
+            name
+            columnNames
+            foreignColumnNames
+          }
+          constraints {
+            schemaName
+            tableName
+            name
+            type
+            columnNames
+          }
+        }
+      }
+    }
+  }
+}

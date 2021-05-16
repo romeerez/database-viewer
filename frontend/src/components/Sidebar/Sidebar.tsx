@@ -1,42 +1,83 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import cx from 'clsx';
-import { Postgresql, Database, FlowChart, Table } from 'icons';
+import DataTree from 'components/DataTree/DataTree';
+import { Logo } from 'icons';
+import Scrollbars from 'components/Common/Scrollbars';
+import Search from 'components/DataTree/Search';
+import SidebarMenu from 'components/Sidebar/SidebarMenu';
+import style from './style.module.css';
 
-const MenuItem = function MenuItem({
-  icon: Icon,
-  title,
-  children,
-}: {
-  icon: (props: {
-    size: number;
-    className: string;
-  }) => React.ReactElement | null;
-  title: React.ReactNode;
-  children?: React.ReactNode;
-}) {
-  return (
-    <div>
-      <button className="h-8 w-full flex items-center mb-1 px-2 rounded hover:bg-primary-30">
-        {<Icon size={16} className="mr-2 text-accent" />}
-        {title}
-      </button>
-      <div className="pl-4">{children}</div>
-    </div>
-  );
-};
+const minWidth = 250;
+const defaultWidth = 300;
+const widthKey = 'sidebar.width';
 
-export default function Sidebar(className: { className?: string }) {
+export default function Sidebar({ className }: { className?: string }) {
+  const width = window.localStorage.getItem(widthKey) || `${defaultWidth}px`;
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const [listenerRef] = useState<{ current?: (e: MouseEvent) => void }>({
+    current: undefined,
+  });
+
+  const startResize = (e: React.MouseEvent) => {
+    const { current: sidebar } = sidebarRef;
+    if (!sidebar) return;
+
+    if (listenerRef.current)
+      document.removeEventListener('mousemove', listenerRef.current);
+
+    const initialWidth = sidebar.offsetWidth;
+    const initialX = e.clientX;
+
+    listenerRef.current = (e) => {
+      sidebar.style.width = `${Math.max(
+        minWidth,
+        initialWidth + e.clientX - initialX,
+      )}px`;
+    };
+
+    document.addEventListener('mousemove', listenerRef.current);
+  };
+
+  const stopResize = () => {
+    if (!sidebarRef.current || !listenerRef.current) return;
+
+    document.removeEventListener('mousemove', listenerRef.current);
+
+    window.localStorage.setItem(widthKey, sidebarRef.current.style.width);
+  };
+
   return (
-    <div className={cx('w-72 p-4 border-r border-primary-30', className)}>
-      <MenuItem icon={Postgresql} title={'orms_overview@localhost'}>
-        <MenuItem icon={Database} title="orms_overview">
-          <MenuItem icon={FlowChart} title="public">
-            {new Array(20).fill(null).map((_, i) => (
-              <MenuItem key={i} icon={Table} title={`table ${i + 1}`} />
-            ))}
-          </MenuItem>
-        </MenuItem>
-      </MenuItem>
-    </div>
+    <>
+      <div
+        ref={sidebarRef}
+        className={cx('h-full flex flex-col text-light-4', className)}
+        style={{ width }}
+      >
+        <div className="p-4 flex-shrink-0 bg-darker-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center">
+              <Logo size={26} className="mr-2 text-accent" />
+              <b>DataFigata</b>
+            </div>
+            <SidebarMenu />
+          </div>
+          <div className="px-2">
+            <Search />
+          </div>
+        </div>
+        <Scrollbars>
+          <div className="p-4 pt-0 inline-block min-w-full">
+            <DataTree />
+          </div>
+        </Scrollbars>
+      </div>
+      <div className="w-px bg-dark-3 relative user-select-none">
+        <div
+          onMouseDown={startResize}
+          onMouseUp={stopResize}
+          className={`absolute top-0 bottom-0 w-2 -left-1 ${style.resize}`}
+        />
+      </div>
+    </>
   );
 }

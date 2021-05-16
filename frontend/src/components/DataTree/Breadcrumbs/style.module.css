@@ -1,0 +1,26 @@
+.group:hover .before, .group:hover .after {
+  border-color: var(--color-dark-5);
+}
+
+.before, .after {
+  position: absolute;
+  top: -2px;
+  width: 0;
+  height: 0;
+  border-color: var(--color-dark-4);
+}
+
+.before {
+  border-top-width: 14px;
+  border-top-style: solid;
+  border-bottom-width: 14px;
+  border-bottom-style: solid;
+  border-left: 8px solid transparent !important;
+}
+
+.after {
+  border-top: 14px solid transparent !important;
+  border-bottom: 14px solid transparent !important;
+  border-left-width: 8px;
+  border-left-style: solid;
+}

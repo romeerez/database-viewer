@@ -7,8 +7,17 @@ import { loaders } from './loaders';
 import { loadSchemaFiles } from 'mercurius-codegen';
 import fastify, { FastifyRequest } from 'fastify';
 import { stopRequestConnections } from 'app/connection';
+import cors from 'fastify-cors';
 
-const app = fastify({ logger: true });
+const app = fastify({
+  logger: {
+    prettyPrint: true,
+  },
+});
+
+app.register(cors, {
+  origin: true,
+});
 
 export const buildContext = (req: FastifyRequest) => ({
   connectionPool: req.connectionPool,
@@ -25,7 +34,7 @@ app.addHook('onRequest', async (request, reply) => {
 });
 
 app.addHook('onResponse', async (request, reply) => {
-  stopRequestConnections(request.connectionPool);
+  await stopRequestConnections(request.connectionPool);
 });
 
 // eslint-disable-next-line

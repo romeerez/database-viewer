@@ -1,0 +1,13 @@
+.transition {
+  transition: 0.3s;
+}
+
+.appearFrom {
+  opacity: 0;
+  transform: scale(0.95, 0.95);
+}
+
+.appearTo {
+  opacity: 1;
+  transform: scale(1, 1);
+}

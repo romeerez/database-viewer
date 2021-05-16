@@ -1,0 +1,9 @@
+.closed {
+  backdrop-filter: blur(0);
+  background: rgba(0, 0, 0, 0);
+}
+
+.open {
+  backdrop-filter: blur(1px);
+  background: rgba(0, 0, 0, .1);
+}

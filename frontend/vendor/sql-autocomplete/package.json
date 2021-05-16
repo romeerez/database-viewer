@@ -1,0 +1,12 @@
+{
+  "name": "sqlautocomplete",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bundle.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "keywords": [],
+  "author": "Cloudera",
+  "license": "Apache 2"
+}
