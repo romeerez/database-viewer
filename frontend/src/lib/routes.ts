@@ -1,17 +1,18 @@
 export default {
   root: '/',
-  dataSource: (sourceName = ':sourceName') => `/${sourceName}`,
+  dataSource: (sourceName = ':sourceName') => `/data/${sourceName}`,
   database: (sourceName = ':sourceName', databaseName = ':databaseName') =>
-    `/${sourceName}/${databaseName}`,
+    `/data/${sourceName}/${databaseName}`,
   schema: (
     sourceName = ':sourceName',
     databaseName = ':databaseName',
     schemaName = ':schemaName',
-  ) => `/${sourceName}/${databaseName}/${schemaName}`,
+  ) => `/data/${sourceName}/${databaseName}/${schemaName}`,
   table: (
     sourceName = ':sourceName',
     databaseName = ':databaseName',
     schemaName = ':schemaName',
     tableName = ':tableName',
-  ) => `/${sourceName}/${databaseName}/${schemaName}/${tableName}`,
+  ) => `/data/${sourceName}/${databaseName}/${schemaName}/${tableName}`,
+  newQuery: `/queries/new`,
 };

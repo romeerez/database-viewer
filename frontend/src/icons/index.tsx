@@ -11,4 +11,4 @@ export { DotsHorizontalRounded } from '@styled-icons/boxicons-regular/DotsHorizo
 export { RightArrowAlt } from '@styled-icons/boxicons-regular/RightArrowAlt';
 export { TextColumnTwoLeft } from '@styled-icons/fluentui-system-regular/TextColumnTwoLeft';
 export { Key } from '@styled-icons/typicons/Key';
-export { Info } from '@styled-icons/fa-solid/Info'
+export { Info } from '@styled-icons/fa-solid/Info';

@@ -1,24 +1,31 @@
 import {
   QueryResult,
-  useQueryFieldsAndRowsQuery,
+  useQueryFieldsAndRowsLazyQuery,
   useQueryRowsLazyQuery,
 } from 'generated/graphql';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DataSourceInLocalStoreWithDriver } from 'components/DataSource/types';
+import { buildQuery } from 'lib/queryBuilder';
 
-const perPage = 30;
+export type UseTableDataProps = {
+  source?: DataSourceInLocalStoreWithDriver;
+  databaseName: string;
+  schemaName: string;
+  tableName: string;
+  perPage: number;
+  initialQuery: string;
+  setQuery(query: string): void;
+};
 
 export const useTableData = ({
   source,
   databaseName,
   schemaName,
   tableName,
-}: {
-  source?: DataSourceInLocalStoreWithDriver;
-  databaseName: string;
-  schemaName: string;
-  tableName: string;
-}) => {
+  perPage,
+  initialQuery,
+  setQuery,
+}: UseTableDataProps) => {
   const [state, setState] = useState<
     QueryResult & { loading: boolean; loadedAll: boolean }
   >({
@@ -28,13 +35,8 @@ export const useTableData = ({
     loadedAll: false,
   });
 
-  useQueryFieldsAndRowsQuery({
+  const [loadFirst] = useQueryFieldsAndRowsLazyQuery({
     fetchPolicy: 'no-cache',
-    skip: !source,
-    variables: {
-      url: source ? `${source.url}/${databaseName}` : '',
-      query: `SELECT * FROM ${schemaName}.${tableName} LIMIT ${perPage}`,
-    },
     onCompleted(data) {
       setState({
         loading: false,
@@ -43,6 +45,17 @@ export const useTableData = ({
       });
     },
   });
+
+  useEffect(() => {
+    if (!source) return;
+
+    loadFirst({
+      variables: {
+        url: `${source.url}/${databaseName}`,
+        query: initialQuery,
+      },
+    });
+  }, [source, initialQuery]);
 
   const [loadNext] = useQueryRowsLazyQuery({
     fetchPolicy: 'no-cache',
@@ -61,10 +74,19 @@ export const useTableData = ({
 
     state.loading = true;
 
+    const query = buildQuery({
+      schemaName,
+      tableName,
+      limit: perPage,
+      offset: state.rows.length,
+    });
+
+    setQuery(query);
+
     loadNext({
       variables: {
         url: `${source.url}/${databaseName}`,
-        query: `SELECT * FROM ${schemaName}.${tableName} LIMIT ${perPage} OFFSET ${state.rows.length}`,
+        query,
       },
     });
   };

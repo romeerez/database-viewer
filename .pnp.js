@@ -14484,6 +14484,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["mobx", "npm:6.3.0"],
             ["mobx-react-lite", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:3.2.0"],
             ["monaco-editor", "npm:0.23.0"],
+            ["monaco-vim", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:0.1.13"],
             ["postcss", "npm:7.0.35"],
             ["prettier", "npm:2.3.0"],
             ["react", "npm:17.0.2"],
@@ -14498,7 +14499,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react-use", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:17.2.4"],
             ["rollup", "npm:2.48.0"],
             ["rollup-plugin-uglify", "virtual:70f984c31b1c9036491ceb6cac36dbf32437af635b0c3863b195b3e678e16dc0b5fe37d374a890045bfb46e102705763845f46648c6295d6ef13254ad7d2d82e#npm:6.0.4"],
-            ["sql-autocomplete", "file:./vendor/sql-autocomplete#./vendor/sql-autocomplete::hash=1805a1&locator=frontend%40workspace%3Afrontend"],
+            ["sql-autocomplete", "file:./vendor/sql-autocomplete#./vendor/sql-autocomplete::hash=dace60&locator=frontend%40workspace%3Afrontend"],
             ["styled-components", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:5.3.0"],
             ["tailwindcss", [
               "@tailwindcss/postcss7-compat",
@@ -19516,6 +19517,28 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/monaco-editor-npm-0.23.0-f10184dc03-505de80fde.zip/node_modules/monaco-editor/",
           "packageDependencies": [
             ["monaco-editor", "npm:0.23.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["monaco-vim", [
+        ["npm:0.1.13", {
+          "packageLocation": "./.yarn/cache/monaco-vim-npm-0.1.13-92847ac709-c48472264e.zip/node_modules/monaco-vim/",
+          "packageDependencies": [
+            ["monaco-vim", "npm:0.1.13"]
+          ],
+          "linkType": "SOFT",
+        }],
+        ["virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:0.1.13", {
+          "packageLocation": "./.yarn/$$virtual/monaco-vim-virtual-37e9ae9780/0/cache/monaco-vim-npm-0.1.13-92847ac709-c48472264e.zip/node_modules/monaco-vim/",
+          "packageDependencies": [
+            ["monaco-vim", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:0.1.13"],
+            ["@types/monaco-editor", null],
+            ["monaco-editor", "npm:0.23.0"]
+          ],
+          "packagePeers": [
+            "@types/monaco-editor",
+            "monaco-editor"
           ],
           "linkType": "HARD",
         }]
@@ -25245,10 +25268,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["sql-autocomplete", [
-        ["file:./vendor/sql-autocomplete#./vendor/sql-autocomplete::hash=1805a1&locator=frontend%40workspace%3Afrontend", {
-          "packageLocation": "./.yarn/cache/sql-autocomplete-file-cf6f4e53a8-39efdcf2a6.zip/node_modules/sql-autocomplete/",
+        ["file:./vendor/sql-autocomplete#./vendor/sql-autocomplete::hash=dace60&locator=frontend%40workspace%3Afrontend", {
+          "packageLocation": "./.yarn/cache/sql-autocomplete-file-69b332ceea-3981c300ba.zip/node_modules/sql-autocomplete/",
           "packageDependencies": [
-            ["sql-autocomplete", "file:./vendor/sql-autocomplete#./vendor/sql-autocomplete::hash=1805a1&locator=frontend%40workspace%3Afrontend"]
+            ["sql-autocomplete", "file:./vendor/sql-autocomplete#./vendor/sql-autocomplete::hash=dace60&locator=frontend%40workspace%3Afrontend"]
           ],
           "linkType": "HARD",
         }]

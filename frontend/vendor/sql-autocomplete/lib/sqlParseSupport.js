@@ -176,7 +176,7 @@ const initSqlParser = function (parser) {
         suggestColRefKeywords: {
           BOOLEAN: ['AND', 'OR'],
           NUMBER: ['+', '-', '*', '/', '%', 'DIV'],
-          STRING: ['LIKE', 'NOT LIKE', 'REGEXP', 'RLIKE']
+          STRING: ['LIKE', 'NOT LIKE', 'REGEXP', 'ILIKE']
         }
       };
     }
@@ -187,7 +187,7 @@ const initSqlParser = function (parser) {
       keywords = keywords.concat(['+', '-', '*', '/', '%', 'DIV']);
     }
     if (matchesType(parser.yy.activeDialect, ['STRING'], types)) {
-      keywords = keywords.concat(['LIKE', 'NOT LIKE', 'REGEXP', 'RLIKE']);
+      keywords = keywords.concat(['LIKE', 'NOT LIKE', 'REGEXP', 'ILIKE']);
     }
     return { suggestKeywords: keywords };
   };

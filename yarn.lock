@@ -9824,6 +9824,7 @@ __metadata:
     mobx: ^6.3.0
     mobx-react-lite: ^3.2.0
     monaco-editor: ^0.23.0
+    monaco-vim: ^0.1.13
     postcss: ^7
     prettier: ^2.2.1
     react: ^17.0.2
@@ -14192,6 +14193,15 @@ fsevents@^1.2.7:
   version: 0.23.0
   resolution: "monaco-editor@npm:0.23.0"
   checksum: 505de80fdea26359eff9837f2d9fd033e45de81e8e07f22464c0dd41aff386601489b9e579e8c962c3b1a6ed5690e936c09f84354d31d1f8bac7ed59e1ebf291
+  languageName: node
+  linkType: hard
+
+"monaco-vim@npm:^0.1.13":
+  version: 0.1.13
+  resolution: "monaco-vim@npm:0.1.13"
+  peerDependencies:
+    monaco-editor: ^0.14.0 || ^0.15.0 || ^0.16.0 || ^0.17.0 || ^0.18.0 || ^0.19.0 || ^0.20.0 || ^0.21.0 || ^0.23.0
+  checksum: c48472264e933bda0a2144facb3d6675ad7de17c71dff79821bd5bd7de1bc34fcad90398d127ca65db50c9ce8076fc81980b6b3916582e8dd461a4b519b1bf9e
   languageName: node
   linkType: hard
 
@@ -19151,8 +19161,8 @@ resolve@^2.0.0-next.3:
 
 "sql-autocomplete@file:./vendor/sql-autocomplete::locator=frontend%40workspace%3Afrontend":
   version: 1.0.0
-  resolution: "sql-autocomplete@file:./vendor/sql-autocomplete#./vendor/sql-autocomplete::hash=1805a1&locator=frontend%40workspace%3Afrontend"
-  checksum: 39efdcf2a61af52b3c0307c1a193e6ca1ed78f0d2d7341789d08a66efa6c4cfb405d16f49b1fea2fc14c22523545d08e08035e1d28bb1042a69385d183c0ca05
+  resolution: "sql-autocomplete@file:./vendor/sql-autocomplete#./vendor/sql-autocomplete::hash=dace60&locator=frontend%40workspace%3Afrontend"
+  checksum: 3981c300baeef29ecc83dc97eded1823630c7d166301384d32f1dafe3e97e73148b189e25b1ab30683cd13526efc544020d513d09f9d6d8198afccc6667b9488
   languageName: node
   linkType: hard
 
