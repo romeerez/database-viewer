@@ -8,6 +8,7 @@ import DataSource from 'components/DataTree/TreeItems/DataSource';
 
 const top = 48;
 const paddingLeft = 8;
+const dataSourceZIndex = 10;
 
 export default function DisplayTree({
   path,
@@ -74,6 +75,7 @@ export default function DisplayTree({
       <DataSource
         key={source.url}
         top={top}
+        zIndex={dataSourceZIndex}
         source={source}
         openState={openState}
         paddingLeft={paddingLeft}
@@ -81,12 +83,15 @@ export default function DisplayTree({
     );
   }
 
+  const zIndex = dataSourceZIndex + tree.length - 1;
+
   return (
     <>
-      {tree.map((source) => (
+      {tree.map((source, i) => (
         <DataSource
           key={source.url}
           top={top}
+          zIndex={zIndex - i}
           source={source}
           openState={openState}
           paddingLeft={paddingLeft}

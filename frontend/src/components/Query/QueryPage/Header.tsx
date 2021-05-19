@@ -1,31 +1,49 @@
 import React from 'react';
 import Header from 'components/Common/Header';
+import { Form } from 'lib/useForm';
+import InputGroup from 'components/Common/Form/InputGroup';
+import Button from 'components/Common/Button/Button';
+import history from 'lib/history';
 
-export default function QueryPageHeader() {
-  const [name, setName] = React.useState('Query 1');
+export default function QueryPageHeader({
+  loading,
+  form,
+  onSubmit,
+}: {
+  loading: boolean;
+  form: Form<{ name: string } | undefined>;
+  onSubmit(): void;
+}) {
+  const submit = form.handleSubmit(onSubmit);
 
   return (
-    <Header
-      breadcrumbs={[
-        'Queries',
-        <input
-          key={0}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          name="title"
-          className="ml-1 px-2 py-1 bg-dark-4 rounded"
-        />,
-      ]}
-      controls={
-        <>
-          <button className="mr-2 py-1 px-4 duration-300 transition hover:text-light-4">
-            Cancel
-          </button>
-          <button className="bg-darker-5 rounded py-1 px-4 duration-300 transition hover:text-light-4">
-            Save
-          </button>
-        </>
-      }
-    />
+    <form onSubmit={submit}>
+      <Header
+        breadcrumbs={[
+          'Queries',
+          <InputGroup
+            key={0}
+            form={form}
+            name="name"
+            groupClassName="ml-1 flex items-center"
+            errorClassName="text-error text-sm ml-2"
+          />,
+        ]}
+        controls={
+          <>
+            <button
+              type="button"
+              className="btn mr-2"
+              onClick={() => history.goBack()}
+            >
+              Cancel
+            </button>
+            <Button type="submit" loading={loading} className="btn btn-primary">
+              Save
+            </Button>
+          </>
+        }
+      />
+    </form>
   );
 }

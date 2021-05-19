@@ -38,7 +38,27 @@ export const dataSourcesStore = makeAutoObservable({
     }
   },
   async create(data: Omit<DataSourceInLocalStore, 'id'>) {
+    if (!this.data) {
+      throw new Error('Data not loaded yet');
+    }
     const record = await dataSourcesDb.create(data);
-    this.data?.unshift(withDriver(record));
+    this.data = [withDriver(record), ...this.data];
+  },
+  async update(id: number, data: Partial<DataSourceInLocalStore>) {
+    const record = this.data?.find((record) => record.id === id);
+    if (!this.data || !record) {
+      throw new Error("Can't find record to update");
+    }
+    const updated = await dataSourcesDb.update(record, data);
+    this.data = this.data.map((item) =>
+      item.id === id ? withDriver(updated) : item,
+    );
+  },
+  async delete(id: number) {
+    if (!this.data?.some((item) => item.id === id)) {
+      throw new Error("Can't find record to delete");
+    }
+    await dataSourcesDb.delete(id);
+    this.data = this.data.filter((item) => item.id !== id);
   },
 });

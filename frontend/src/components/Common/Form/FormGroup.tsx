@@ -5,23 +5,32 @@ import ErrorMessage from 'components/Common/Form/ErrorMessage';
 export type FormGroupProps = {
   form: Form;
   name: string;
-  label: string;
+  label?: string;
+  groupClassName?: string;
+  errorClassName?: string;
   children: React.ReactNode;
 };
 
 export default function FormGroup({
-  label,
   form,
   name,
+  label,
+  groupClassName,
+  errorClassName,
   children,
 }: FormGroupProps) {
   return (
-    <label className="block">
+    <label className={groupClassName || 'block'}>
       <div className="flex items-center">
-        <div className="w-28 flex-shrink-0">{label}:</div>
+        {label && <div className="w-28 flex-shrink-0">{label}:</div>}
         {children}
       </div>
-      <ErrorMessage addClass="pl-28" form={form} name={name} />
+      <ErrorMessage
+        className={errorClassName}
+        addClass={errorClassName === undefined ? 'pl-28' : undefined}
+        form={form}
+        name={name}
+      />
     </label>
   );
 }

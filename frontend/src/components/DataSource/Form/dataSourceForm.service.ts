@@ -1,5 +1,11 @@
 import { Form } from 'lib/useForm';
-import React from 'react';
+import React, { useState } from 'react';
+import { DataSourceInLocalStore } from 'components/DataSource/types';
+import { useCheckConnectionMutation } from 'generated/graphql';
+import { dataSourcesStore } from 'components/DataSource/dataSource.store';
+import { useObserver } from 'mobx-react-lite';
+import { toast } from 'react-toastify';
+import { useSaveDataSource } from 'components/DataSource/dataSource.service';
 
 const urlAffectiveFields = ['host', 'port', 'user', 'password', 'database'];
 
@@ -55,4 +61,24 @@ export const useConnectURLAndOtherFields = (form: Form) => {
   };
 
   return { onFormChange };
+};
+
+export const useSubmit = ({
+  form,
+  dataSource,
+  onClose,
+}: {
+  form: Form<{ name: string; url: string }>;
+  dataSource?: DataSourceInLocalStore;
+  onClose(): void;
+}) => {
+  const { save, loading } = useSaveDataSource({ dataSource, onClose });
+  const submit = async () => {
+    const values = form.getValues();
+    const errors = await save(values);
+    errors?.forEach((error) =>
+      form.setError(error.field, { message: error.message }),
+    );
+  };
+  return { submit, loading };
 };

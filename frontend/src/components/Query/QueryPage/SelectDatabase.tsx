@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import Select from 'components/Common/Form/Select';
 import Input from 'components/Common/Form/Input';
 import { useDataTree } from 'components/DataTree/dataTree.service';
 import { ChevronRight } from 'icons';
+import DataSourceFormButton from 'components/DataSource/Form/DataSourceFormButton';
+import Spinner from 'components/Common/Spinner/Spinner';
 
 export default function SelectDatabase({
   databaseUrl,
@@ -14,37 +16,59 @@ export default function SelectDatabase({
   const formRef = useRef<HTMLFormElement>(null);
 
   const { dataSourcesLocal, tree } = useDataTree();
-  const databaseOptions =
-    dataSourcesLocal &&
-    tree?.dataSources.flatMap((source) => {
-      let url = source.url;
-      const match = url.match(/\w+:\/\/[^/]+/);
-      if (match) url = match[0];
+  const databaseOptions = useMemo(
+    () =>
+      dataSourcesLocal &&
+      tree?.dataSources.flatMap((source) => {
+        let url = source.url;
+        const match = url.match(/\w+:\/\/[^/]+/);
+        if (match) url = match[0];
 
-      const sourceName =
-        dataSourcesLocal.find((local) => local.url === source.url)?.name || url;
+        const sourceName =
+          dataSourcesLocal.find((local) => local.url === source.url)?.name ||
+          url;
 
-      return source.databases.map((database) => ({
-        label: (
-          <>
-            {sourceName}
-            <ChevronRight size={16} />
-            {database.name}
-          </>
-        ),
-        text: `${sourceName} > ${database.name}`,
-        value: `${url}/${database.name}`,
-      }));
-    });
+        return source.databases.map((database) => ({
+          label: (
+            <>
+              {sourceName}
+              <ChevronRight size={16} />
+              {database.name}
+            </>
+          ),
+          text: `${sourceName} > ${database.name}`,
+          value: `${url}/${database.name}`,
+        }));
+      }),
+    [dataSourcesLocal, tree],
+  );
 
-  useEffect(() => {
-    if (databaseOptions?.length && !databaseUrl) {
-      setDatabaseUrl(databaseOptions[0].value);
-    }
-  }, [databaseOptions]);
+  if (!databaseOptions) {
+    return (
+      <div className="h-7 flex items-center">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (databaseOptions.length === 0) {
+    return (
+      <div className="h-7">
+        No databases to perform query, please{' '}
+        <DataSourceFormButton>
+          {(toggle) => (
+            <button className="text-accent hover:underline" onClick={toggle}>
+              connect to datasource
+            </button>
+          )}
+        </DataSourceFormButton>{' '}
+        first.
+      </div>
+    );
+  }
 
   return (
-    <form>
+    <form className="flex justify-start" onSubmit={(e) => e.preventDefault()}>
       <label className="flex items-center">
         <div className="mr-2">Database:</div>
         <Select

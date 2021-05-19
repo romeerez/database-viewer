@@ -4,6 +4,7 @@ import {
   loadStateFromLocalStorage,
   saveStateToLocalStorage,
 } from 'components/DataTree/open.state';
+import { DataSourceInLocalStore } from 'components/DataSource/types';
 
 export const DataTreeState = makeAutoObservable({
   search: '',
@@ -27,5 +28,16 @@ export const searchOpenState = createOpenState({
   defaultOpen: true,
   onChange() {
     DataTreeState.openChangedOnSearch = false;
+  },
+});
+
+export const modalsState = makeAutoObservable({
+  dataSourceForEdit: undefined as DataSourceInLocalStore | undefined,
+  setDataSourceForEdit(value?: DataSourceInLocalStore) {
+    this.dataSourceForEdit = value;
+  },
+  dataSourceForDelete: undefined as DataSourceInLocalStore | undefined,
+  setDataSourceForDelete(value?: DataSourceInLocalStore) {
+    this.dataSourceForDelete = value;
   },
 });

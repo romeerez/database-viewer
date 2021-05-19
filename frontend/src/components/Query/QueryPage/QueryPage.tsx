@@ -6,6 +6,14 @@ import { toast } from 'react-toastify';
 import { useQueryFieldsAndRowsLazyQuery } from 'generated/graphql';
 import QueryResult from 'components/Query/QueryResult';
 import cn from 'classnames';
+import * as yup from 'yup';
+import { useForm } from 'lib/useForm';
+import { queryStore } from 'components/Query/queryStore';
+import { useSaveQuery } from 'components/Query/query.service';
+
+const schema = yup.object({
+  name: yup.string().label('Query name').required(),
+});
 
 export default function QueryPage() {
   const [databaseUrl, setDatabaseUrl] = useState('');
@@ -29,9 +37,33 @@ export default function QueryPage() {
     });
   };
 
+  const form = useForm({
+    schema,
+    defaultValues: {
+      name: 'Query name',
+    },
+  });
+
+  const { save, loading } = useSaveQuery();
+
+  const submit = async () => {
+    if (loading) return;
+
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const { name } = form.getValues();
+
+    await save({
+      name,
+      databaseUrl: databaseUrl || undefined,
+      content: editor.getValue(),
+    });
+  };
+
   return (
     <div className="flex flex-col h-full">
-      <Header />
+      <Header form={form} onSubmit={submit} loading={loading} />
       <div className="py-3 px-6 grid gap-4 flex-shrink-0 border-b border-dark-3">
         <SelectDatabase
           databaseUrl={databaseUrl}

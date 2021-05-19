@@ -10,6 +10,14 @@ export type Option = {
 
 const menuClassId = 'select-menu';
 
+const isLowerIncludes = (target: string, lower: string) =>
+  target.toLocaleLowerCase().includes(lower);
+
+const isOptionMatchingValue = ({ label, text, value }: Option, lower: string) =>
+  (typeof label === 'string' ? isLowerIncludes(label, lower) : false) ||
+  (text ? isLowerIncludes(text, lower) : false) ||
+  isLowerIncludes(value, lower);
+
 export default function Select({
   value,
   setValue,
@@ -108,19 +116,16 @@ export default function Select({
 
   if (!lowerValue) processedOptions = options;
 
+  if (!value) {
+    processedOptions = options;
+  }
   if (filter) {
-    processedOptions = options?.filter(({ label, text, value }) =>
-      (typeof label === 'string' ? label : text || value)
-        .toLocaleLowerCase()
-        .includes(lowerValue),
+    processedOptions = options?.filter((option) =>
+      isOptionMatchingValue(option, lowerValue),
     );
   } else {
-    processedOptions = options?.sort(({ label, text, value }) =>
-      (typeof label === 'string' ? label : text || value)
-        .toLocaleLowerCase()
-        .includes(lowerValue)
-        ? -1
-        : 0,
+    processedOptions = options?.sort((option) =>
+      isOptionMatchingValue(option, value) ? -1 : 0,
     );
   }
 
@@ -128,7 +133,8 @@ export default function Select({
     <Menu
       open={open}
       setOpen={setOpen}
-      className={`w-full ${menuClassId}`}
+      className={menuClassId}
+      menuClass="mt-1"
       button={() =>
         input({
           ref: inputRef,

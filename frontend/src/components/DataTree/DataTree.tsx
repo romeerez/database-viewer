@@ -6,7 +6,9 @@ import { useObserver } from 'mobx-react-lite';
 import { PathState } from 'components/DataTree/path.state';
 import Search from 'components/DataTree/Search';
 import DisplayTree from 'components/DataTree/DisplayTree';
-import AddConnectionButton from 'components/DataTree/AddConnectionButton';
+import DataSourceFormButton from 'components/DataSource/Form/DataSourceFormButton';
+import { Plus } from 'icons';
+import DataTreeModals from 'components/DataTree/Modals/DataTreeModals';
 
 export default function DataTree() {
   const { tree, openState } = useDataTreeForSidebar();
@@ -14,9 +16,16 @@ export default function DataTree() {
 
   return (
     <>
+      <DataTreeModals />
       <div className="p-4 flex items-center">
         <Search />
-        <AddConnectionButton />
+        <DataSourceFormButton>
+          {(toggle) => (
+            <button className="w-6 h-6 ml-2 flex-center" onClick={toggle}>
+              <Plus size={16} />
+            </button>
+          )}
+        </DataSourceFormButton>
       </div>
       <Scrollbars>
         <div className="p-4 pt-0 inline-block min-w-full">

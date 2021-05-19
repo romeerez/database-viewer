@@ -9,14 +9,17 @@ import { useObserver } from 'mobx-react-lite';
 import { PathState } from 'components/DataTree/path.state';
 import routes from 'lib/routes';
 import cn from 'classnames';
+import { modalsState } from 'components/DataTree/dataTree.state';
 
 export default function DataSource({
   top,
+  zIndex,
   paddingLeft,
   source,
   openState,
 }: {
   top: number;
+  zIndex: number;
   paddingLeft: number;
   source: DataSourceTree;
   openState: ReturnType<typeof createOpenState>;
@@ -31,7 +34,7 @@ export default function DataSource({
       key={source.url}
       className="relative flex flex-col"
       paddingLeft={paddingLeft}
-      buttonStyle={{ top, zIndex: 10 }}
+      buttonStyle={{ top, zIndex }}
       icon={(match) => (
         <Postgresql size={16} className={cn('mr-2', !match && 'text-accent')} />
       )}
@@ -40,10 +43,24 @@ export default function DataSource({
       setOpen={(open) => openState.setDataSource(name, open)}
       openTree={() => PathState.setPath([name])}
       to={routes.dataSource(name)}
-      menu={() => (
+      menu={(toggle) => (
         <>
-          <MenuItem>Edit</MenuItem>
-          <MenuItem>Delete</MenuItem>
+          <MenuItem
+            onClick={() => {
+              modalsState.setDataSourceForEdit(source.dataSourceInLocalDb);
+              toggle();
+            }}
+          >
+            Edit
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              modalsState.setDataSourceForDelete(source.dataSourceInLocalDb);
+              toggle();
+            }}
+          >
+            Delete
+          </MenuItem>
         </>
       )}
     >

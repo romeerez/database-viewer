@@ -4,6 +4,7 @@ export type DataSourceInLocalStore = {
   id: number;
   name: string;
   url: string;
+  updatedAt: Date;
   createdAt: Date;
 };
 

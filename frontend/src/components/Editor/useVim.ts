@@ -48,6 +48,6 @@ export const useVim = ({
       },
     });
 
-    return () => vimMode?.dispose();
+    return () => vimMode?.dispose?.();
   }, []);
 };

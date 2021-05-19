@@ -18,7 +18,7 @@ export default function MenuItem({
     <button
       ref={buttonRef}
       className={cn(
-        'h-8 flex min-w-full items-center px-3 text-light-3 hover:text-light hover:bg-lighter',
+        'h-8 flex min-w-full items-center px-3 whitespace-nowrap text-light-3 hover:text-light hover:bg-lighter',
         className,
       )}
       {...rest}

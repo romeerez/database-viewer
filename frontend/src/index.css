@@ -79,8 +79,12 @@ button:focus-visible {
 @tailwind components;
 
 @layer components {
+  .btn {
+    @apply cursor-pointer rounded py-1 px-4 relative flex items-center justify-center duration-300 transition hover:text-light-4;
+  }
+
   .btn-primary {
-    @apply cursor-pointer text-light py-1 px-5 border-b-2 border-blue-darker rounded-md bg-blue font-bold relative flex items-center justify-center;
+    @apply bg-darker-5;
   }
 }
 

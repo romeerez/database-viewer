@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
-
 export type Row = { id: number } & Record<string, string | number | Date>;
 export type DB = ReturnType<typeof init>;
 
-export const init = (name: string, version: number, tables: string[]) => ({
+export const init = (
+  name: string,
+  migrations: ((db: IDBDatabase) => void)[],
+) => ({
   name: 'DataFigata',
-  version: 1,
+  version: migrations.length,
 
   databasePromise: undefined as Promise<IDBDatabase> | undefined,
 
@@ -23,11 +24,12 @@ export const init = (name: string, version: number, tables: string[]) => ({
         const db = (e.target as unknown as { result: IDBDatabase }).result;
         resolve(db);
       };
-      req.onupgradeneeded = (e) => {
-        const db = (e.target as unknown as { result: IDBDatabase }).result;
-        tables.forEach((table) => {
-          db.createObjectStore(table, { autoIncrement: true });
-        });
+      req.onupgradeneeded = ({ target, oldVersion, newVersion }) => {
+        const db = (target as unknown as { result: IDBDatabase }).result;
+        const to = newVersion || migrations.length;
+        for (let i = oldVersion; i < to; i++) {
+          migrations[i](db);
+        }
       };
     });
   },

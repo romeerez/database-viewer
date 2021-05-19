@@ -52,7 +52,8 @@ module.exports = {
   },
   variants: {
     extend: {
-      padding: ['group-hover'],
+      padding: ['hover', 'group-hover'],
+      display: ['group-hover'],
     },
   },
   purge: {

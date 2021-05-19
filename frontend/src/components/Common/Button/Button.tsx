@@ -9,12 +9,12 @@ export default function Button({
   disabled = loading,
   children,
   ...rest
-}: { loading: boolean } & React.DetailedHTMLProps<
+}: { loading?: boolean } & React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >) {
   return (
-    <button className="btn-primary" type={type} {...rest}>
+    <button className="btn btn-primary" type={type} {...rest}>
       <Spinner show={loading} addClass="w-8 absolute" />
       <div
         className={cn(

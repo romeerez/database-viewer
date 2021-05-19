@@ -25,7 +25,7 @@ export default function TreeItem({
   buttonStyle: React.CSSProperties;
   icon: (routeMatch: boolean) => React.ReactNode;
   title: React.ReactNode;
-  menu?: () => React.ReactNode;
+  menu?: (toggle: () => void) => React.ReactNode;
   openTree?: () => void;
   paddingLeft: number;
   to?: string;
@@ -86,11 +86,8 @@ export default function TreeItem({
             </div>
           )}
         </div>
-        <div
-          className="sticky right-16 self-end h-0 opacity-0 group-hover:opacity-100"
-          style={buttonStyle}
-        >
-          <div className="absolute h-8 py-1 bottom-0 flex-center bg-dark-2 text-light-5">
+        <div className="sticky right-16 self-end h-0 opacity-0 group-hover:opacity-100">
+          <div className="absolute h-8 py-1 bottom-0 bg-dark-2 text-light-5 hidden group-hover:flex items-center justify-center">
             {menu && (
               <Menu
                 menuClass="-top-2 -right-2"
