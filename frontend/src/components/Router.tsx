@@ -10,7 +10,7 @@ export default function Router() {
     <Switch>
       <Route exact path={routes.root} component={HomePage} />
       <Route exact path={routes.table()} component={TablePage} />
-      <Route exact path={routes.newQuery} component={QueryPage} />
+      <Route exact path={routes.query()} component={QueryPage} />
       <Redirect to={routes.root} />
     </Switch>
   );

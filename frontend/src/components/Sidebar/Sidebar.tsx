@@ -3,20 +3,26 @@ import DataTree from 'components/DataTree/DataTree';
 import { Logo } from 'icons';
 import SidebarMenu from 'components/Sidebar/SidebarMenu';
 import style from './style.module.css';
-import { useResize, useTab } from 'components/Sidebar/sidebar.service';
+import {
+  useResizeSidebar,
+  useResizeQueries,
+  useQueriesPanelState,
+} from 'components/Sidebar/sidebar.service';
 import cn from 'classnames';
 import QueriesTree from 'components/Query/QueriesTree/QueriesTree';
+import SidebarPanel from 'components/Sidebar/SidebarPanel';
 
 export default function Sidebar({ className }: { className?: string }) {
-  const { ref, width, startResize, stopResize } = useResize();
-  const [tab, setTab] = useTab();
+  const resizeSidebar = useResizeSidebar();
+  const resizeQueries = useResizeQueries();
+  const queriesPanelState = useQueriesPanelState();
 
   return (
     <>
       <div
-        ref={ref}
+        ref={resizeSidebar.ref}
         className={cn('h-full flex flex-col text-light-4', className)}
-        style={{ width }}
+        style={{ width: resizeSidebar.size }}
       >
         <div className="p-4 pb-0 flex-shrink-0 bg-darker-5">
           <div className="flex items-center justify-between mb-4">
@@ -26,37 +32,48 @@ export default function Sidebar({ className }: { className?: string }) {
             </div>
             <SidebarMenu />
           </div>
-          <div className="px-2 mt-4 flex text-center">
-            <button
-              className={cn(
-                'w-full py-1 rounded-t mr-2',
-                tab === 'data' ? 'bg-dark' : 'text-light-5 hover:text-light-4',
-              )}
-              onClick={() => setTab('data')}
-            >
-              Data
-            </button>
-            <button
-              className={cn(
-                'w-full py-1 rounded-t',
-                tab === 'queries'
-                  ? 'bg-dark'
-                  : 'text-light-5 hover:text-light-4',
-              )}
-              onClick={() => setTab('queries')}
-            >
-              Queries
-            </button>
-          </div>
         </div>
-        {tab === 'data' && <DataTree />}
-        {tab === 'queries' && <QueriesTree />}
+        <div className="flex-grow flex flex-col">
+          <SidebarPanel
+            title="Data"
+            state={
+              queriesPanelState.state === 'min'
+                ? 'max'
+                : queriesPanelState.state === 'max'
+                ? 'min'
+                : 'normal'
+            }
+            minimize={queriesPanelState.maximize}
+            maximize={queriesPanelState.maximize}
+            normalize={queriesPanelState.minimize}
+          >
+            <DataTree />
+          </SidebarPanel>
+          <div className="h-px bg-dark-3 relative user-select-none">
+            <div
+              onMouseDown={resizeQueries.startResize}
+              onMouseUp={resizeQueries.stopResize}
+              className={`absolute left-0 right-0 h-2 -top-1 ${style.resizeHorizontal}`}
+            />
+          </div>
+          <SidebarPanel
+            elementRef={resizeQueries.ref}
+            height={resizeQueries.size}
+            title="Queries"
+            state={queriesPanelState.state}
+            minimize={queriesPanelState.minimize}
+            maximize={queriesPanelState.maximize}
+            normalize={queriesPanelState.normalize}
+          >
+            <QueriesTree />
+          </SidebarPanel>
+        </div>
       </div>
       <div className="w-px bg-dark-3 relative user-select-none">
         <div
-          onMouseDown={startResize}
-          onMouseUp={stopResize}
-          className={`absolute top-0 bottom-0 w-2 -left-1 ${style.resize}`}
+          onMouseDown={resizeSidebar.startResize}
+          onMouseUp={resizeSidebar.stopResize}
+          className={`absolute top-0 bottom-0 w-2 -left-1 ${style.resizeVertical}`}
         />
       </div>
     </>

@@ -5906,6 +5906,34 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["@styled-icons/bootstrap", [
+        ["npm:10.33.0", {
+          "packageLocation": "./.yarn/cache/@styled-icons-bootstrap-npm-10.33.0-6ac29e5b89-56d37b31fb.zip/node_modules/@styled-icons/bootstrap/",
+          "packageDependencies": [
+            ["@styled-icons/bootstrap", "npm:10.33.0"]
+          ],
+          "linkType": "SOFT",
+        }],
+        ["virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:10.33.0", {
+          "packageLocation": "./.yarn/$$virtual/@styled-icons-bootstrap-virtual-5a215af4f4/0/cache/@styled-icons-bootstrap-npm-10.33.0-6ac29e5b89-56d37b31fb.zip/node_modules/@styled-icons/bootstrap/",
+          "packageDependencies": [
+            ["@styled-icons/bootstrap", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:10.33.0"],
+            ["@babel/runtime", "npm:7.14.0"],
+            ["@styled-icons/styled-icon", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:10.6.3"],
+            ["@types/react", "npm:17.0.5"],
+            ["@types/styled-components", null],
+            ["react", "npm:17.0.2"],
+            ["styled-components", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:5.3.0"]
+          ],
+          "packagePeers": [
+            "@types/react",
+            "@types/styled-components",
+            "react",
+            "styled-components"
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["@styled-icons/boxicons-regular", [
         ["npm:10.23.0", {
           "packageLocation": "./.yarn/cache/@styled-icons-boxicons-regular-npm-10.23.0-ab38659db2-91d2d17c4c.zip/node_modules/@styled-icons/boxicons-regular/",
@@ -14436,6 +14464,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@craco/craco", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:6.1.2"],
             ["@hookform/error-message", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:2.0.0"],
             ["@popperjs/core", "npm:2.9.2"],
+            ["@styled-icons/bootstrap", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:10.33.0"],
             ["@styled-icons/boxicons-regular", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:10.23.0"],
             ["@styled-icons/fa-solid", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:10.32.0"],
             ["@styled-icons/feather", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:10.18.0"],

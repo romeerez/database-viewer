@@ -1,49 +1,34 @@
 import React from 'react';
 import Header from 'components/Common/Header';
-import { Form } from 'lib/useForm';
-import InputGroup from 'components/Common/Form/InputGroup';
-import Button from 'components/Common/Button/Button';
+import { QueryInLocalStore } from 'components/Query/types';
+import { updateQuery } from 'components/Query/query.service';
+import { useObserver } from 'mobx-react-lite';
 import history from 'lib/history';
+import routes from 'lib/routes';
 
 export default function QueryPageHeader({
-  loading,
-  form,
-  onSubmit,
+  query,
 }: {
-  loading: boolean;
-  form: Form<{ name: string } | undefined>;
-  onSubmit(): void;
+  query: QueryInLocalStore;
 }) {
-  const submit = form.handleSubmit(onSubmit);
+  const name = useObserver(() => query.name);
 
   return (
-    <form onSubmit={submit}>
-      <Header
-        breadcrumbs={[
-          'Queries',
-          <InputGroup
-            key={0}
-            form={form}
-            name="name"
-            groupClassName="ml-1 flex items-center"
-            errorClassName="text-error text-sm ml-2"
-          />,
-        ]}
-        controls={
-          <>
-            <button
-              type="button"
-              className="btn mr-2"
-              onClick={() => history.goBack()}
-            >
-              Cancel
-            </button>
-            <Button type="submit" loading={loading} className="btn btn-primary">
-              Save
-            </Button>
-          </>
-        }
-      />
-    </form>
+    <Header
+      breadcrumbs={[
+        'Queries',
+        <label key={0} className="ml-1 flex items-center">
+          <input
+            className="w-full px-3 bg-dark-4 rounded h-7"
+            value={name}
+            onChange={(e) => {
+              const name = e.target.value;
+              updateQuery(query, { name });
+              history.replace(routes.query(name));
+            }}
+          />
+        </label>,
+      ]}
+    />
   );
 }

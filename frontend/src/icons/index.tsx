@@ -12,3 +12,6 @@ export { RightArrowAlt } from '@styled-icons/boxicons-regular/RightArrowAlt';
 export { TextColumnTwoLeft } from '@styled-icons/fluentui-system-regular/TextColumnTwoLeft';
 export { Key } from '@styled-icons/typicons/Key';
 export { Info } from '@styled-icons/fa-solid/Info';
+export { Minus } from '@styled-icons/boxicons-regular/Minus';
+export { ExpandAlt } from '@styled-icons/boxicons-regular/ExpandAlt';
+export { Window } from '@styled-icons/boxicons-regular/Window';

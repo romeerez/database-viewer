@@ -14,5 +14,5 @@ export default {
     schemaName = ':schemaName',
     tableName = ':tableName',
   ) => `/data/${sourceName}/${databaseName}/${schemaName}/${tableName}`,
-  newQuery: `/queries/new`,
+  query: (name = ':name') => `/queries/${name}`,
 };

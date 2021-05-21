@@ -21,14 +21,12 @@ const isOptionMatchingValue = ({ label, text, value }: Option, lower: string) =>
 export default function Select({
   value,
   setValue,
-  formRef,
   options,
   filter,
   input,
 }: {
   value: string;
   setValue(value: string): void;
-  formRef: { current: HTMLFormElement | null };
   options?: Option[];
   filter?: boolean;
   input(params: {
@@ -52,20 +50,17 @@ export default function Select({
   };
 
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const refs = React.useRef<HTMLButtonElement[]>([]);
+  const listRef = React.useRef<HTMLDivElement>(null);
 
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const list = listRef.current as HTMLDivElement;
+    let button;
     if (e.key === 'ArrowDown') {
-      refs.current[0]?.focus();
+      button = list.firstElementChild as HTMLButtonElement | null;
     } else if (e.key === 'ArrowUp') {
-      refs.current[refs.current.length - 1]?.focus();
+      button = list.lastElementChild as HTMLButtonElement | null;
     }
-  };
-
-  const setButtonRef = (el: HTMLButtonElement | null) => {
-    if (!el) return;
-    if (refs.current.length === options?.length) refs.current.length = 0;
-    refs.current.push(el);
+    button?.focus();
   };
 
   const onOptionKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -80,35 +75,21 @@ export default function Select({
     const up = e.key === 'ArrowUp';
     if (!down && !up) return;
 
+    e.preventDefault();
+
     const current = e.target as HTMLButtonElement;
-    const index = refs.current.indexOf(current);
-    if (index === -1) return;
+    const toFocus =
+      (current[
+        down ? 'nextElementSibling' : 'previousElementSibling'
+      ] as HTMLButtonElement) || inputRef.current;
 
-    let toFocus: HTMLButtonElement | HTMLInputElement | null =
-      refs.current[down ? index + 1 : index - 1];
-
-    if (!toFocus) toFocus = inputRef.current;
-
-    if (toFocus) toFocus.focus();
+    toFocus?.focus();
   };
 
   const onOptionSelect = (e: React.SyntheticEvent) => {
     const el = e.target as HTMLButtonElement;
     setValue(el.value);
     setOpen(false);
-
-    const formElement = formRef.current;
-    const inputElement = inputRef.current;
-    if (!formElement || !inputElement) return;
-
-    const lastButtonIndex = Array.prototype.indexOf.call(
-      formElement.elements,
-      refs.current[refs.current.length - 1],
-    );
-    if (lastButtonIndex === -1) return;
-
-    const nextInput = formElement.elements[lastButtonIndex + 1] as HTMLElement;
-    if (nextInput) nextInput.focus();
   };
 
   const lowerValue = value?.toLocaleLowerCase();
@@ -146,11 +127,10 @@ export default function Select({
       }
     >
       {() => (
-        <>
+        <div ref={listRef}>
           {processedOptions?.map(({ label, value }) => (
             <MenuItem
               key={value}
-              buttonRef={setButtonRef}
               onKeyDown={onOptionKeyDown}
               onClick={onOptionSelect}
               onFocus={onFocus}
@@ -161,7 +141,7 @@ export default function Select({
               {label || value}
             </MenuItem>
           ))}
-        </>
+        </div>
       )}
     </Menu>
   );

@@ -1,3 +1,7 @@
-.resize {
+.resizeVertical {
   cursor: ew-resize;
+}
+
+.resizeHorizontal {
+  cursor: ns-resize;
 }

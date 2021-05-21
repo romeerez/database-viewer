@@ -1,48 +1,38 @@
 import { useRef, useState } from 'react';
 
-type Tab = 'data' | 'queries';
-const tabLocalStorageKey = 'sidebarTab';
-
-export const useTab = () => {
-  const [tab, setTab] = useState<Tab>(() => {
-    const value = window.localStorage.getItem(tabLocalStorageKey);
-    return value === 'data' || value === 'queries' ? value : 'data';
-  });
-
-  const changeTab = (tab: Tab) => {
-    window.localStorage.setItem(tabLocalStorageKey, tab);
-    setTab(tab);
-  };
-
-  return [tab, changeTab] as const;
-};
-
-const minWidth = 250;
-const defaultWidth = 300;
-const widthKey = 'sidebar.width';
-
-export const useResize = () => {
-  const width = window.localStorage.getItem(widthKey) || `${defaultWidth}px`;
+const useResize = ({
+  type,
+  localStorageKey,
+  defaultSize,
+  minSize,
+}: {
+  type: 'width' | 'height';
+  localStorageKey: string;
+  defaultSize: number | string;
+  minSize: number;
+}) => {
+  const size =
+    window.localStorage.getItem(localStorageKey) || `${defaultSize}px`;
   const ref = useRef<HTMLDivElement>(null);
   const [listenerRef] = useState<{ current?: (e: MouseEvent) => void }>({
     current: undefined,
   });
 
   const startResize = (e: React.MouseEvent) => {
-    const { current: sidebar } = ref;
-    if (!sidebar) return;
+    const { current: el } = ref;
+    if (!el) return;
 
     if (listenerRef.current)
       document.removeEventListener('mousemove', listenerRef.current);
 
-    const initialWidth = sidebar.offsetWidth;
-    const initialX = e.clientX;
+    const initialSize = el[type === 'width' ? 'offsetWidth' : 'offsetHeight'];
+    const prop = type === 'width' ? 'clientX' : 'clientY';
+    const initialPos = e[prop];
 
     listenerRef.current = (e) => {
-      sidebar.style.width = `${Math.max(
-        minWidth,
-        initialWidth + e.clientX - initialX,
-      )}px`;
+      const diff =
+        type === 'width' ? e[prop] - initialPos : initialPos - e[prop];
+      el.style[type] = `${Math.max(minSize, initialSize + diff)}px`;
     };
 
     document.addEventListener('mousemove', listenerRef.current);
@@ -53,8 +43,54 @@ export const useResize = () => {
 
     document.removeEventListener('mousemove', listenerRef.current);
 
-    window.localStorage.setItem(widthKey, ref.current.style.width);
+    window.localStorage.setItem(localStorageKey, ref.current.style[type]);
   };
 
-  return { ref, width, startResize, stopResize };
+  return { ref, size, startResize, stopResize };
+};
+
+export const useResizeSidebar = () =>
+  useResize({
+    type: 'width',
+    localStorageKey: 'sidebar.width',
+    defaultSize: 300,
+    minSize: 250,
+  });
+
+export const useResizeQueries = () =>
+  useResize({
+    type: 'height',
+    localStorageKey: 'sidebar.queries.height',
+    defaultSize: 250,
+    minSize: 200,
+  });
+
+export type PanelState = 'min' | 'normal' | 'max';
+const defaultPanelState = 'normal';
+const panelStateKey = 'sidebar.queries.panelState';
+
+export const useQueriesPanelState = () => {
+  const [state, setState] = useState<PanelState>(
+    () =>
+      (window.localStorage.getItem(panelStateKey) as PanelState) ||
+      defaultPanelState,
+  );
+
+  const changeState = (state: PanelState) => {
+    window.localStorage.setItem(panelStateKey, state);
+    setState(state);
+  };
+
+  return {
+    state,
+    minimize() {
+      changeState('min');
+    },
+    normalize() {
+      changeState('normal');
+    },
+    maximize() {
+      changeState('max');
+    },
+  };
 };

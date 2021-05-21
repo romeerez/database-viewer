@@ -7,14 +7,25 @@ export default function Button({
   type = 'button',
   loading = false,
   disabled = loading,
+  buttonRef,
+  addClass,
   children,
   ...rest
-}: { loading?: boolean } & React.DetailedHTMLProps<
+}: {
+  buttonRef?: React.Ref<HTMLButtonElement>;
+  loading?: boolean;
+  addClass?: string;
+} & React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >) {
   return (
-    <button className="btn btn-primary" type={type} {...rest}>
+    <button
+      ref={buttonRef}
+      className={cn('btn btn-primary', addClass)}
+      type={type}
+      {...rest}
+    >
       <Spinner show={loading} addClass="w-8 absolute" />
       <div
         className={cn(

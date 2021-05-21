@@ -72,7 +72,7 @@ input:focus, button:focus, textarea:focus {
   outline: none;
 }
 
-button:focus-visible {
+button:focus-visible, button.focus-visible:focus {
   box-shadow: inset var(--color-accent) 0 0 2px 1px;
 }
 

@@ -54,7 +54,6 @@ export const useExecuteWidget = ({
 
         if (!fullText.match(/;\s*$/)) fullText += ';';
 
-        console.log(fullText);
         const parsedLocations = parseSql(fullText, '', false)
           .locations as Location[];
         const len = parsedLocations.length;

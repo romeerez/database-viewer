@@ -1,17 +1,16 @@
 import React from 'react';
 import Input from 'components/Common/Form/Input';
-import { DataTreeState } from 'components/DataTree/dataTree.state';
-import { useObserver } from 'mobx-react-lite';
+import { useSearch } from 'components/Query/QueriesTree/queriesTree.service';
 
 export default function Search() {
-  const value = useObserver(() => DataTreeState.search);
+  const [search, setSearch] = useSearch();
 
   return (
     <Input
       placeholder="Search"
       className="bg-lighter text-light-5 px-2 w-full"
-      value={value}
-      onChange={(e) => DataTreeState.setSearch(e.target.value)}
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
     />
   );
 }

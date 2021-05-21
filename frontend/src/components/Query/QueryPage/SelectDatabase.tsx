@@ -5,15 +5,18 @@ import { useDataTree } from 'components/DataTree/dataTree.service';
 import { ChevronRight } from 'icons';
 import DataSourceFormButton from 'components/DataSource/Form/DataSourceFormButton';
 import Spinner from 'components/Common/Spinner/Spinner';
+import { QueryInLocalStore } from 'components/Query/types';
+import { useObserver } from 'mobx-react-lite';
+import { updateQuery } from 'components/Query/query.service';
 
 export default function SelectDatabase({
-  databaseUrl,
-  setDatabaseUrl,
+  query,
 }: {
-  databaseUrl: string;
-  setDatabaseUrl(value: string): void;
+  query: QueryInLocalStore;
 }) {
-  const formRef = useRef<HTMLFormElement>(null);
+  const databaseUrl = useObserver(() => query.databaseUrl) || '';
+  const setDatabaseUrl = (databaseUrl: string) =>
+    updateQuery(query, { databaseUrl });
 
   const { dataSourcesLocal, tree } = useDataTree();
   const databaseOptions = useMemo(
@@ -68,33 +71,35 @@ export default function SelectDatabase({
   }
 
   return (
-    <form className="flex justify-start" onSubmit={(e) => e.preventDefault()}>
+    <div className="flex justify-start">
       <label className="flex items-center">
         <div className="mr-2">Database:</div>
         <Select
           value={databaseUrl}
           setValue={setDatabaseUrl}
-          formRef={formRef}
           options={databaseOptions}
           filter
-          input={(props) => (
-            <Input
-              autoComplete="off"
-              name="database"
-              width="w-64"
-              value={
-                (databaseUrl &&
-                  databaseOptions?.find(
-                    (option) => option.value === databaseUrl,
-                  )?.text) ||
-                databaseUrl
-              }
-              onChange={(e) => setDatabaseUrl(e.target.value)}
-              {...props}
-            />
-          )}
+          input={({ ref, ...props }) => {
+            return (
+              <Input
+                inputRef={ref}
+                autoComplete="off"
+                name="database"
+                width="w-64"
+                value={
+                  (databaseUrl &&
+                    databaseOptions?.find(
+                      (option) => option.value === databaseUrl,
+                    )?.text) ||
+                  databaseUrl
+                }
+                onChange={(e) => setDatabaseUrl(e.target.value)}
+                {...props}
+              />
+            );
+          }}
         />
       </label>
-    </form>
+    </div>
   );
 }

@@ -35,7 +35,6 @@ export default function SelectGroup({
       <Select
         value={value}
         setValue={(value) => form.setValue(name, value)}
-        formRef={form.formRef}
         options={options}
         filter={filter}
         input={({ ref, ...props }) => (

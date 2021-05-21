@@ -2844,6 +2844,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@styled-icons/bootstrap@npm:^10.33.0":
+  version: 10.33.0
+  resolution: "@styled-icons/bootstrap@npm:10.33.0"
+  dependencies:
+    "@babel/runtime": ^7.13.10
+    "@styled-icons/styled-icon": ^10.6.0
+  peerDependencies:
+    react: "*"
+    styled-components: "*"
+  checksum: 56d37b31fb7cd837a98c96f06d210b4ceabb5876fc725a635201ac2b73669c5184cf38ba30a272942378adc19b9c6097da6dc05ed07620b14f56e83a8606b0c8
+  languageName: node
+  linkType: hard
+
 "@styled-icons/boxicons-regular@npm:^10.23.0":
   version: 10.23.0
   resolution: "@styled-icons/boxicons-regular@npm:10.23.0"
@@ -9776,6 +9789,7 @@ __metadata:
     "@craco/craco": ^6.1.2
     "@hookform/error-message": ^2.0.0
     "@popperjs/core": ^2.9.2
+    "@styled-icons/bootstrap": ^10.33.0
     "@styled-icons/boxicons-regular": ^10.23.0
     "@styled-icons/fa-solid": ^10.32.0
     "@styled-icons/feather": ^10.18.0

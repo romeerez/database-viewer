@@ -3,7 +3,7 @@ import { QueryInLocalStore } from 'components/Query/types';
 import { queriesDb } from 'lib/db';
 import { Status } from 'lib/indexedDB';
 
-export const queryStore = makeAutoObservable({
+export const queriesStore = makeAutoObservable({
   status: 'init' as Status,
   error: undefined as Error | undefined,
   data: undefined as QueryInLocalStore[] | undefined,
@@ -37,5 +37,18 @@ export const queryStore = makeAutoObservable({
     const record = await queriesDb.create(query);
     this.data = [...(this.data || []), record];
     return record;
+  },
+  async update(
+    query: QueryInLocalStore,
+    { ...data }: Partial<QueryInLocalStore>,
+  ) {
+    data.updatedAt = new Date();
+    Object.assign(query, data);
+    await queriesDb.update(query, data);
+    return query;
+  },
+  async delete(query: QueryInLocalStore) {
+    await queriesDb.delete(query.id);
+    this.data = this.data?.filter((item) => item.id !== query.id);
   },
 });
