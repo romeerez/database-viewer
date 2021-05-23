@@ -76,7 +76,7 @@ export default function TablePage() {
   return (
     <div className="flex flex-col h-full">
       <Header breadcrumbs={[sourceName, databaseName, schemaName, tableName]} />
-      <div className="h-1/4 flex-shrink-0">
+      <div className="h-32 flex-shrink-0">
         <Editor
           initialValue={initialQuery}
           source={source}
