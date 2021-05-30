@@ -9,7 +9,7 @@ export default function Search() {
   return (
     <Input
       placeholder="Search"
-      className="bg-lighter text-light-5 px-2 w-full"
+      className="bg-dark-3 text-light-5 px-2 w-full"
       value={value}
       onChange={(e) => DataTreeState.setSearch(e.target.value)}
     />

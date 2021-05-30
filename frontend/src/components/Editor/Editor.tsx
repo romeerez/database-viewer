@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { editor as MonacoEditor } from 'monaco-editor';
-import { DataSourceInLocalStoreWithDriver } from 'components/DataSource/types';
 import { useDataTree } from 'components/DataTree/dataTree.service';
 import { enableSuggestions } from 'components/Editor/suggestions';
 import { useExecuteWidget } from 'components/Editor/executeWidget';
@@ -24,18 +23,26 @@ export const useEditorRef = () => {
 
 export default function Editor({
   editorRef,
-  source,
+  sourceUrl,
   databaseName,
-  schemaName,
+  schemaName = 'public',
   initialValue,
   executeQuery,
+  disableVim,
+  paddingTop = 20,
+  singleLine,
+  suggestionsPrepend,
 }: {
   editorRef: { current?: ExtendedEditor };
-  source?: DataSourceInLocalStoreWithDriver;
+  sourceUrl?: string;
   databaseName?: string;
   schemaName?: string;
   initialValue?: string;
-  executeQuery(query: string): void;
+  executeQuery?(query: string): void;
+  disableVim?: boolean;
+  paddingTop?: number;
+  singleLine?: boolean;
+  suggestionsPrepend?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const statusBarRef = useRef<HTMLDivElement>(null);
@@ -43,7 +50,6 @@ export default function Editor({
   executeQueryRef.current = executeQuery;
 
   const { tree } = useDataTree();
-  const sourceUrl = source?.url;
   const dataSource = sourceUrl
     ? tree?.dataSources.find((source) => source.url === sourceUrl)
     : undefined;
@@ -60,7 +66,7 @@ export default function Editor({
   useEffect(() => {
     const el = ref.current as HTMLDivElement;
 
-    const editor = MonacoEditor.create(el, {
+    const options: MonacoEditor.IStandaloneEditorConstructionOptions = {
       value: initialValue,
       language: 'pgsql',
       minimap: {
@@ -68,38 +74,50 @@ export default function Editor({
       },
       scrollBeyondLastLine: false,
       padding: {
-        top: 20,
+        top: paddingTop,
       },
-    }) as ExtendedEditor;
+    };
+
+    if (singleLine) {
+      Object.assign(options, {
+        lineNumbers: 'off',
+        lineNumbersMinChars: 0,
+        folding: false,
+      });
+    }
+
+    const editor = MonacoEditor.create(el, options) as ExtendedEditor;
 
     editor.resize = () => {
       editor.layout({
-        ...editor.getLayoutInfo(),
+        width: editor._domElement.offsetWidth,
         height: editor._domElement.offsetHeight,
       });
     };
 
     editorRef.current = editor;
 
-    addExecuteAction(editor);
+    if (executeQuery) addExecuteAction(editor);
 
     return () => editor.dispose();
   }, []);
 
   useEffect(() => {
     const editor = editorRef.current as ExtendedEditor;
-    enableSuggestions({ editor, tables });
+    enableSuggestions({ editor, tables, prepend: suggestionsPrepend });
   }, [tables]);
 
-  useVim({ editorRef, statusBarRef });
+  useVim({ editorRef, statusBarRef, disabled: disableVim });
 
   return (
     <div className="h-full flex flex-col">
       <div ref={ref} className="flex-grow" />
-      <div
-        ref={statusBarRef}
-        className="flex-shrink-0 h-6 editor-vim-statusbar"
-      />
+      {!disableVim && (
+        <div
+          ref={statusBarRef}
+          className="flex-shrink-0 h-6 editor-vim-statusbar"
+        />
+      )}
     </div>
   );
 }

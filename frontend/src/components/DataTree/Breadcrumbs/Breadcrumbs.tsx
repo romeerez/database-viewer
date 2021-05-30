@@ -9,14 +9,14 @@ export default function Breadcrumbs() {
   const last = path.length - 1;
 
   return (
-    <div className="h-12 pt-3 pb-3 bg-dark sticky top-0 z-20">
+    <div className="h-12 pt-3 pb-3 bg-dark-2 sticky top-0 z-20">
       <div className="flex">
         {path.length > 1 &&
           path.map((item, i) => (
             <button
               key={i}
               className={cn(
-                'bg-dark-4 h-6 px-2 flex items-center text-sm text-light-4 relative shadow-md hover:bg-dark-5',
+                'bg-dark-5 h-6 px-2 flex items-center text-sm text-light-4 relative shadow-md hover:bg-dark-6',
                 i === 0 ? 'rounded-l' : 'ml-3',
                 style.group,
               )}

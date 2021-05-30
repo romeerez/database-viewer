@@ -3,13 +3,13 @@ import Scrollbars from 'components/Common/Scrollbars';
 import { positionValues } from 'react-custom-scrollbars';
 import { Field } from 'generated/graphql';
 
-const cellClass = 'h-10 border-b border-l border-dark-3 px-4 max-w-sm truncate';
+const cellClass = 'h-10 border-b border-l border-dark-4 px-4 max-w-sm truncate';
 const classes = {
-  table: 'border-r border-dark-3 text-sm text-left',
+  table: 'border-r border-dark-4 text-sm text-left',
   tbody: 'bg-darker',
-  th: `${cellClass} bg-dark-2 sticky z-10`,
+  th: `${cellClass} bg-dark-3 sticky z-10`,
   cell: cellClass,
-  firstCell: `${cellClass} bg-dark-2 sticky -left-px`,
+  firstCell: `${cellClass} bg-dark-3 sticky -left-px`,
 };
 
 const rowHeight = 40;

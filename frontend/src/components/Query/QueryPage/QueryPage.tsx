@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Editor, { useEditorRef } from 'components/Editor/Editor';
 import Header from './Header';
 import SelectDatabase from './SelectDatabase';
@@ -13,6 +13,8 @@ import { updateQuery, useQueries } from 'components/Query/query.service';
 import { useParams } from 'react-router-dom';
 import { QueryInLocalStore } from 'components/Query/types';
 import { IDisposable } from 'monaco-editor';
+import { useObserver } from 'mobx-react-lite';
+import { getSourceUrlAndDatabaseNameFromUrl } from 'lib/sourceUrl';
 
 export default function QueryPage() {
   const { name } = useParams<{ name: string }>();
@@ -84,14 +86,29 @@ const QueryPageInner = React.memo(
       });
     };
 
+    const databaseUrl = useObserver(() => query.databaseUrl) || '';
+    const setDatabaseUrl = (databaseUrl: string) =>
+      updateQuery(query, { databaseUrl });
+
+    const { sourceUrl, databaseName } =
+      getSourceUrlAndDatabaseNameFromUrl(databaseUrl);
+
     return (
       <div className="flex flex-col h-full">
         <Header query={query} />
-        <div className="py-3 px-6 grid gap-4 flex-shrink-0 border-b border-dark-3">
-          <SelectDatabase query={query} />
+        <div className="py-3 px-6 grid gap-4 flex-shrink-0 border-b border-dark-4">
+          <SelectDatabase
+            databaseUrl={databaseUrl}
+            setDatabaseUrl={setDatabaseUrl}
+          />
         </div>
         <div className={cn('overflow-hidden', data ? 'h-1/3' : 'flex-grow')}>
-          <Editor executeQuery={executeQuery} editorRef={editorRef} />
+          <Editor
+            executeQuery={executeQuery}
+            editorRef={editorRef}
+            sourceUrl={sourceUrl}
+            databaseName={databaseName}
+          />
         </div>
         {data && (
           <div className="flex-grow">

@@ -1,4 +1,4 @@
-export type Row = { id: number } & Record<string, string | number | Date>;
+export type Row = Record<string, string | number | Date>;
 export type DB = ReturnType<typeof init>;
 
 export const init = (
@@ -44,9 +44,10 @@ export const init = (
     storeName: string,
     methodName: string,
     mode: IDBTransactionMode,
-    args?: any[],
+    args?: unknown[],
   ) {
     const objectStore = await this.getObjectStore(storeName, mode);
+    // eslint-disable-next-line
     return (objectStore as any)[methodName].apply(objectStore, args);
   },
 
@@ -54,7 +55,7 @@ export const init = (
     storeName: string,
     methodName: string,
     mode: IDBTransactionMode,
-    args: any[],
+    args: unknown[],
   ) {
     const request = await this.createRequest(storeName, methodName, mode, args);
     return await new Promise((resolve, reject) => {
@@ -84,39 +85,54 @@ export const init = (
     return records;
   },
 
-  async get<T extends Row>(storeName: string, key: number) {
-    return (await this.call(storeName, 'get', 'readonly', [key])) as Row;
+  async get<T extends Row>(
+    storeName: string,
+    key: number | string,
+  ): Promise<T> {
+    return (await this.call(storeName, 'get', 'readonly', [key])) as T;
   },
 
-  async put(storeName: string, item: any, key?: number) {
+  async put(storeName: string, item: unknown, key?: number | string) {
     return (await this.call(storeName, 'put', 'readwrite', [
       item,
       key,
     ])) as number;
   },
 
-  async delete(storeName: string, key: number) {
-    return await this.call(storeName, 'delete', 'readwrite', [key]);
+  async delete(storeName: string, key: number | string) {
+    await this.call(storeName, 'delete', 'readwrite', [key]);
   },
 });
 
 export type Status = 'init' | 'loading' | 'error' | 'ready';
 
-export const createStore = <T extends Row>(db: DB, tableName: string) => ({
+export interface Store<T extends Row, Id extends keyof T> {
+  all(): Promise<T[]>;
+  get(id: T[Id]): Promise<T>;
+  create(data: Omit<T, Id> & Partial<T>): Promise<T>;
+  update(record: T, data: Partial<T>): Promise<T>;
+  delete(id: string | number): Promise<void>;
+}
+
+export const createStore = <T extends Row, Id extends keyof T>(
+  db: DB,
+  tableName: string,
+  idName: Id,
+): Store<T, Id> => ({
   all: () => db.all<T>(tableName),
 
-  get: (id: number) => db.get<T>(tableName, id),
+  get: (id) => db.get<T>(tableName, id as number),
 
-  async create(data: Omit<T, 'id'>): Promise<T> {
+  async create(data): Promise<T> {
     const id = await db.put(tableName, data);
-    return { ...data, id } as T;
+    return { ...data, [idName]: id } as T;
   },
 
-  async update(record: T, data: Partial<T>) {
+  async update(record, data) {
     const updated = { ...record, ...data };
-    await db.put(tableName, updated, record.id);
+    await db.put(tableName, updated, record[idName] as number);
     return updated;
   },
 
-  delete: (id: number) => db.delete(tableName, id),
+  delete: (id) => db.delete(tableName, id),
 });

@@ -1,31 +1,27 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import Select from 'components/Common/Form/Select';
 import Input from 'components/Common/Form/Input';
 import { useDataTree } from 'components/DataTree/dataTree.service';
 import { ChevronRight } from 'icons';
 import DataSourceFormButton from 'components/DataSource/Form/DataSourceFormButton';
 import Spinner from 'components/Common/Spinner/Spinner';
-import { QueryInLocalStore } from 'components/Query/types';
-import { useObserver } from 'mobx-react-lite';
-import { updateQuery } from 'components/Query/query.service';
+import { getSourceUrlAndDatabaseNameFromUrl } from 'lib/sourceUrl';
 
 export default function SelectDatabase({
-  query,
+  databaseUrl,
+  setDatabaseUrl,
 }: {
-  query: QueryInLocalStore;
+  databaseUrl: string;
+  setDatabaseUrl(value: string): void;
 }) {
-  const databaseUrl = useObserver(() => query.databaseUrl) || '';
-  const setDatabaseUrl = (databaseUrl: string) =>
-    updateQuery(query, { databaseUrl });
-
   const { dataSourcesLocal, tree } = useDataTree();
   const databaseOptions = useMemo(
     () =>
       dataSourcesLocal &&
       tree?.dataSources.flatMap((source) => {
-        let url = source.url;
-        const match = url.match(/\w+:\/\/[^/]+/);
-        if (match) url = match[0];
+        const { sourceUrl: url } = getSourceUrlAndDatabaseNameFromUrl(
+          source.url,
+        );
 
         const sourceName =
           dataSourcesLocal.find((local) => local.url === source.url)?.name ||

@@ -17,7 +17,7 @@ export default function Input({ form, width, inputRef, ...rest }: InputProps) {
         if (typeof inputRef === 'function') inputRef(input);
         else if (inputRef) inputRef.current = input;
       }}
-      className={`${width || 'w-full'} px-3 bg-dark-4 rounded h-7`}
+      className={`${width || 'w-full'} px-3 bg-dark-5 rounded h-7`}
       {...rest}
     />
   );

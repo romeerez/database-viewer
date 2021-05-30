@@ -17,7 +17,7 @@ export default function QueryTreeItem({
   return (
     <NavLink
       to={routes.query(name)}
-      className="h-8 mb-1 flex items-center justify-between rounded pl-2 duration-200 transition-all hover:bg-dark-2 hover:pl-4 group"
+      className="h-8 mb-1 flex items-center justify-between rounded pl-2 duration-200 transition-all hover:bg-dark-3 hover:pl-4 group"
       activeClassName="bg-accent-dark hover:bg-accent-dark"
     >
       {name}

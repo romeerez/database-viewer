@@ -14,25 +14,36 @@ const popularKeywords: Record<string, true> = {
 
 monaco.languages.registerCompletionItemProvider('pgsql', {
   triggerCharacters: [' ', '.'],
-  provideCompletionItems: (model, position) => {
+  provideCompletionItems(model, position) {
+    const { tables, prepend = '' } = model as unknown as {
+      tables?: Tables;
+      prepend?: string;
+    };
+
     const { lineNumber, column } = position;
 
-    const textBeforePointer = model.getValueInRange({
+    const beforePointer = model.getValueInRange({
       startLineNumber: 1,
       startColumn: 0,
       endLineNumber: lineNumber,
       endColumn: column,
     });
 
-    const result = parseSql(textBeforePointer, '', false);
+    const fullRange = model.getFullModelRange();
+    const afterPointer = model.getValueInRange({
+      startLineNumber: lineNumber,
+      startColumn: column,
+      endLineNumber: fullRange.endLineNumber,
+      endColumn: fullRange.endColumn,
+    });
 
-    const tokens = textBeforePointer.split(/\s+/);
+    const result = parseSql(prepend + beforePointer, afterPointer, false);
+
+    const tokens = beforePointer.split(/\s+/);
     const lastToken = tokens[tokens.length - 1];
 
     const suggestions: monaco.languages.CompletionItem[] = [];
     let sortIndex = 0;
-
-    const { tables } = model as unknown as { tables?: Tables };
 
     if (result.suggestColumns?.tables && tables) {
       for (const suggestTable of result.suggestColumns.tables) {
@@ -120,10 +131,17 @@ monaco.languages.registerCompletionItemProvider('pgsql', {
 export const enableSuggestions = ({
   editor,
   tables,
+  prepend,
 }: {
   editor: monaco.editor.IStandaloneCodeEditor;
   tables?: Tables;
+  tableName?: string;
+  prepend?: string;
 }) => {
-  const model = editor.getModel() as unknown as { tables?: Tables };
+  const model = editor.getModel() as unknown as {
+    tables?: Tables;
+    prepend?: string;
+  };
   model.tables = tables;
+  model.prepend = prepend;
 };

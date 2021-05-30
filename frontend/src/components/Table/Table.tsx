@@ -1,28 +1,17 @@
 import React from 'react';
-import {
-  useTableData,
-  UseTableDataProps,
-} from 'components/Table/tablePage.service';
 import QueryResult from 'components/Query/QueryResult';
-import { QueryFieldsAndRowsQuery } from 'generated/graphql';
+import { useTable } from 'components/Table/table.service';
+import { useObserver } from 'mobx-react-lite';
 
 export default function Table({
-  queryFromEditor,
-  data,
-  useProvidedData,
-  ...useTableDataProps
+  state: { state },
 }: {
-  queryFromEditor: boolean;
-  data?: QueryFieldsAndRowsQuery;
-  useProvidedData?: boolean;
-} & UseTableDataProps) {
-  const { fields, rows, fetchNext } = useTableData(useTableDataProps);
+  state: ReturnType<typeof useTable>;
+}) {
+  const { fields, rows } = useObserver(() => ({
+    fields: state.fields,
+    rows: state.rows,
+  }));
 
-  return (
-    <QueryResult
-      fields={useProvidedData ? data?.executeQuery.fields : fields}
-      rows={useProvidedData ? data?.executeQuery.rows : rows}
-      fetchNext={queryFromEditor ? undefined : fetchNext}
-    />
-  );
+  return <QueryResult fields={fields} rows={rows} />;
 }

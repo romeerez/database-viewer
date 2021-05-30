@@ -72,10 +72,10 @@ export default function Scrollbars({
       <Scroll
         onUpdate={handleUpdate}
         renderThumbVertical={({ style, ...props }) => (
-          <div {...props} style={style} className="bg-dark-4 z-40" />
+          <div {...props} style={style} className="bg-dark-5 z-40" />
         )}
         renderThumbHorizontal={({ style, ...props }) => (
-          <div {...props} style={style} className="bg-dark-4 z-40" />
+          <div {...props} style={style} className="bg-dark-5 z-40" />
         )}
       >
         {children}

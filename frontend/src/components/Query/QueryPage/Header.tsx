@@ -19,7 +19,7 @@ export default function QueryPageHeader({
         'Queries',
         <label key={0} className="ml-1 flex items-center">
           <input
-            className="w-full px-3 bg-dark-4 rounded h-7"
+            className="w-full px-3 bg-dark-5 rounded h-7"
             value={name}
             onChange={(e) => {
               const name = e.target.value;

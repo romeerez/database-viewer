@@ -1,5 +1,5 @@
 .group:hover .before, .group:hover .after {
-  border-color: var(--color-dark-5);
+  border-color: var(--color-dark-6);
 }
 
 .before, .after {
@@ -7,7 +7,7 @@
   top: -2px;
   width: 0;
   height: 0;
-  border-color: var(--color-dark-4);
+  border-color: var(--color-dark-5);
 }
 
 .before {

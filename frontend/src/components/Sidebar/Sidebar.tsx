@@ -49,7 +49,7 @@ export default function Sidebar({ className }: { className?: string }) {
           >
             <DataTree />
           </SidebarPanel>
-          <div className="h-px bg-dark-3 relative user-select-none">
+          <div className="h-px bg-dark-4 relative user-select-none">
             <div
               onMouseDown={resizeQueries.startResize}
               onMouseUp={resizeQueries.stopResize}
@@ -69,7 +69,7 @@ export default function Sidebar({ className }: { className?: string }) {
           </SidebarPanel>
         </div>
       </div>
-      <div className="w-px bg-dark-3 relative user-select-none">
+      <div className="w-px bg-dark-4 relative user-select-none">
         <div
           onMouseDown={resizeSidebar.startResize}
           onMouseUp={resizeSidebar.stopResize}

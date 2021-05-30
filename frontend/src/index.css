@@ -5,16 +5,20 @@
   --color-lighter-5: rgba(255, 255, 255, .15);
   --color-darker: rgba(0, 0, 0, .03);
   --color-darker-5: rgba(0, 0, 0, .15);
-  --color-dark: #202124;
-  --color-dark-2: #27282b;
-  --color-dark-3: #2d2e31;
-  --color-dark-4: #343538;
-  --color-dark-5: #3b3c3f;
-  --color-light-5: #aaabae;
-  --color-light-4: #cbcecf;
-  --color-light-3: #d6d6d6;
-  --color-light-2: #f0f0f0;
-  --color-light: #f7f8f8;
+  --color-dark-1: #1B1C1F;
+  --color-dark-2: #202124;
+  --color-dark-3: #262729;
+  --color-dark-4: #2B2C2F;
+  --color-dark-5: #313234;
+  --color-dark-6: #36373A;
+  --color-light-8: #838486;
+  --color-light-7: #949596;
+  --color-light-6: #A4A5A6;
+  --color-light-5: #B5B6B6;
+  --color-light-4: #C5C6C7;
+  --color-light-3: #D6D7D7;
+  --color-light-2: #E6E7E7;
+  --color-light-1: #F7F8F8;
   --color-accent: #2196f3;
   --color-accent-dark: #073e69;
   --color-blue: #3f51b5;
@@ -28,16 +32,20 @@
   --color-lighter-5: rgba(0, 0, 0, .15);
   --color-darker: rgba(255, 255, 255, .03);
   --color-darker-5: rgba(255, 255, 255, .15);
-  --color-dark: #ffffff;
-  --color-dark-2: #f0f0f0;
-  --color-dark-3: #eeeeee;
-  --color-dark-4: #e5e5e5;
-  --color-dark-5: #b2b2b2;
-  --color-light-5: #555451;
-  --color-light-4: #343130;
-  --color-light-3: #292929;
-  --color-light-2: #0f0f0f;
-  --color-light: #080707;
+  --color-dark-1: #ffffff;
+  --color-dark-2: #ffffff;
+  --color-dark-3: #f0f0f0;
+  --color-dark-4: #eeeeee;
+  --color-dark-5: #e5e5e5;
+  --color-dark-6: #b2b2b2;
+  --color-light-8: #8E8F90;
+  --color-light-7: #7E7F80;
+  --color-light-6: #6D6E70;
+  --color-light-5: #5D5E60;
+  --color-light-4: #4C4D4F;
+  --color-light-3: #3C3D3F;
+  --color-light-2: #2B2C2F;
+  --color-light-1: #1B1C1F;
   --color-accent: #2196f3;
   --color-accent-dark: #b7dbf7;
   --color-blue: #3f51b5;
@@ -47,7 +55,7 @@
 }
 
 html {
-  @apply bg-dark text-light-5;
+  @apply bg-dark-2 text-light-5;
 }
 
 html, body, #root {
@@ -76,6 +84,10 @@ button:focus-visible, button.focus-visible:focus {
   box-shadow: inset var(--color-accent) 0 0 2px 1px;
 }
 
+input::placeholder {
+  color: var(--color-light-8);
+}
+
 @tailwind components;
 
 @layer components {
@@ -92,11 +104,11 @@ button:focus-visible, button.focus-visible:focus {
 
 @layer utilities {
   .bg-primary-gradient {
-    background: linear-gradient(136.61deg, var(--color-dark-2) 13.72%, var(--color-dark-3) 74.3%);
+    background: linear-gradient(136.61deg, var(--color-dark-3) 13.72%, var(--color-dark-4) 74.3%);
   }
 
   .bg-primary-gradient-lighter {
-    background: linear-gradient(136.61deg, var(--color-dark-3) 13.72%, var(--color-dark-4) 74.3%);
+    background: linear-gradient(136.61deg, var(--color-dark-4) 13.72%, var(--color-dark-5) 74.3%);
   }
 
   .flex-center {

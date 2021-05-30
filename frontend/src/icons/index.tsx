@@ -9,6 +9,7 @@ export { X } from '@styled-icons/boxicons-regular/X';
 export { ChevronRight } from '@styled-icons/boxicons-regular/ChevronRight';
 export { DotsHorizontalRounded } from '@styled-icons/boxicons-regular/DotsHorizontalRounded';
 export { RightArrowAlt } from '@styled-icons/boxicons-regular/RightArrowAlt';
+export { ChevronDown } from '@styled-icons/boxicons-regular/ChevronDown';
 export { TextColumnTwoLeft } from '@styled-icons/fluentui-system-regular/TextColumnTwoLeft';
 export { Key } from '@styled-icons/typicons/Key';
 export { Info } from '@styled-icons/fa-solid/Info';

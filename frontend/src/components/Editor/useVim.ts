@@ -10,11 +10,15 @@ const localStorageKey = 'editorVimModeEnabled';
 export const useVim = ({
   statusBarRef,
   editorRef,
+  disabled,
 }: {
   editorRef: { current?: ExtendedEditor };
   statusBarRef: React.RefObject<HTMLDivElement>;
+  disabled?: boolean;
 }) => {
   useEffect(() => {
+    if (disabled) return;
+
     const editor = editorRef.current;
     if (!editor) return;
 
@@ -49,5 +53,5 @@ export const useVim = ({
     });
 
     return () => vimMode?.dispose?.();
-  }, []);
+  }, [disabled]);
 };

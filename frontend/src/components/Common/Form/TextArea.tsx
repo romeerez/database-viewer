@@ -24,7 +24,7 @@ export default function TextArea({ form, width, ...rest }: TextAreaProps) {
       onChange={change}
       className={`${
         width || 'w-full'
-      } px-3 bg-dark-4 rounded h-7 pt-0.5 resize-none`}
+      } px-3 bg-dark-5 rounded h-7 pt-0.5 resize-none`}
       {...rest}
     />
   );

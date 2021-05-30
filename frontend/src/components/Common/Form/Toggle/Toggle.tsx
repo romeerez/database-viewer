@@ -24,7 +24,7 @@ export default function Toggle({
           className={`w-8 h-4 bg-darker-5 rounded-full ${style.dotContainer}`}
         />
         <div
-          className={`absolute w-4 h-4 bg-dark-5 rounded-full shadow left-0 top-0 transition ${style.dot}`}
+          className={`absolute w-4 h-4 bg-dark-6 rounded-full shadow left-0 top-0 transition ${style.dot}`}
         />
       </div>
     </label>

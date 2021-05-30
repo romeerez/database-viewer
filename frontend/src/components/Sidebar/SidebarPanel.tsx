@@ -37,7 +37,7 @@ export default function SidebarPanel({
       {...props}
       className={cn('flex flex-col', height ? 'flex-shrink-0' : 'flex-grow')}
     >
-      <div className="pt-3 pb-1 px-4 bg-dark flex items-center justify-between">
+      <div className="pt-3 pb-1 px-4 bg-dark-2 flex items-center justify-between">
         {title}
         <div className="flex items-center">
           <button className="rounded opacity-70 duration-300 transition hover:opacity-100 hover:bg-darker-5 flex-center w-5 h-5 mr-3">

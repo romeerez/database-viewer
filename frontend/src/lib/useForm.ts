@@ -54,7 +54,7 @@ export type Form<T = any> = UseFormMethods<Exclude<T, undefined>> & {
 export function useForm<
   T extends object | undefined,
   TFieldValues extends FieldValues = FieldValues,
-  TContext extends Record<string, unknown> = Record<string, unknown>
+  TContext extends Record<string, unknown> = Record<string, unknown>,
 >({
   schema,
   ...params

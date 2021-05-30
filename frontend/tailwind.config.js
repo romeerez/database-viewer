@@ -10,11 +10,12 @@ module.exports = {
         5: 'var(--color-darker-5)',
       },
       dark: {
-        DEFAULT: 'var(--color-dark)',
+        1: 'var(--color-dark-1)',
         2: 'var(--color-dark-2)',
         3: 'var(--color-dark-3)',
         4: 'var(--color-dark-4)',
         5: 'var(--color-dark-5)',
+        6: 'var(--color-dark-6)',
       },
       light: {
         5: 'var(--color-light-5)',

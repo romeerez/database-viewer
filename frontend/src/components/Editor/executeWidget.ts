@@ -21,7 +21,9 @@ type Statement = Location['location'] & { query: string };
 export const useExecuteWidget = ({
   executeQueryRef,
 }: {
-  executeQueryRef: React.MutableRefObject<(query: string) => void>;
+  executeQueryRef: React.MutableRefObject<
+    undefined | ((query: string) => void)
+  >;
 }) => {
   const [widgetRef] = useState<{ current: HTMLDivElement | null }>({
     current: null,
@@ -177,7 +179,7 @@ export const useExecuteWidget = ({
               const { query } = statement;
 
               button.className =
-                'h-8 whitespace-nowrap px-3 text-light-3 hover:text-light hover:bg-lighter';
+                'h-8 whitespace-nowrap px-3 text-light-3 hover:text-light-1 hover:bg-lighter';
               button.textContent = query;
               button.onfocus = () => {
                 editor.setSelection({
@@ -189,7 +191,7 @@ export const useExecuteWidget = ({
               };
               button.onclick = () => {
                 close();
-                executeQueryRef.current(query);
+                if (executeQueryRef.current) executeQueryRef.current(query);
               };
               div.appendChild(button);
             });
