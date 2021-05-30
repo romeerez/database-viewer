@@ -2922,6 +2922,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@styled-icons/material@npm:^10.28.0":
+  version: 10.28.0
+  resolution: "@styled-icons/material@npm:10.28.0"
+  dependencies:
+    "@babel/runtime": ^7.12.13
+    "@styled-icons/styled-icon": ^10.6.0
+  peerDependencies:
+    react: "*"
+    styled-components: "*"
+  checksum: a4782fa10f403f3b12e5c110f8bfb63f189e8757b13bd0d35b3f230746bb030bd6245cc212af740a004891e8dfee1ca358050b87b3ca02a759534ac6a587bc75
+  languageName: node
+  linkType: hard
+
 "@styled-icons/remix-editor@npm:^10.33.0":
   version: 10.33.0
   resolution: "@styled-icons/remix-editor@npm:10.33.0"
@@ -9794,6 +9807,7 @@ __metadata:
     "@styled-icons/fa-solid": ^10.32.0
     "@styled-icons/feather": ^10.18.0
     "@styled-icons/fluentui-system-regular": ^10.33.0
+    "@styled-icons/material": ^10.28.0
     "@styled-icons/material-rounded": ^10.28.0
     "@styled-icons/remix-editor": ^10.33.0
     "@styled-icons/remix-line": ^10.18.0

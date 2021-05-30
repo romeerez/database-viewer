@@ -88,6 +88,10 @@ input::placeholder {
   color: var(--color-light-8);
 }
 
+button[disabled] {
+  cursor: default;
+}
+
 @tailwind components;
 
 @layer components {

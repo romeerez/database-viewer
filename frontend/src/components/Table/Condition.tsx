@@ -31,12 +31,15 @@ export default function Condition({
   const historyKey = `${sourceUrl}/${databaseName}/${schemaName}/${tableName}.${conditionType}`;
 
   const { data: history = [] } = useValue<string[]>(historyKey);
+  const historyRef = useRef(history);
+  historyRef.current = history;
 
   const submit = (value: string) => {
     if (value) {
+      const history = historyRef.current;
       updateValue(historyKey, [
         value,
-        ...history.filter((query) => query === value),
+        ...history.filter((query) => query !== value),
       ]);
     }
     onSubmitRef.current(value);

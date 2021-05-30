@@ -5,6 +5,7 @@ export const buildQuery = ({
   orderBy,
   limit,
   offset,
+  count = false,
 }: {
   schemaName: string;
   tableName: string;
@@ -12,15 +13,19 @@ export const buildQuery = ({
   orderBy?: string;
   limit?: number;
   offset?: number;
+  count?: boolean;
 }) => {
-  let sql = 'SELECT * FROM ';
+  let sql = count ? 'SELECT count(*) FROM ' : 'SELECT * FROM ';
 
   sql += schemaName === 'public' ? tableName : `${schemaName}.${tableName}`;
 
   if (where) sql += ` WHERE ${where}`;
   if (orderBy) sql += ` ORDER BY ${orderBy}`;
-  if (limit) sql += ` LIMIT ${limit}`;
-  if (offset) sql += ` OFFSET ${offset}`;
+
+  if (!count) {
+    if (limit) sql += ` LIMIT ${limit}`;
+    if (offset) sql += ` OFFSET ${offset}`;
+  }
 
   return sql;
 };

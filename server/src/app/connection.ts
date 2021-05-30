@@ -11,11 +11,16 @@ Result.prototype._parseRowAsArray = (row: any) => row
 
 type Connection = { db: DB; connect?: Promise<void> };
 
-const globalPool: Record<string, { connection: Connection; counter: number }> =
-  {};
+const globalPool: Record<
+  string,
+  { connection: Connection; counter: number; closingPromise?: Promise<void> }
+> = {};
 
 export const getConnection = async (ctx: MercuriusContext, url: string) => {
   if (!ctx.connectionPool[url]) {
+    const closingPromise = globalPool[url]?.closingPromise;
+    if (closingPromise) await closingPromise;
+
     if (globalPool[url]) {
       globalPool[url].counter++;
     } else {
@@ -56,9 +61,10 @@ export const stopRequestConnections = async (
 
       const { connection } = globalPool[url];
       if (connection.connect) await connection.connect;
-      await connection.db.end();
       globalPool[url].counter--;
       if (globalPool[url].counter === 0) {
+        globalPool[url].closingPromise = connection.db.end();
+        await globalPool[url].closingPromise;
         delete globalPool[url];
       }
     }),

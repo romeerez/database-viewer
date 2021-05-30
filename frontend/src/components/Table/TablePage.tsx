@@ -4,6 +4,7 @@ import { useRouteMatch } from 'react-router-dom';
 import Header from 'components/Common/Header';
 import { useTable } from 'components/Table/table.service';
 import Condition from 'components/Table/Condition';
+import ControlPanel from 'components/Table/ControlPanel';
 
 export default function TablePage() {
   const { params } =
@@ -21,6 +22,9 @@ export default function TablePage() {
   return (
     <div className="flex flex-col h-full">
       <Header breadcrumbs={Object.values(params)} />
+      <div className="flex w-full border-b border-dark-4">
+        <ControlPanel state={tableState} />
+      </div>
       <div className="flex w-full">
         {tableState.sourceUrl && (
           <>

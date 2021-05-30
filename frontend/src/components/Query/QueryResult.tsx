@@ -3,13 +3,17 @@ import Scrollbars from 'components/Common/Scrollbars';
 import { positionValues } from 'react-custom-scrollbars';
 import { Field } from 'generated/graphql';
 
-const cellClass = 'h-10 border-b border-l border-dark-4 px-4 max-w-sm truncate';
+const cellClass = 'h-10 border-b border-l border-dark-4 max-w-sm truncate';
+const cellPx3Class = `${cellClass} px-3`;
+const cellPx4Class = `${cellClass} px-4`;
+
 const classes = {
   table: 'border-r border-dark-4 text-sm text-left',
   tbody: 'bg-darker',
-  th: `${cellClass} bg-dark-3 sticky z-10`,
-  cell: cellClass,
-  firstCell: `${cellClass} bg-dark-3 sticky -left-px`,
+  th: `${cellPx4Class} bg-dark-3 sticky z-10`,
+  cell: cellPx4Class,
+  firstTh: `${cellPx3Class} bg-dark-3 sticky z-10`,
+  firstCell: `${cellPx3Class} bg-dark-3 sticky -left-px`,
 };
 
 const rowHeight = 40;
@@ -71,7 +75,7 @@ export default function QueryResult({
         >
           <thead>
             <tr>
-              <th className={classes.th} style={top} />
+              <th className={classes.firstTh} style={top} />
               {fields.map((field) => (
                 <th key={field.name} className={classes.th} style={top}>
                   {field.name}

@@ -8,7 +8,9 @@ import { useObserver } from 'mobx-react-lite';
 import { dataSourcesStore } from 'components/DataSource/dataSource.store';
 import { buildQuery } from 'lib/queryBuilder';
 
-const defaulPerPage = 100;
+export type TableState = ReturnType<typeof useTable>;
+
+const defaulPerPage = 10;
 export const useTable = ({
   sourceName,
   databaseName,
@@ -24,12 +26,13 @@ export const useTable = ({
   const source = localDataSources?.find((source) => source.name === sourceName);
 
   const [state, setState] = useState<
-    QueryResult & {
+    Partial<QueryResult> & {
       loading: boolean;
       where: string;
       orderBy: string;
-      limit: number;
+      limit?: number;
       offset: number;
+      count?: number;
     }
   >({
     loading: true,
@@ -47,7 +50,20 @@ export const useTable = ({
       setState((state) => ({
         ...state,
         ...data.executeQuery,
-        loading: false,
+        loading: state.count === undefined,
+      }));
+    },
+  });
+
+  const [loadCount] = useQueryRowsLazyQuery({
+    fetchPolicy: 'no-cache',
+    onCompleted(data) {
+      const count = parseInt(data.executeQuery.rows[0][0]);
+
+      setState((state) => ({
+        ...state,
+        count,
+        loading: state.rows === undefined,
       }));
     },
   });
@@ -55,13 +71,28 @@ export const useTable = ({
   useEffect(() => {
     if (!source) return;
 
+    const url = `${source.url}/${databaseName}`;
+
     loadFieldsAndFirst({
       variables: {
-        url: `${source.url}/${databaseName}`,
+        url,
         query: buildQuery({
           schemaName,
           tableName,
           ...state,
+          count: false,
+        }),
+      },
+    });
+
+    loadCount({
+      variables: {
+        url,
+        query: buildQuery({
+          schemaName,
+          tableName,
+          ...state,
+          count: true,
         }),
       },
     });
@@ -88,22 +119,31 @@ export const useTable = ({
           schemaName,
           tableName,
           ...updatedState,
+          count: false,
         }),
       },
     });
   };
 
-  const setWhere = (where: string) => {
-    const updatedState = { ...state, where };
+  const updateStateAndLoad = (data: Partial<typeof state>) => {
+    const updatedState = { ...state, ...data };
     setState(updatedState);
     load(updatedState);
   };
 
-  const setOrderBy = (orderBy: string) => {
-    const updatedState = { ...state, orderBy };
-    setState(updatedState);
-    load(updatedState);
-  };
+  const setLimit = (limit?: number) => updateStateAndLoad({ limit, offset: 0 });
+  const setOffset = (offset?: number) => updateStateAndLoad({ offset });
+  const setWhere = (where: string) => updateStateAndLoad({ where });
+  const setOrderBy = (orderBy: string) => updateStateAndLoad({ orderBy });
+  const reload = () => load(state);
 
-  return { state, sourceUrl: source?.url, setWhere, setOrderBy };
+  return {
+    state,
+    sourceUrl: source?.url,
+    setLimit,
+    setOffset,
+    setWhere,
+    setOrderBy,
+    reload,
+  };
 };
