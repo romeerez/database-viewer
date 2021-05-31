@@ -58,7 +58,7 @@ export type DataSource = {
   __typename?: 'DataSource';
   url: Scalars['String'];
   databases: Array<Database>;
-  types: Array<Maybe<Type>>;
+  types: Array<Type>;
 };
 
 export type DataSourcedatabasesArgs = {
@@ -77,7 +77,7 @@ export type Schema = {
   url: Scalars['String'];
   name: Scalars['String'];
   tables: Array<Table>;
-  types: Array<Maybe<Type>>;
+  types: Array<Type>;
 };
 
 export type Table = {
@@ -148,7 +148,7 @@ export type Type = {
 export type QueryResult = {
   __typename?: 'QueryResult';
   fields: Array<Field>;
-  rows: Array<Array<Scalars['String']>>;
+  rows: Array<Array<Maybe<Scalars['String']>>>;
 };
 
 export type Field = {
@@ -346,11 +346,7 @@ export type DataSourceResolvers<
     ContextType,
     RequireFields<DataSourcedatabasesArgs, never>
   >;
-  types?: Resolver<
-    Array<Maybe<ResolversTypes['Type']>>,
-    ParentType,
-    ContextType
-  >;
+  types?: Resolver<Array<ResolversTypes['Type']>, ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -371,11 +367,7 @@ export type SchemaResolvers<
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   tables?: Resolver<Array<ResolversTypes['Table']>, ParentType, ContextType>;
-  types?: Resolver<
-    Array<Maybe<ResolversTypes['Type']>>,
-    ParentType,
-    ContextType
-  >;
+  types?: Resolver<Array<ResolversTypes['Type']>, ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -493,7 +485,7 @@ export type QueryResultResolvers<
 > = {
   fields?: Resolver<Array<ResolversTypes['Field']>, ParentType, ContextType>;
   rows?: Resolver<
-    Array<Array<ResolversTypes['String']>>,
+    Array<Array<Maybe<ResolversTypes['String']>>>,
     ParentType,
     ContextType
   >;
@@ -561,7 +553,7 @@ export interface Loaders<
       DataSourcedatabasesArgs,
       TContext
     >;
-    types?: LoaderResolver<Array<Maybe<Type>>, DataSource, {}, TContext>;
+    types?: LoaderResolver<Array<Type>, DataSource, {}, TContext>;
   };
 
   Database?: {
@@ -574,7 +566,7 @@ export interface Loaders<
     url?: LoaderResolver<Scalars['String'], Schema, {}, TContext>;
     name?: LoaderResolver<Scalars['String'], Schema, {}, TContext>;
     tables?: LoaderResolver<Array<Table>, Schema, {}, TContext>;
-    types?: LoaderResolver<Array<Maybe<Type>>, Schema, {}, TContext>;
+    types?: LoaderResolver<Array<Type>, Schema, {}, TContext>;
   };
 
   Table?: {
@@ -656,7 +648,12 @@ export interface Loaders<
 
   QueryResult?: {
     fields?: LoaderResolver<Array<Field>, QueryResult, {}, TContext>;
-    rows?: LoaderResolver<Array<Scalars['String']>, QueryResult, {}, TContext>;
+    rows?: LoaderResolver<
+      Array<Maybe<Scalars['String']>>,
+      QueryResult,
+      {},
+      TContext
+    >;
   };
 
   Field?: {

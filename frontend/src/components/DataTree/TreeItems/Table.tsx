@@ -63,12 +63,8 @@ export default function Table({
       {table.columns.map((column) => (
         <Column
           key={column.name}
-          sourceName={sourceName}
-          databaseName={databaseName}
-          schemaName={schemaName}
           table={table}
           column={column}
-          openState={openState}
           paddingLeft={innerPaddingLeft}
         />
       ))}

@@ -1,49 +1,73 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Table from './Table';
-import { useRouteMatch } from 'react-router-dom';
 import Header from 'components/Common/Header';
-import { useTable } from 'components/Table/table.service';
 import Condition from 'components/Table/Condition';
 import ControlPanel from 'components/Table/ControlPanel';
+import { useFieldsInfo } from 'components/Table/fieldsInfo.service';
+import { useRowsState } from 'components/Table/rows.state';
+import { useParamsState } from 'components/Table/params.service';
+import { useDataState } from 'components/Table/data.state';
+import {
+  setOrderBy,
+  setWhere,
+  useLoadData,
+  useLoadInitialData,
+} from 'components/Table/data.service';
+import Scrollbars from 'react-custom-scrollbars';
 
 export default function TablePage() {
-  const { params } =
-    useRouteMatch<{
-      sourceName: string;
-      databaseName: string;
-      schemaName: string;
-      tableName: string;
-    }>();
+  const paramsState = useParamsState();
+  const dataState = useDataState();
 
-  const tableState = useTable({
-    ...params,
+  const fieldsInfo = useFieldsInfo({
+    paramsState,
+    dataState,
   });
+
+  useLoadInitialData({ dataState, paramsState });
+
+  const load = useLoadData({ dataState, paramsState });
+
+  const rowsState = useRowsState({ dataState });
+
+  const scrollRef = useRef<Scrollbars>(null);
 
   return (
     <div className="flex flex-col h-full">
-      <Header breadcrumbs={Object.values(params)} />
+      <Header
+        breadcrumbs={[
+          paramsState.sourceName,
+          paramsState.databaseName,
+          paramsState.schemaName,
+          paramsState.tableName,
+        ]}
+      />
       <div className="flex w-full border-b border-dark-4">
-        <ControlPanel state={tableState} />
+        <ControlPanel
+          dataState={dataState}
+          rowsState={rowsState}
+          load={load}
+          scrollRef={scrollRef}
+        />
       </div>
       <div className="flex w-full">
-        {tableState.sourceUrl && (
-          <>
-            <Condition
-              conditionType="where"
-              onSubmit={tableState.setWhere}
-              sourceUrl={tableState.sourceUrl}
-              {...params}
-            />
-            <Condition
-              conditionType="orderBy"
-              onSubmit={tableState.setWhere}
-              sourceUrl={tableState.sourceUrl}
-              {...params}
-            />
-          </>
-        )}
+        <Condition
+          conditionType="where"
+          onSubmit={(where) => setWhere(dataState, load, where)}
+          paramsState={paramsState}
+        />
+        <Condition
+          conditionType="orderBy"
+          onSubmit={(orderBy) => setOrderBy(dataState, load, orderBy)}
+          paramsState={paramsState}
+        />
       </div>
-      <Table state={tableState} />
+      <Table
+        dataState={dataState}
+        rowsState={rowsState}
+        scrollRef={scrollRef}
+        fieldsInfo={fieldsInfo}
+      />
     </div>
   );
 }

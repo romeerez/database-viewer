@@ -3,31 +3,20 @@ import {
   TableTree,
   Column as ColumnType,
 } from 'components/DataTree/dataTree.service';
-import { createOpenState } from 'components/DataTree/open.state';
 import TreeItem from 'components/DataTree/TreeItems/TreeItem';
 import MenuItem from 'components/Common/Menu/MenuItem';
 import { TextColumnTwoLeft, Key } from 'icons';
-import { PathState } from 'components/DataTree/path.state';
-import routes from 'lib/routes';
 
 export default function Column({
-  sourceName,
-  databaseName,
-  schemaName,
   paddingLeft,
   table,
   column,
-  openState,
 }: {
-  sourceName: string;
-  databaseName: string;
-  schemaName: string;
   paddingLeft: number;
   table: TableTree;
   column: ColumnType;
-  openState: ReturnType<typeof createOpenState>;
 }) {
-  const { name } = column;
+  const { name, isNullable } = column;
 
   const isPrimary = table.indices.some(
     (index) => index.isPrimary && index.columnNames.includes(name),
@@ -58,6 +47,7 @@ export default function Column({
           {name}
           <div className="text-sm ml-2 text-light-4">
             {column.type}
+            {!isPrimary && !isNullable && <span> not null</span>}
             {column.default && <span> = {column.default}</span>}
           </div>
         </div>

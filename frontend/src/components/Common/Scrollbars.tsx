@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import { positionValues, Scrollbars as Scroll } from 'react-custom-scrollbars';
 import cn from 'classnames';
 
@@ -9,10 +9,12 @@ export default function Scrollbars({
   onUpdate,
   shadows = true,
   children,
+  scrollRef,
 }: {
   onUpdate?: (values: positionValues) => void;
   shadows?: boolean;
   children: React.ReactNode;
+  scrollRef?: RefObject<Scroll>;
 }) {
   const shadowRightRef = React.useRef<HTMLDivElement>(null);
   const shadowBottomRef = React.useRef<HTMLDivElement>(null);
@@ -70,6 +72,7 @@ export default function Scrollbars({
   return (
     <div className="relative h-full w-full">
       <Scroll
+        ref={scrollRef}
         onUpdate={handleUpdate}
         renderThumbVertical={({ style, ...props }) => (
           <div {...props} style={style} className="bg-dark-5 z-40" />

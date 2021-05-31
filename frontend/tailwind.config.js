@@ -24,6 +24,10 @@ module.exports = {
         2: 'var(--color-light-2)',
         DEFAULT: 'var(--color-light)',
       },
+      green: {
+        1: 'var(--color-green-1)',
+        2: 'var(--color-green-2)',
+      },
       accent: {
         DEFAULT: 'var(--color-accent)',
         dark: 'var(--color-accent-dark)',

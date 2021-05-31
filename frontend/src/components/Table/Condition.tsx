@@ -8,21 +8,40 @@ import {
   useValue,
 } from 'components/KeyValueStore/keyValue.service';
 import MenuItem from 'components/Common/Menu/MenuItem';
+import { ParamsState } from 'components/Table/params.service';
 
 export default function Condition({
-  sourceUrl,
-  databaseName,
-  schemaName,
-  tableName,
-  onSubmit,
   conditionType,
+  onSubmit,
+  paramsState,
 }: {
-  sourceUrl: string;
-  databaseName: string;
-  schemaName: string;
-  tableName: string;
-  onSubmit(value: string): void;
   conditionType: 'where' | 'orderBy';
+  onSubmit(value: string): void;
+  paramsState: ParamsState;
+}) {
+  const { sourceUrl } = paramsState;
+  if (!sourceUrl) return null;
+
+  return (
+    <ConditionInner
+      conditionType={conditionType}
+      onSubmit={onSubmit}
+      paramsState={paramsState}
+      sourceUrl={sourceUrl}
+    />
+  );
+}
+
+function ConditionInner({
+  conditionType,
+  onSubmit,
+  paramsState: { databaseName, schemaName, tableName },
+  sourceUrl,
+}: {
+  conditionType: 'where' | 'orderBy';
+  onSubmit(value: string): void;
+  paramsState: ParamsState;
+  sourceUrl: string;
 }) {
   const editorRef = useEditorRef();
   const onSubmitRef = useRef(onSubmit);

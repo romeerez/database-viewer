@@ -10,7 +10,7 @@ type Mutation {
 type DataSource {
   url: String!
   databases(name: String): [Database!]!
-  types: [Type]!
+  types: [Type!]!
 }
 
 type Database {
@@ -23,7 +23,7 @@ type Schema {
   url: String!
   name: String!
   tables: [Table!]!
-  types: [Type]!
+  types: [Type!]!
 }
 
 type Table {
@@ -87,7 +87,7 @@ type Type {
 
 type QueryResult {
   fields: [Field!]!
-  rows: [[String!]!]!
+  rows: [[String]!]!
 }
 
 type Field {

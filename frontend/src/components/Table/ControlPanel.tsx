@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import {
   ChevronsLeft,
   ChevronLeft,
@@ -13,14 +13,28 @@ import {
   Upload,
 } from 'icons';
 import Menu from 'components/Common/Menu/Menu';
-import { TableState } from 'components/Table/table.service';
 import MenuItem from 'components/Common/Menu/MenuItem';
 import cn from 'classnames';
+import { DataState } from 'components/Table/data.state';
+import { setLimit, setOffset } from 'components/Table/data.service';
+import { RowsState } from 'components/Table/rows.state';
+import { addRow } from 'components/Table/rows.service';
+import Scroll from 'react-custom-scrollbars';
 
 const limits = [10, 25, 50, 100, 500, 1000, undefined];
 
-export default function ControlPanel({ state }: { state: TableState }) {
-  const { offset, limit, count } = state.state;
+export default function ControlPanel({
+  dataState,
+  rowsState,
+  load,
+  scrollRef,
+}: {
+  dataState: DataState;
+  rowsState: RowsState;
+  load(): void;
+  scrollRef: RefObject<Scroll>;
+}) {
+  const { offset, limit, count } = dataState;
 
   const lastPageOffset =
     count === undefined || limit === undefined
@@ -38,7 +52,7 @@ export default function ControlPanel({ state }: { state: TableState }) {
           isPrevPageDisabled && 'opacity-50',
         )}
         disabled={isPrevPageDisabled}
-        onClick={() => state.setOffset(0)}
+        onClick={() => setOffset(dataState, load, 0)}
       >
         <ChevronsLeft size={20} />
       </button>
@@ -48,7 +62,7 @@ export default function ControlPanel({ state }: { state: TableState }) {
           isPrevPageDisabled && 'opacity-50',
         )}
         disabled={isPrevPageDisabled}
-        onClick={() => limit && state.setOffset(offset - limit)}
+        onClick={() => limit && setOffset(dataState, load, offset - limit)}
       >
         <ChevronLeft size={20} />
       </button>
@@ -73,7 +87,7 @@ export default function ControlPanel({ state }: { state: TableState }) {
                   key={i}
                   onClick={() => {
                     toggle();
-                    state.setLimit(limit);
+                    setLimit(dataState, load, limit);
                   }}
                 >
                   {limit || 'All'}
@@ -90,7 +104,7 @@ export default function ControlPanel({ state }: { state: TableState }) {
           isNextPageDisabled && 'opacity-50',
         )}
         disabled={isNextPageDisabled}
-        onClick={() => limit && state.setOffset(offset + limit)}
+        onClick={() => limit && setOffset(dataState, load, offset + limit)}
       >
         <ChevronRight size={20} />
       </button>
@@ -100,17 +114,22 @@ export default function ControlPanel({ state }: { state: TableState }) {
           isNextPageDisabled && 'opacity-50',
         )}
         disabled={isNextPageDisabled}
-        onClick={() => lastPageOffset && state.setOffset(lastPageOffset)}
+        onClick={() =>
+          lastPageOffset && setOffset(dataState, load, lastPageOffset)
+        }
       >
         <ChevronsRight size={20} />
       </button>
       <button
         className="w-7 h-7 flex-center rounded hover:bg-lighter"
-        onClick={() => state.reload()}
+        onClick={() => load()}
       >
         <Sync size={20} />
       </button>
-      <button className="w-7 h-7 flex-center rounded hover:bg-lighter">
+      <button
+        className="w-7 h-7 flex-center rounded hover:bg-lighter"
+        onClick={() => addRow(rowsState, dataState, scrollRef)}
+      >
         <Plus size={20} />
       </button>
       <button className="w-7 h-7 flex-center rounded hover:bg-lighter">
