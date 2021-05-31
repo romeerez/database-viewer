@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react';
-import cn from 'clsx';
+import cn from 'classnames';
 import Appear from 'components/Common/Appear/Appear';
 import { useClickAway } from 'react-use';
-import { createPortal } from 'react-dom';
 
 type Toggle = (e?: React.SyntheticEvent | boolean) => void;
 

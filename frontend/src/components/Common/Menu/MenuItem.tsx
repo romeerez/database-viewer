@@ -1,5 +1,5 @@
 import React from 'react';
-import cn from 'clsx';
+import cn from 'classnames';
 
 export default function MenuItem({
   children,

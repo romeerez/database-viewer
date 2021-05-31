@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
 export const client = new ApolloClient({
-  uri: process.env.REACT_APP_GRAPHQL_URL,
+  uri: import.meta.env.VITE_GRAPHQL_URL as string,
   cache: new InMemoryCache({
     typePolicies: {
       DataSource: {
