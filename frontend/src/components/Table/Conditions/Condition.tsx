@@ -8,39 +8,42 @@ import {
   useValue,
 } from 'components/KeyValueStore/keyValue.service';
 import MenuItem from 'components/Common/Menu/MenuItem';
-import { ParamsState } from 'components/Table/params.service';
+import { DataStore } from 'components/Table/data.store';
+import { observer } from 'mobx-react-lite';
 
-export default function Condition({
+export default observer(function Condition({
+  store,
   conditionType,
   onSubmit,
-  paramsState,
 }: {
+  store: DataStore;
   conditionType: 'where' | 'orderBy';
   onSubmit(value: string): void;
-  paramsState: ParamsState;
 }) {
-  const { sourceUrl } = paramsState;
+  const { sourceUrl } = store;
   if (!sourceUrl) return null;
 
   return (
     <ConditionInner
+      store={store}
       conditionType={conditionType}
       onSubmit={onSubmit}
-      paramsState={paramsState}
       sourceUrl={sourceUrl}
     />
   );
-}
+});
 
 function ConditionInner({
+  store: {
+    params: { databaseName, schemaName, tableName },
+  },
   conditionType,
   onSubmit,
-  paramsState: { databaseName, schemaName, tableName },
   sourceUrl,
 }: {
+  store: DataStore;
   conditionType: 'where' | 'orderBy';
   onSubmit(value: string): void;
-  paramsState: ParamsState;
   sourceUrl: string;
 }) {
   const editorRef = useEditorRef();

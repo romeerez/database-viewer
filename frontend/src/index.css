@@ -11,9 +11,10 @@
   --color-dark-4: #2B2C2F;
   --color-dark-5: #313234;
   --color-dark-6: #36373A;
-  --color-light-8: #838486;
-  --color-light-7: #949596;
-  --color-light-6: #A4A5A6;
+  --color-light-9: #727373;
+  /*--color-light-8: #838486;*/
+  /*--color-light-7: #949596;*/
+  /*--color-light-6: #A4A5A6;*/
   --color-light-5: #B5B6B6;
   --color-light-4: #C5C6C7;
   --color-light-3: #D6D7D7;
@@ -25,8 +26,8 @@
   --color-blue-darker: #324191;
   --color-error: #f87171;
   --color-yellow: #f2c94c;
-  --color-green-1: #2e3e1e;
-  --color-green-2: #33491e;
+  --color-green-1: #1a5d29;
+  --color-green-2: #183e21;
 }
 
 .light-mode {
@@ -40,9 +41,10 @@
   --color-dark-4: #eeeeee;
   --color-dark-5: #e5e5e5;
   --color-dark-6: #b2b2b2;
-  --color-light-8: #8E8F90;
-  --color-light-7: #7E7F80;
-  --color-light-6: #6D6E70;
+  --color-light-9: #9FA0A0;
+  /*--color-light-8: #8E8F90;*/
+  /*--color-light-7: #7E7F80;*/
+  /*--color-light-6: #6D6E70;*/
   --color-light-5: #5D5E60;
   --color-light-4: #4C4D4F;
   --color-light-3: #3C3D3F;
@@ -78,6 +80,10 @@ code {
     monospace;
 }
 
+input, textarea {
+  background: none;
+}
+
 input:focus, button:focus, textarea:focus {
   outline: none;
 }
@@ -92,6 +98,10 @@ input::placeholder {
 
 button[disabled] {
   cursor: default;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 @tailwind components;

@@ -26,12 +26,14 @@ export default function SidebarMenu() {
         {() => (
           <>
             <MenuItem>
-              <Toggle
-                checked={darkMode}
-                onChange={(dark) => themeSwitcher.setDark(dark)}
-              >
-                Dark Mode
-              </Toggle>
+              <label className="w-full flex items-center justify-between cursor-pointer">
+                <div className="mr-2">Dark Mode</div>
+                <Toggle
+                  checked={darkMode}
+                  onChange={(dark) => themeSwitcher.setDark(dark)}
+                  toggleColor
+                />
+              </label>
             </MenuItem>
           </>
         )}
