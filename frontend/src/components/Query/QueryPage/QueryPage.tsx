@@ -3,7 +3,6 @@ import Editor, { useEditorRef } from '../../../components/Editor/Editor';
 import Header from './Header';
 import SelectDatabase from './SelectDatabase';
 import { toast } from 'react-toastify';
-import { QueryFieldsAndRowsQuery, useAPIContext } from 'graphql-react-provider';
 import QueryResult from '../../../components/Query/QueryResult';
 import cn from 'classnames';
 import {
@@ -15,6 +14,8 @@ import { QueryInLocalStore } from '../../../components/Query/types';
 import { IDisposable } from 'monaco-editor';
 import { useObserver } from 'mobx-react-lite';
 import { getSourceUrlAndDatabaseNameFromUrl } from '../../../lib/sourceUrl';
+import { QueryFieldsAndRowsQuery } from 'types';
+import { useAPIContext } from '../../../lib/apiContext';
 
 export default function QueryPage() {
   const { name } = useParams<{ name: string }>();

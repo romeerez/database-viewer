@@ -2,6 +2,10 @@ overwrite: true
 schema: server/src/schema.gql
 documents: "graphql-react-provider/src/**/*.gql"
 generates:
+  types/src/data.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
   graphql-react-provider/src/generated/graphql.tsx:
     plugins:
       - "typescript"

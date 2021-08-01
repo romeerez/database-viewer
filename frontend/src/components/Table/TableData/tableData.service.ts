@@ -1,7 +1,7 @@
 import { useDataStore } from '../../../components/Table/TableData/tableData.store';
 import { useEffect, useMemo } from 'react';
 import { buildQuery } from '../../../lib/queryBuilder';
-import { useAPIContext } from 'graphql-react-provider';
+import { useAPIContext } from '../../../lib/apiContext';
 
 export type TableDataService = ReturnType<typeof useDataService>;
 

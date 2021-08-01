@@ -1,9 +1,9 @@
-import { useAPIContext } from 'graphql-react-provider';
 import { dataSourcesStore } from '../../components/DataSource/dataSource.store';
 import { useState } from 'react';
 import { useObserver } from 'mobx-react-lite';
 import { DataSourceInLocalStore } from '../../components/DataSource/types';
 import { toast } from 'react-toastify';
+import { useAPIContext } from '../../lib/apiContext';
 
 type Error = {
   field: 'name' | 'url';

@@ -1,5 +1,5 @@
 import { useLocalObservable } from 'mobx-react-lite';
-import { Field, GetDataTreeQuery, QueryResult } from 'graphql-react-provider';
+import { Field, GetDataTreeQuery, QueryResult } from 'types';
 import { useDataTree } from '../../../components/DataTree/dataTree.service';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
