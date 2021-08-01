@@ -1,50 +1,66 @@
 import React from 'react';
-import { DataStore } from 'components/Table/data.store';
-import { DataService } from 'components/Table/data.service';
+import { FieldInfo } from 'components/Table/TableData/tableData.store';
 import { observer } from 'mobx-react-lite';
 import cn from 'classnames';
+import Cell from './Cell';
+import { CellType } from 'components/Table/Table/Table.types';
+import { useTablePageContext } from 'components/Table/TablePage.context';
 
 export default observer(function Row({
-  store,
-  service,
-  row,
-  index,
+  fields,
+  rowIndex,
 }: {
-  store: DataStore;
-  service: DataService;
-  row: (string | null)[];
-  index: number;
+  fields: FieldInfo[];
+  rowIndex: number;
 }) {
-  const { defaults, fields, newRows } = store;
-  if (!defaults || !fields) return null;
+  const { tableDataService, dataChangesService, selectionService } =
+    useTablePageContext();
+  const defaults = tableDataService.getDefaults();
 
-  const isNew = newRows[index];
+  if (!defaults) return null;
+
+  const isRemoved = dataChangesService.isRowRemoved(rowIndex);
+  const isChanged = dataChangesService.isRowChanged(rowIndex);
+  const isNew = dataChangesService.isNewRow(rowIndex);
+  const isSelected = selectionService.isRowSelected(rowIndex);
+
+  const rowNumber = rowIndex + 1;
 
   return (
     <tr>
       <td
+        {...selectionService.getRowProps(rowIndex)}
+        data-type={CellType.rowNumber}
         className={cn(
-          'h-10 border-b border-l border-dark-4 max-w-sm truncate px-3 sticky -left-px w-px',
-          isNew ? 'bg-green-1' : 'bg-dark-3',
+          'h-10 border-b border-l border-dark-4 sticky -left-px w-px',
+          isNew
+            ? 'bg-green-1'
+            : isRemoved
+            ? 'bg-darker-5'
+            : isChanged
+            ? 'bg-yellow-2'
+            : 'bg-dark-3',
         )}
       >
-        {index + 1}
-      </td>
-      {row.map((value, i) => (
-        <td
-          data-bg-class={isNew ? 'bg-green-2' : 'bg-dark-3'}
-          data-row-index={index}
-          data-column-index={i}
-          tabIndex={0}
-          key={i}
+        <div
           className={cn(
-            'h-10 border-b border-l border-dark-4 max-w-sm truncate px-4',
-            isNew ? 'bg-green-2' : 'px-4',
-            value === null && 'text-light-9',
+            'w-full h-full max-w-sm truncate flex items-center px-3 pointer-events-none',
+            isSelected && 'bg-lighter-4',
           )}
         >
-          {value === null ? defaults[i] || 'null' : value}
-        </td>
+          {rowNumber}
+        </div>
+      </td>
+      {fields.map((field, i) => (
+        <Cell
+          key={i}
+          rowIndex={rowIndex}
+          columnIndex={i}
+          defaultValue={defaults[i]}
+          isRemoved={isRemoved}
+          isRowChanged={isChanged}
+          isNew={isNew}
+        />
       ))}
     </tr>
   );

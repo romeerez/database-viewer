@@ -1,49 +1,51 @@
-import React, { useRef } from 'react';
-import { DataStore } from 'components/Table/data.store';
-import { DataService } from 'components/Table/data.service';
+import React from 'react';
 import { observer } from 'mobx-react-lite';
-import Scrollbars from 'components/Common/Scrollbars';
 import Row from './Row';
-import Inputs from './Inputs';
+import { CellType } from 'components/Table/Table/Table.types';
+import cn from 'classnames';
+import { useTablePageContext } from 'components/Table/TablePage.context';
 
-export default observer(function Table({
-  store,
-  service,
-}: {
-  store: DataStore;
-  service: DataService;
-}) {
-  const tableRef = useRef<HTMLTableElement>(null);
+export default observer(function Table() {
+  const { selectionService } = useTablePageContext();
+  const { tableDataService } = useTablePageContext();
+  const fields = tableDataService.getFields();
+  const rows = tableDataService.getRows();
 
-  const { fields, rows } = store;
   if (!fields || !rows) return null;
 
   return (
-    <Scrollbars>
-      <table
-        ref={tableRef}
-        className="border-r border-dark-4 text-sm text-left"
-      >
-        <thead>
-          <tr>
-            <th className="h-10 border-b border-l border-dark-4 max-w-sm truncate px-3 bg-dark-3 sticky z-10 top-0 w-px" />
-            {fields.map((field) => (
+    <table className="border-r border-dark-4 text-sm text-left user-select-none">
+      <thead>
+        <tr>
+          <th className="h-10 border-b border-l border-dark-4 max-w-sm truncate px-3 bg-dark-3 sticky z-10 top-0 w-px" />
+          {fields.map((field, i) => {
+            const isSelected = selectionService.isColumnSelected(i);
+
+            return (
               <th
                 key={field.name}
-                className="h-10 border-b border-l border-dark-4 max-w-sm truncate px-4 bg-dark-3 sticky z-10 top-0"
+                data-type={CellType.columnTitle}
+                {...selectionService.getColumnProps(i)}
+                className="h-10 border-b border-l border-dark-4 bg-dark-3 sticky z-10 top-0"
               >
-                {field.name}
+                <div
+                  className={cn(
+                    'min-w-full min-h-full flex items-center max-w-sm truncate px-4 pointer-events-none',
+                    isSelected && 'bg-lighter-4',
+                  )}
+                >
+                  {field.name}
+                </div>
               </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="bg-darker">
-          {rows.map((row, i) => (
-            <Row key={i} store={store} service={service} row={row} index={i} />
-          ))}
-        </tbody>
-      </table>
-      <Inputs store={store} service={service} tableRef={tableRef} />
-    </Scrollbars>
+            );
+          })}
+        </tr>
+      </thead>
+      <tbody className="bg-darker">
+        {rows.map((_, i) => (
+          <Row key={i} fields={fields} rowIndex={i} />
+        ))}
+      </tbody>
+    </table>
   );
 });

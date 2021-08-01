@@ -8,24 +8,22 @@ import {
   useValue,
 } from 'components/KeyValueStore/keyValue.service';
 import MenuItem from 'components/Common/Menu/MenuItem';
-import { DataStore } from 'components/Table/data.store';
 import { observer } from 'mobx-react-lite';
+import { useTablePageContext } from 'components/Table/TablePage.context';
 
 export default observer(function Condition({
-  store,
   conditionType,
   onSubmit,
 }: {
-  store: DataStore;
   conditionType: 'where' | 'orderBy';
   onSubmit(value: string): void;
 }) {
-  const { sourceUrl } = store;
+  const { tableDataService } = useTablePageContext();
+  const sourceUrl = tableDataService.getSourceUrl();
   if (!sourceUrl) return null;
 
   return (
     <ConditionInner
-      store={store}
       conditionType={conditionType}
       onSubmit={onSubmit}
       sourceUrl={sourceUrl}
@@ -34,18 +32,17 @@ export default observer(function Condition({
 });
 
 function ConditionInner({
-  store: {
-    params: { databaseName, schemaName, tableName },
-  },
   conditionType,
   onSubmit,
   sourceUrl,
 }: {
-  store: DataStore;
   conditionType: 'where' | 'orderBy';
   onSubmit(value: string): void;
   sourceUrl: string;
 }) {
+  const { tableDataService } = useTablePageContext();
+  const { databaseName, schemaName, tableName } = tableDataService.getParams();
+
   const editorRef = useEditorRef();
   const onSubmitRef = useRef(onSubmit);
   onSubmitRef.current = onSubmit;
@@ -134,6 +131,7 @@ function ConditionInner({
           editorRef={editorRef}
           disableVim
           paddingTop={9}
+          paddingBottom={0}
           singleLine
           suggestionsPrepend={`SELECT * FROM \`${tableName}\` ${sqlCondition} `}
           sourceUrl={sourceUrl}

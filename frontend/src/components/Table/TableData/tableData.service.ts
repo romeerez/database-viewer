@@ -1,4 +1,4 @@
-import { DataStore, FieldInfo } from './data.store';
+import { useDataStore } from 'components/Table/TableData/tableData.store';
 import { useEffect, useMemo } from 'react';
 import { buildQuery } from 'lib/queryBuilder';
 import {
@@ -6,11 +6,22 @@ import {
   useQueryRowsLazyQuery,
 } from 'generated/graphql';
 
-export type DataService = ReturnType<typeof useDataService>;
+export type TableDataService = ReturnType<typeof useDataService>;
 
-export const useDataService = ({ store }: { store: DataStore }) => {
+export const useDataService = () => {
+  const store = useDataStore();
+
   const service = useMemo(
     () => ({
+      setRows: store.setRows,
+      getParams: () => store.params,
+      getRows: () => store.rows,
+      getFields: () => store.fields,
+      getCount: () => store.count,
+      getQueryParams: () => store.queryParams,
+      getSourceUrl: () => store.sourceUrl,
+      getDefaults: () => store.defaults,
+      getPrimaryColumnNames: () => store.primaryColumnNames,
       loadFieldsAndRows() {
         const { sourceUrl, params } = store;
         if (!sourceUrl) return;
@@ -80,17 +91,6 @@ export const useDataService = ({ store }: { store: DataStore }) => {
         service.loadRows();
         service.loadCount();
       },
-      addRow() {
-        const { fields, rows } = store;
-        if (!fields || !rows) return;
-
-        store.setNewRow(rows.length);
-
-        const row = new Array(fields.length).fill(null);
-        store.addRow(row);
-      },
-      getValue: store.getValue,
-      setValue: store.setValue,
     }),
     [store],
   );

@@ -5,6 +5,7 @@ import { enableSuggestions } from 'components/Editor/suggestions';
 import { useExecuteWidget } from 'components/Editor/executeWidget';
 import './style.css';
 import { useVim } from 'components/Editor/useVim';
+import { useOnWindowResize } from 'lib/onWindowResize';
 
 MonacoEditor.setTheme('vs-dark');
 
@@ -21,6 +22,8 @@ export const useEditorRef = () => {
   return editorRef;
 };
 
+const LINE_HEIGHT = 19;
+
 export default function Editor({
   editorRef,
   sourceUrl,
@@ -30,8 +33,10 @@ export default function Editor({
   executeQuery,
   disableVim,
   paddingTop = 20,
+  paddingBottom = 20,
   singleLine,
   suggestionsPrepend,
+  autoHeight,
 }: {
   editorRef: { current?: ExtendedEditor };
   sourceUrl?: string;
@@ -41,8 +46,10 @@ export default function Editor({
   executeQuery?(query: string): void;
   disableVim?: boolean;
   paddingTop?: number;
+  paddingBottom?: number;
   singleLine?: boolean;
   suggestionsPrepend?: string;
+  autoHeight?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const statusBarRef = useRef<HTMLDivElement>(null);
@@ -75,6 +82,7 @@ export default function Editor({
       scrollBeyondLastLine: false,
       padding: {
         top: paddingTop,
+        bottom: paddingBottom,
       },
     };
 
@@ -87,13 +95,6 @@ export default function Editor({
     }
 
     const editor = MonacoEditor.create(el, options) as ExtendedEditor;
-
-    editor.resize = () => {
-      editor.layout({
-        width: editor._domElement.offsetWidth,
-        height: editor._domElement.offsetHeight,
-      });
-    };
 
     editorRef.current = editor;
 
@@ -108,6 +109,40 @@ export default function Editor({
   }, [tables]);
 
   useVim({ editorRef, statusBarRef, disabled: disableVim });
+
+  useOnWindowResize(() => editorRef.current?.resize());
+
+  useEffect(() => {
+    const editor = editorRef.current;
+
+    if (!editor) return;
+
+    if (autoHeight) {
+      const model = editor.getModel();
+      if (!model) return;
+
+      editor.resize = () => {
+        editor.layout({
+          width: editor._domElement.offsetWidth,
+          height:
+            model.getLineCount() * LINE_HEIGHT + paddingTop + paddingBottom,
+        });
+      };
+
+      const disposable = editor.onDidChangeModelContent(() => editor.resize());
+
+      editor.resize();
+
+      return () => disposable.dispose();
+    }
+
+    editor.resize = () => {
+      editor.layout({
+        width: editor._domElement.offsetWidth,
+        height: editor._domElement.offsetHeight,
+      });
+    };
+  }, [autoHeight, paddingTop]);
 
   return (
     <div className="h-full flex flex-col">

@@ -1,26 +1,19 @@
 import React from 'react';
-import { DataStore } from '../data.store';
 import Condition from './Condition';
-import { DataService } from 'components/Table/data.service';
+import { useTablePageContext } from 'components/Table/TablePage.context';
 
-export default function Conditions({
-  store,
-  service,
-}: {
-  store: DataStore;
-  service: DataService;
-}) {
+export default function Conditions() {
+  const { tableDataService } = useTablePageContext();
+
   return (
     <div className="flex w-full">
       <Condition
-        store={store}
         conditionType="where"
-        onSubmit={(where) => service.setWhere(where)}
+        onSubmit={(where) => tableDataService.setWhere(where)}
       />
       <Condition
-        store={store}
         conditionType="orderBy"
-        onSubmit={(orderBy) => service.setOrderBy(orderBy)}
+        onSubmit={(orderBy) => tableDataService.setOrderBy(orderBy)}
       />
     </div>
   );

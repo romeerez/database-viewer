@@ -1175,6 +1175,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["regenerator-runtime", "npm:0.13.8"]
           ],
           "linkType": "HARD",
+        }],
+        ["npm:7.14.8", {
+          "packageLocation": "./.yarn/cache/@babel-runtime-npm-7.14.8-177f7f6866-ebadb3e013.zip/node_modules/@babel/runtime/",
+          "packageDependencies": [
+            ["@babel/runtime", "npm:7.14.8"],
+            ["regenerator-runtime", "npm:0.13.8"]
+          ],
+          "linkType": "HARD",
         }]
       ]],
       ["@babel/runtime-corejs3", [
@@ -6418,7 +6426,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["frontend", "workspace:frontend"],
             ["@apollo/client", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:3.3.16"],
             ["@hookform/error-message", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:2.0.0"],
-            ["@popperjs/core", "npm:2.9.2"],
             ["@styled-icons/bootstrap", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:10.33.0"],
             ["@styled-icons/boxicons-regular", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:10.23.0"],
             ["@styled-icons/fa-solid", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:10.32.0"],
@@ -6465,7 +6472,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react-dom", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:17.0.2"],
             ["react-hook-form", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:6.15.7"],
             ["react-is", "npm:17.0.2"],
-            ["react-popper", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:2.2.5"],
+            ["react-popper-tooltip", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:4.3.0"],
             ["react-router-dom", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:5.2.0"],
             ["react-toastify", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:7.0.4"],
             ["react-use", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:17.2.4"],
@@ -10476,10 +10483,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
           "linkType": "SOFT",
         }],
-        ["virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:2.2.5", {
-          "packageLocation": "./.yarn/$$virtual/react-popper-virtual-0b76a39a3e/0/cache/react-popper-npm-2.2.5-6e86e4bf1e-5cac009001.zip/node_modules/react-popper/",
+        ["virtual:ead2fbe7cedabf7f3523ba7fd76150d5d8f047ee67b83e0efb90aaaf839be6e665f863af95cf4512f169487cff99454f749e1460942f19d60c93fc0ef93ae806#npm:2.2.5", {
+          "packageLocation": "./.yarn/$$virtual/react-popper-virtual-19c12d7387/0/cache/react-popper-npm-2.2.5-6e86e4bf1e-5cac009001.zip/node_modules/react-popper/",
           "packageDependencies": [
-            ["react-popper", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:2.2.5"],
+            ["react-popper", "virtual:ead2fbe7cedabf7f3523ba7fd76150d5d8f047ee67b83e0efb90aaaf839be6e665f863af95cf4512f169487cff99454f749e1460942f19d60c93fc0ef93ae806#npm:2.2.5"],
             ["@popperjs/core", "npm:2.9.2"],
             ["@types/popperjs__core", null],
             ["@types/react", "npm:17.0.5"],
@@ -10491,6 +10498,35 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             "@popperjs/core",
             "@types/popperjs__core",
             "@types/react",
+            "react"
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["react-popper-tooltip", [
+        ["npm:4.3.0", {
+          "packageLocation": "./.yarn/cache/react-popper-tooltip-npm-4.3.0-567f9da077-7c4b0fbadc.zip/node_modules/react-popper-tooltip/",
+          "packageDependencies": [
+            ["react-popper-tooltip", "npm:4.3.0"]
+          ],
+          "linkType": "SOFT",
+        }],
+        ["virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:4.3.0", {
+          "packageLocation": "./.yarn/$$virtual/react-popper-tooltip-virtual-ead2fbe7ce/0/cache/react-popper-tooltip-npm-4.3.0-567f9da077-7c4b0fbadc.zip/node_modules/react-popper-tooltip/",
+          "packageDependencies": [
+            ["react-popper-tooltip", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:4.3.0"],
+            ["@babel/runtime", "npm:7.14.8"],
+            ["@popperjs/core", "npm:2.9.2"],
+            ["@types/react", "npm:17.0.5"],
+            ["@types/react-dom", "npm:17.0.3"],
+            ["react", "npm:17.0.2"],
+            ["react-dom", "virtual:129c180801e06ed395e4da371c76ab19371e66a3c2230c25e2f8aa53715d8f66998096a34403ac325c10f7034d54eaa1a82bf612b0d4bf56a1d1943388d98f11#npm:17.0.2"],
+            ["react-popper", "virtual:ead2fbe7cedabf7f3523ba7fd76150d5d8f047ee67b83e0efb90aaaf839be6e665f863af95cf4512f169487cff99454f749e1460942f19d60c93fc0ef93ae806#npm:2.2.5"]
+          ],
+          "packagePeers": [
+            "@types/react-dom",
+            "@types/react",
+            "react-dom",
             "react"
           ],
           "linkType": "HARD",

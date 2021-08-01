@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { ReactNode, useRef, useState } from 'react';
 import cn from 'classnames';
 import Appear from 'components/Common/Appear/Appear';
 import { useClickAway } from 'react-use';
+import Tooltip from 'components/Common/Tooltip/Tooltip';
 
 type Toggle = (e?: React.SyntheticEvent | boolean) => void;
 
@@ -12,6 +13,7 @@ export default function Menu({
   menuClass,
   menuStyle,
   button,
+  tooltip,
   children,
 }: {
   open?: boolean;
@@ -20,6 +22,7 @@ export default function Menu({
   menuClass?: string;
   menuStyle?: React.CSSProperties;
   button: (toggle: Toggle) => React.ReactNode;
+  tooltip?: ReactNode;
   children: (toggle: Toggle) => React.ReactNode;
 }) {
   const [ownIsOpen, ownSetOpen] = useState(false);
@@ -40,7 +43,7 @@ export default function Menu({
   const ref = useRef<HTMLDivElement | null>(null);
   useClickAway(ref, close);
 
-  return (
+  const menu = (
     <div ref={ref} className={cn('relative', className)}>
       {button(toggle)}
       <Appear
@@ -55,5 +58,13 @@ export default function Menu({
         {children(toggle)}
       </Appear>
     </div>
+  );
+
+  return tooltip ? (
+    <Tooltip text={tooltip} open={isOpen ? false : undefined}>
+      {menu}
+    </Tooltip>
+  ) : (
+    menu
   );
 }

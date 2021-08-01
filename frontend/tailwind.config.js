@@ -3,11 +3,13 @@ module.exports = {
     colors: {
       lighter: {
         DEFAULT: 'var(--color-lighter)',
+        4: 'var(--color-lighter-4)',
         5: 'var(--color-lighter-5)',
       },
       darker: {
         DEFAULT: 'var(--color-darker)',
         5: 'var(--color-darker-5)',
+        10: 'var(--color-darker-10)',
       },
       dark: {
         1: 'var(--color-dark-1)',
@@ -41,7 +43,9 @@ module.exports = {
         darker: 'var(--color-blue-darker)',
       },
       yellow: {
-        DEFAULT: 'var(--color-yellow)',
+        1: 'var(--color-yellow-1)',
+        2: 'var(--color-yellow-2)',
+        3: 'var(--color-yellow-3)',
       },
       error: {
         DEFAULT: 'var(--color-error)',

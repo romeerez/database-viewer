@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@hookform/error-message": "^2.0.0",
-    "@popperjs/core": "^2.9.2",
     "@styled-icons/bootstrap": "^10.33.0",
     "@styled-icons/boxicons-regular": "^10.23.0",
     "@styled-icons/fa-solid": "^10.32.0",
@@ -30,7 +29,7 @@
     "monaco-vim": "^0.1.13",
     "react-custom-scrollbars": "^4.2.1",
     "react-hook-form": "^6.15.5",
-    "react-popper": "^2.2.5",
+    "react-popper-tooltip": "^4.3.0",
     "react-router-dom": "^5.2.0",
     "react-toastify": "^7.0.4",
     "react-use": "^17.2.4"

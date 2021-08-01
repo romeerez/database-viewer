@@ -1,12 +1,11 @@
 import React from 'react';
 import Header from 'components/Common/Header';
-import { DataStore } from 'components/Table/data.store';
+import { useTablePageContext } from 'components/Table/TablePage.context';
 
-export default function TableHeader({
-  store: { params },
-}: {
-  store: DataStore;
-}) {
+export default function TableHeader() {
+  const { tableDataService } = useTablePageContext();
+  const params = tableDataService.getParams();
+
   return (
     <Header
       breadcrumbs={[

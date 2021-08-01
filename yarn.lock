@@ -724,6 +724,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.14.0":
+  version: 7.14.8
+  resolution: "@babel/runtime@npm:7.14.8"
+  dependencies:
+    regenerator-runtime: ^0.13.4
+  checksum: ebadb3e013a26e0f62abea0da6f6f5d83c9566f0d900e65069885f93088066c64586076d15dcbe6e093c536f66cffc9e2e136ad5d8b3e66235af62f0051afa42
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.12.13":
   version: 7.12.13
   resolution: "@babel/template@npm:7.12.13"
@@ -4672,7 +4681,6 @@ __metadata:
   dependencies:
     "@apollo/client": ^3.3.16
     "@hookform/error-message": ^2.0.0
-    "@popperjs/core": ^2.9.2
     "@styled-icons/bootstrap": ^10.33.0
     "@styled-icons/boxicons-regular": ^10.23.0
     "@styled-icons/fa-solid": ^10.32.0
@@ -4719,7 +4727,7 @@ __metadata:
     react-dom: ^17.0.2
     react-hook-form: ^6.15.5
     react-is: ^17.0.2
-    react-popper: ^2.2.5
+    react-popper-tooltip: ^4.3.0
     react-router-dom: ^5.2.0
     react-toastify: ^7.0.4
     react-use: ^17.2.4
@@ -8037,6 +8045,20 @@ fsevents@~2.3.1:
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 3eff23f410d40ab9bc5177f147a92c7f42c356a21ecea340e0554566956d67e5e1ba56f26cc7fa22339ac3c7151744177bd6305eaa26d3cbf15f354358c9d9b6
+  languageName: node
+  linkType: hard
+
+"react-popper-tooltip@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "react-popper-tooltip@npm:4.3.0"
+  dependencies:
+    "@babel/runtime": ^7.14.0
+    "@popperjs/core": ^2.9.2
+    react-popper: ^2.2.5
+  peerDependencies:
+    react: ">=16.6.0"
+    react-dom: ">=16.6.0"
+  checksum: 7c4b0fbadc427a80b97b07ac160a858e9f5b6149f4225d5664fb1bb8c6cd3d3100b90e0db2e03ca7e9d7ef7dfe199df94c2a156bed47ea9a8cd6ca718097ccdc
   languageName: node
   linkType: hard
 

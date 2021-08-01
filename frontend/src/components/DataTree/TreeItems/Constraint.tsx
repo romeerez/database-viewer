@@ -31,7 +31,7 @@ export default function Constraint({
       buttonStyle={{ zIndex: 6 }}
       icon={() => (
         <div className="relative flex-center mr-1.5">
-          <Key size={20} className="text-yellow" />
+          <Key size={20} className="text-yellow-1" />
         </div>
       )}
       title={

@@ -35,7 +35,10 @@ export default function Column({
         <div className="relative mr-2">
           <TextColumnTwoLeft size={18} className="text-light-5" />
           {isPrimary && (
-            <Key size={17} className="absolute -right-1 bottom-0 text-yellow" />
+            <Key
+              size={17}
+              className="absolute -right-1 bottom-0 text-yellow-1"
+            />
           )}
           {hasForeignKey && (
             <Key size={17} className="absolute -right-1 bottom-0 text-accent" />

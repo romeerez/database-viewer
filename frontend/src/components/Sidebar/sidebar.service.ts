@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { dispatchWindowResizeEvent } from 'lib/onWindowResize';
 
 const useResize = ({
   type,
@@ -33,6 +34,10 @@ const useResize = ({
       const diff =
         type === 'width' ? e[prop] - initialPos : initialPos - e[prop];
       el.style[type] = `${Math.max(minSize, initialSize + diff)}px`;
+
+      if (type === 'width') {
+        dispatchWindowResizeEvent();
+      }
     };
 
     document.addEventListener('mousemove', listenerRef.current);
