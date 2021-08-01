@@ -5,12 +5,12 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-} from 'icons';
-import Menu from 'components/Common/Menu/Menu';
-import MenuItem from 'components/Common/Menu/MenuItem';
-import { useTablePageContext } from 'components/Table/TablePage.context';
+} from '../../../icons';
+import Menu from '../../../components/Common/Menu/Menu';
+import MenuItem from '../../../components/Common/Menu/MenuItem';
+import { useTablePageContext } from '../../../components/Table/TablePage.context';
 import cn from 'classnames';
-import Tooltip from 'components/Common/Tooltip/Tooltip';
+import Tooltip from '../../../components/Common/Tooltip/Tooltip';
 import { observer } from 'mobx-react-lite';
 import { useKey } from 'react-use';
 

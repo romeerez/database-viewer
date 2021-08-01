@@ -2,10 +2,10 @@ import React from 'react';
 import {
   TableTree,
   Column as ColumnType,
-} from 'components/DataTree/dataTree.service';
-import TreeItem from 'components/DataTree/TreeItems/TreeItem';
-import MenuItem from 'components/Common/Menu/MenuItem';
-import { TextColumnTwoLeft, Key } from 'icons';
+} from '../../../components/DataTree/dataTree.service';
+import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
+import MenuItem from '../../../components/Common/Menu/MenuItem';
+import { TextColumnTwoLeft, Key } from '../../../icons';
 
 export default function Column({
   paddingLeft,

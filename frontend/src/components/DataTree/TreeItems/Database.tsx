@@ -1,14 +1,14 @@
 import React from 'react';
-import { Database as DatabaseIcon } from 'icons';
-import { DatabaseTree } from 'components/DataTree/dataTree.service';
-import { createOpenState } from 'components/DataTree/open.state';
-import TreeItem from 'components/DataTree/TreeItems/TreeItem';
-import MenuItem from 'components/Common/Menu/MenuItem';
-import Schema from 'components/DataTree/TreeItems/Schema';
+import { Database as DatabaseIcon } from '../../../icons';
+import { createOpenState } from '../../../components/DataTree/open.state';
+import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
+import MenuItem from '../../../components/Common/Menu/MenuItem';
+import Schema from '../../../components/DataTree/TreeItems/Schema';
 import { useObserver } from 'mobx-react-lite';
-import { PathState } from 'components/DataTree/path.state';
-import routes from 'lib/routes';
+import { PathState } from '../../../components/DataTree/path.state';
+import routes from '../../../lib/routes';
 import cn from 'classnames';
+import { DatabaseTree } from '../../../components/DataTree/dataTree.service';
 
 export default function Database({
   sourceName,

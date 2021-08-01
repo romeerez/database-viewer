@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useRef } from 'react';
 import { Cell, CellType } from './selection.store';
-import { useTablePageContext } from 'components/Table/TablePage.context';
+import { useTablePageContext } from '../../../components/Table/TablePage.context';
 
 export default function Selection({ children }: { children: ReactNode }) {
   const { selectionService } = useTablePageContext();

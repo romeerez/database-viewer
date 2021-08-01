@@ -1,6 +1,6 @@
 import { useObserver } from 'mobx-react-lite';
 import { SearchState } from './queriesTree.state';
-import { queriesStore } from 'components/Query/queries.store';
+import { queriesStore } from '../../../components/Query/queries.store';
 
 export const useSearch = () => {
   const search = useObserver(() => SearchState.search);

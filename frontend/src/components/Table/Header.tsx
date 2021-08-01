@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from 'components/Common/Header';
-import { useTablePageContext } from 'components/Table/TablePage.context';
+import Header from '../../components/Common/Header';
+import { useTablePageContext } from '../../components/Table/TablePage.context';
 
 export default function TableHeader() {
   const { tableDataService } = useTablePageContext();

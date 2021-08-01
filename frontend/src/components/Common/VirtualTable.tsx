@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import Scrollbars from 'components/Common/Scrollbars';
+import Scrollbars from '../../components/Common/Scrollbars';
 import { positionValues } from 'react-custom-scrollbars';
 import { Field } from 'graphql-react-provider';
 import Scroll from 'react-custom-scrollbars';

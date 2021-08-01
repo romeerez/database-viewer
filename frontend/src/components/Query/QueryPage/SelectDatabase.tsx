@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
-import Select from 'components/Common/Form/Select';
-import Input from 'components/Common/Form/Input';
-import { useDataTree } from 'components/DataTree/dataTree.service';
-import { ChevronRight } from 'icons';
-import DataSourceFormButton from 'components/DataSource/Form/DataSourceFormButton';
-import Spinner from 'components/Common/Spinner/Spinner';
-import { getSourceUrlAndDatabaseNameFromUrl } from 'lib/sourceUrl';
+import Select from '../../../components/Common/Form/Select';
+import Input from '../../../components/Common/Form/Input';
+import { useDataTree } from '../../../components/DataTree/dataTree.service';
+import { ChevronRight } from '../../../icons';
+import DataSourceFormButton from '../../../components/DataSource/Form/DataSourceFormButton';
+import Spinner from '../../../components/Common/Spinner/Spinner';
+import { getSourceUrlAndDatabaseNameFromUrl } from '../../../lib/sourceUrl';
 
 export default function SelectDatabase({
   databaseUrl,

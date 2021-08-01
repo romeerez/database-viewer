@@ -3,9 +3,9 @@ import {
   DataSourceInLocalStore,
   DataSourceInLocalStoreWithDriver,
   Driver,
-} from 'components/DataSource/types';
-import { dataSourcesDb } from 'lib/db';
-import { Status } from 'lib/indexedDB';
+} from '../../components/DataSource/types';
+import { dataSourcesDb } from '../../lib/db';
+import { Status } from '../../lib/indexedDB';
 
 const withDriver = (
   record: DataSourceInLocalStore,

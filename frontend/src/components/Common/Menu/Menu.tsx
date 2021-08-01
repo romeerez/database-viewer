@@ -1,8 +1,8 @@
 import React, { ReactNode, useRef, useState } from 'react';
 import cn from 'classnames';
-import Appear from 'components/Common/Appear/Appear';
+import Appear from '../../../components/Common/Appear/Appear';
 import { useClickAway } from 'react-use';
-import Tooltip from 'components/Common/Tooltip/Tooltip';
+import Tooltip from '../../../components/Common/Tooltip/Tooltip';
 
 type Toggle = (e?: React.SyntheticEvent | boolean) => void;
 

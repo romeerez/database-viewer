@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import Search from './Search';
-import { Plus } from 'icons';
-import Scrollbars from 'components/Common/Scrollbars';
-import { deleteQuery, useCreateQuery } from 'components/Query/query.service';
-import { useFilteredQueries } from 'components/Query/QueriesTree/queriesTree.service';
-import QueryTreeItem from 'components/Query/QueriesTree/QueryTreeItem';
-import ConfirmModal from 'components/Common/Modals/ConfirmModal';
-import { QueryInLocalStore } from 'components/Query/types';
+import { Plus } from '../../../icons';
+import Scrollbars from '../../../components/Common/Scrollbars';
+import {
+  deleteQuery,
+  useCreateQuery,
+} from '../../../components/Query/query.service';
+import { useFilteredQueries } from '../../../components/Query/QueriesTree/queriesTree.service';
+import QueryTreeItem from '../../../components/Query/QueriesTree/QueryTreeItem';
+import ConfirmModal from '../../../components/Common/Modals/ConfirmModal';
+import { QueryInLocalStore } from '../../../components/Query/types';
 
 export default function QueriesTree() {
   const queries = useFilteredQueries();
   const { createQuery } = useCreateQuery();
 
-  const [queryToDelete, setQueryToDelete] =
-    useState<QueryInLocalStore | undefined>();
+  const [queryToDelete, setQueryToDelete] = useState<
+    QueryInLocalStore | undefined
+  >();
 
   const [deleting, setDeleting] = useState(false);
 

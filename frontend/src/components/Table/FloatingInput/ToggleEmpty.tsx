@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Toggle from 'components/Common/Form/Toggle/Toggle';
+import React, { useEffect, useState } from 'react';
+import Toggle from '../../../components/Common/Form/Toggle/Toggle';
 import { observer } from 'mobx-react-lite';
-import { useTablePageContext } from 'components/Table/TablePage.context';
+import { useTablePageContext } from '../../../components/Table/TablePage.context';
 import cn from 'classnames';
 
 export default observer(function ToggleEmpty() {

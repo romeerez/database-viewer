@@ -1,9 +1,8 @@
 import React from 'react';
 import cn from 'classnames';
-import { TableDataService } from 'components/Table/TableData/tableData.service';
 import { observer } from 'mobx-react-lite';
-import { CellType } from 'components/Table/Table/Table.types';
-import { useTablePageContext } from 'components/Table/TablePage.context';
+import { CellType } from '../../../components/Table/Table/Table.types';
+import { useTablePageContext } from '../../../components/Table/TablePage.context';
 
 export default observer(function Row({
   rowIndex,

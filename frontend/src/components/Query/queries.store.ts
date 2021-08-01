@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
-import { QueryInLocalStore } from 'components/Query/types';
-import { queriesDb } from 'lib/db';
-import { Status } from 'lib/indexedDB';
+import { QueryInLocalStore } from '../../components/Query/types';
+import { queriesDb } from '../../lib/db';
+import { Status } from '../../lib/indexedDB';
 
 export const queriesStore = makeAutoObservable({
   status: 'init' as Status,

@@ -1,9 +1,9 @@
 import React from 'react';
-import Appear from 'components/Common/Appear/Appear';
-import Scrollbars from 'components/Common/Scrollbars';
+import Appear from '../../../components/Common/Appear/Appear';
+import Scrollbars from '../../../components/Common/Scrollbars';
 import cn from 'classnames';
 import style from './style.module.css';
-import { X } from 'icons';
+import { X } from '../../../icons';
 
 export default function Modal({
   open,

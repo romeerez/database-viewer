@@ -1,9 +1,9 @@
 import React from 'react';
-import { QueryInLocalStore } from 'components/Query/types';
+import { QueryInLocalStore } from '../../../components/Query/types';
 import { useObserver } from 'mobx-react-lite';
 import { NavLink } from 'react-router-dom';
-import routes from 'lib/routes';
-import { X } from 'icons';
+import routes from '../../../lib/routes';
+import { X } from '../../../icons';
 
 export default function QueryTreeItem({
   query,

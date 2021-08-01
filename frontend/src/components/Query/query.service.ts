@@ -1,11 +1,11 @@
-import { QueryInLocalStore } from 'components/Query/types';
+import { QueryInLocalStore } from '../../components/Query/types';
 import { useState } from 'react';
-import { queriesStore } from 'components/Query/queries.store';
+import { queriesStore } from '../../components/Query/queries.store';
 import { toast } from 'react-toastify';
 import { useObserver } from 'mobx-react-lite';
-import history from 'lib/history';
-import routes from 'lib/routes';
-import { queriesDb } from 'lib/db';
+import history from '../../lib/history';
+import routes from '../../lib/routes';
+import { queriesDb } from '../../lib/db';
 
 export const useQueries = () => useObserver(() => queriesStore.queries);
 

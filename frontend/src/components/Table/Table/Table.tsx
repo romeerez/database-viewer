@@ -1,9 +1,9 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import Row from './Row';
-import { CellType } from 'components/Table/Table/Table.types';
+import { CellType } from '../../../components/Table/Table/Table.types';
 import cn from 'classnames';
-import { useTablePageContext } from 'components/Table/TablePage.context';
+import { useTablePageContext } from '../../../components/Table/TablePage.context';
 
 export default observer(function Table() {
   const { selectionService } = useTablePageContext();

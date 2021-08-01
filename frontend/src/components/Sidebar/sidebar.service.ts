@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { dispatchWindowResizeEvent } from 'lib/onWindowResize';
+import { dispatchWindowResizeEvent } from '../../lib/onWindowResize';
 
 const useResize = ({
   type,

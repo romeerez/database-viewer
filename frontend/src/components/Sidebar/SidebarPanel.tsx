@@ -1,8 +1,8 @@
 import React from 'react';
-import { ExpandAlt, Window, Minus } from 'icons';
+import { ExpandAlt, Window, Minus } from '../../icons';
 
 import cn from 'classnames';
-import { PanelState } from 'components/Sidebar/sidebar.service';
+import { PanelState } from '../../components/Sidebar/sidebar.service';
 
 export default function SidebarPanel({
   elementRef,

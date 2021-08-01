@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useDataChangesStore } from 'components/Table/DataChanges/dataChanges.store';
-import { TableDataService } from 'components/Table/TableData/tableData.service';
+import { useDataChangesStore } from '../../../components/Table/DataChanges/dataChanges.store';
+import { TableDataService } from '../../../components/Table/TableData/tableData.service';
 
 export type DataChangesService = ReturnType<typeof useDataChangesService>;
 

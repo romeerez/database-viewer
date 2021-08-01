@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 import {
   Cell,
   useFloatingInputStore,
-} from 'components/Table/FloatingInput/FloatingInput.store';
-import { TableDataService } from 'components/Table/TableData/tableData.service';
-import { SelectionService } from 'components/Table/Selection/selection.service';
-import { DataChangesService } from 'components/Table/DataChanges/dataChanges.service';
+} from '../../../components/Table/FloatingInput/FloatingInput.store';
+import { TableDataService } from '../../../components/Table/TableData/tableData.service';
+import { SelectionService } from '../../../components/Table/Selection/selection.service';
+import { DataChangesService } from '../../../components/Table/DataChanges/dataChanges.service';
 
 export type FloatingInputService = ReturnType<typeof useFloatingInputService>;
 

@@ -1,10 +1,10 @@
 import { useLocalObservable } from 'mobx-react-lite';
 import { Field, GetDataTreeQuery, QueryResult } from 'graphql-react-provider';
-import { useDataTree } from 'components/DataTree/dataTree.service';
+import { useDataTree } from '../../../components/DataTree/dataTree.service';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useRouteMatch } from 'react-router-dom';
-import { dataSourcesStore } from 'components/DataSource/dataSource.store';
+import { dataSourcesStore } from '../../../components/DataSource/dataSource.store';
 import { observable } from 'mobx';
 
 const defaultLimit = 10;

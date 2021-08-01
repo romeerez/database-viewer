@@ -1,14 +1,14 @@
 import React from 'react';
-import { useDataTreeForSidebar } from 'components/DataTree/dataTree.service';
-import Scrollbars from 'components/Common/Scrollbars';
-import Breadcrumbs from 'components/DataTree/Breadcrumbs/Breadcrumbs';
+import { useDataTreeForSidebar } from '../../components/DataTree/dataTree.service';
+import Scrollbars from '../../components/Common/Scrollbars';
+import Breadcrumbs from '../../components/DataTree/Breadcrumbs/Breadcrumbs';
 import { useObserver } from 'mobx-react-lite';
-import { PathState } from 'components/DataTree/path.state';
-import Search from 'components/DataTree/Search';
-import DisplayTree from 'components/DataTree/DisplayTree';
-import DataSourceFormButton from 'components/DataSource/Form/DataSourceFormButton';
-import { Plus } from 'icons';
-import DataTreeModals from 'components/DataTree/Modals/DataTreeModals';
+import { PathState } from '../../components/DataTree/path.state';
+import Search from '../../components/DataTree/Search';
+import DisplayTree from '../../components/DataTree/DisplayTree';
+import DataSourceFormButton from '../../components/DataSource/Form/DataSourceFormButton';
+import { Plus } from '../../icons';
+import DataTreeModals from '../../components/DataTree/Modals/DataTreeModals';
 
 export default function DataTree() {
   const { tree, openState } = useDataTreeForSidebar();

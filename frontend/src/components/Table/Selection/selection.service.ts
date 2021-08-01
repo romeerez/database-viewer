@@ -2,9 +2,9 @@ import {
   Cell,
   CellType,
   useSelectionStore,
-} from 'components/Table/Selection/selection.store';
-import { TableDataService } from 'components/Table/TableData/tableData.service';
-import { DataChangesService } from 'components/Table/DataChanges/dataChanges.service';
+} from '../../../components/Table/Selection/selection.store';
+import { TableDataService } from '../../../components/Table/TableData/tableData.service';
+import { DataChangesService } from '../../../components/Table/DataChanges/dataChanges.service';
 
 type SelectionStore = ReturnType<typeof useSelectionStore>;
 

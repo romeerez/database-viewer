@@ -1,13 +1,13 @@
 import React from 'react';
-import { SchemaTree } from 'components/DataTree/dataTree.service';
-import { createOpenState } from 'components/DataTree/open.state';
-import TreeItem from 'components/DataTree/TreeItems/TreeItem';
-import MenuItem from 'components/Common/Menu/MenuItem';
-import { FlowChart } from 'icons';
-import Table from 'components/DataTree/TreeItems/Table';
+import { SchemaTree } from '../../../components/DataTree/dataTree.service';
+import { createOpenState } from '../../../components/DataTree/open.state';
+import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
+import MenuItem from '../../../components/Common/Menu/MenuItem';
+import { FlowChart } from '../../../icons';
+import Table from '../../../components/DataTree/TreeItems/Table';
 import { useObserver } from 'mobx-react-lite';
-import { PathState } from 'components/DataTree/path.state';
-import routes from 'lib/routes';
+import { PathState } from '../../../components/DataTree/path.state';
+import routes from '../../../lib/routes';
 import cn from 'classnames';
 
 export default function Schema({

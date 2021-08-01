@@ -1,7 +1,7 @@
 import React from 'react';
 import { ErrorMessage as OriginalErrorMessage } from '@hookform/error-message';
 import cn from 'classnames';
-import { Form } from 'lib/useForm';
+import { Form } from '../../../lib/useForm';
 
 export default function ErrorMessage({
   form,

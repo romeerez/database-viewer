@@ -1,16 +1,16 @@
 import React from 'react';
-import { TableTree } from 'components/DataTree/dataTree.service';
-import { createOpenState } from 'components/DataTree/open.state';
-import TreeItem from 'components/DataTree/TreeItems/TreeItem';
-import MenuItem from 'components/Common/Menu/MenuItem';
-import { Table as TableIcon } from 'icons';
+import { TableTree } from '../../../components/DataTree/dataTree.service';
+import { createOpenState } from '../../../components/DataTree/open.state';
+import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
+import MenuItem from '../../../components/Common/Menu/MenuItem';
+import { Table as TableIcon } from '../../../icons';
 import { useObserver } from 'mobx-react-lite';
-import { PathState } from 'components/DataTree/path.state';
-import Column from 'components/DataTree/TreeItems/Column';
-import Constraint from 'components/DataTree/TreeItems/Constraint';
-import ForeignKey from 'components/DataTree/TreeItems/ForeignKey';
-import Index from 'components/DataTree/TreeItems/Index';
-import routes from 'lib/routes';
+import { PathState } from '../../../components/DataTree/path.state';
+import Column from '../../../components/DataTree/TreeItems/Column';
+import Constraint from '../../../components/DataTree/TreeItems/Constraint';
+import ForeignKey from '../../../components/DataTree/TreeItems/ForeignKey';
+import Index from '../../../components/DataTree/TreeItems/Index';
+import routes from '../../../lib/routes';
 import cn from 'classnames';
 
 export default function Table({

@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import Spinner from 'components/Common/Spinner/Spinner';
+import Spinner from '../../../components/Common/Spinner/Spinner';
 import style from './style.module.css';
 
 export default function Button({

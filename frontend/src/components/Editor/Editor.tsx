@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { editor as MonacoEditor } from 'monaco-editor';
-import { useDataTree } from 'components/DataTree/dataTree.service';
-import { enableSuggestions } from 'components/Editor/suggestions';
-import { useExecuteWidget } from 'components/Editor/executeWidget';
+import { useDataTree } from '../../components/DataTree/dataTree.service';
+import { enableSuggestions } from '../../components/Editor/suggestions';
+import { useExecuteWidget } from '../../components/Editor/executeWidget';
 import './style.css';
-import { useVim } from 'components/Editor/useVim';
-import { useOnWindowResize } from 'lib/onWindowResize';
+import { useVim } from '../../components/Editor/useVim';
+import { useOnWindowResize } from '../../lib/onWindowResize';
 
 MonacoEditor.setTheme('vs-dark');
 

@@ -1,9 +1,9 @@
 import React from 'react';
-import Modal from 'components/Common/Modal/Modal';
-import Button from 'components/Common/Button/Button';
-import Editor, { useEditorRef } from 'components/Editor/Editor';
+import Modal from '../../../components/Common/Modal/Modal';
+import Button from '../../../components/Common/Button/Button';
+import Editor, { useEditorRef } from '../../../components/Editor/Editor';
 import { observer } from 'mobx-react-lite';
-import { useTablePageContext } from 'components/Table/TablePage.context';
+import { useTablePageContext } from '../../../components/Table/TablePage.context';
 
 export default observer(function PreviewChanges({
   open,

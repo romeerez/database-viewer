@@ -1,6 +1,6 @@
 import React from 'react';
-import Input from 'components/Common/Form/Input';
-import { DataTreeState } from 'components/DataTree/dataTree.state';
+import Input from '../../components/Common/Form/Input';
+import { DataTreeState } from '../../components/DataTree/dataTree.state';
 import { useObserver } from 'mobx-react-lite';
 
 export default function Search() {

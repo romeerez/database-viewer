@@ -1,8 +1,8 @@
-import { KeyValue } from 'components/KeyValueStore/types';
+import { KeyValue } from '../../components/KeyValueStore/types';
 import { useObserver } from 'mobx-react-lite';
 import store from './keyValue.store';
 import { useEffect } from 'react';
-import { keyValueDb } from 'lib/db';
+import { keyValueDb } from '../../lib/db';
 
 const subscriptions: Record<KeyValue['key'], number> = {};
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import routes from 'lib/routes';
-import HomePage from 'components/HomePage';
-import TablePage from 'components/Table/TablePage';
-import QueryPage from 'components/Query/QueryPage/QueryPage';
+import routes from '../lib/routes';
+import HomePage from '../components/HomePage';
+import TablePage from '../components/Table/TablePage';
+import QueryPage from '../components/Query/QueryPage/QueryPage';
 
 export default function Router() {
   return (

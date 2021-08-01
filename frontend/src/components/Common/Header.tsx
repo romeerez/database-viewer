@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronRight } from 'icons';
+import { ChevronRight } from '../../icons';
 
 export default function Header({
   breadcrumbs,

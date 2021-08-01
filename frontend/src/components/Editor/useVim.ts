@@ -1,4 +1,4 @@
-import { ExtendedEditor } from 'components/Editor/Editor';
+import { ExtendedEditor } from '../../components/Editor/Editor';
 // eslint-disable-next-line
 // @ts-ignore
 import { initVimMode } from 'monaco-vim';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from 'lib/useForm';
+import { Form } from '../../../lib/useForm';
 
 export type TextAreaProps = {
   form: Form;

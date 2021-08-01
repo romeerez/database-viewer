@@ -1,16 +1,16 @@
 import React from 'react';
-import DataTree from 'components/DataTree/DataTree';
-import { Logo } from 'icons';
-import SidebarMenu from 'components/Sidebar/SidebarMenu';
+import DataTree from '../../components/DataTree/DataTree';
+import { Logo } from '../../icons';
+import SidebarMenu from '../../components/Sidebar/SidebarMenu';
 import style from './style.module.css';
 import {
   useResizeSidebar,
   useResizeQueries,
   useQueriesPanelState,
-} from 'components/Sidebar/sidebar.service';
+} from '../../components/Sidebar/sidebar.service';
 import cn from 'classnames';
-import QueriesTree from 'components/Query/QueriesTree/QueriesTree';
-import SidebarPanel from 'components/Sidebar/SidebarPanel';
+import QueriesTree from '../../components/Query/QueriesTree/QueriesTree';
+import SidebarPanel from '../../components/Sidebar/SidebarPanel';
 
 export default function Sidebar({ className }: { className?: string }) {
   const resizeSidebar = useResizeSidebar();

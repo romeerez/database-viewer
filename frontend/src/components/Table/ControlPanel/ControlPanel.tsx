@@ -1,12 +1,12 @@
 import React from 'react';
-import { Sync, Plus, Undo, ListCheck, Upload } from 'icons';
+import { Sync, Plus, Undo, ListCheck, Upload } from '../../../icons';
 import { observer } from 'mobx-react-lite';
 import { useKey, useToggle } from 'react-use';
-import PreviewChanges from 'components/Table/PreviewChanges/PreviewChanges';
-import RemoveButton from 'components/Table/ControlPanel/RemoveButton';
-import { useTablePageContext } from 'components/Table/TablePage.context';
-import Pagination from 'components/Table/ControlPanel/Pagination';
-import Tooltip from 'components/Common/Tooltip/Tooltip';
+import PreviewChanges from '../../../components/Table/PreviewChanges/PreviewChanges';
+import RemoveButton from '../../../components/Table/ControlPanel/RemoveButton';
+import { useTablePageContext } from '../../../components/Table/TablePage.context';
+import Pagination from '../../../components/Table/ControlPanel/Pagination';
+import Tooltip from '../../../components/Common/Tooltip/Tooltip';
 import cn from 'classnames';
 
 export default observer(function ControlPanel() {

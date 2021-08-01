@@ -1,9 +1,9 @@
 import React from 'react';
-import { useTablePageContext } from 'components/Table/TablePage.context';
-import { Minus } from 'icons';
+import { useTablePageContext } from '../../../components/Table/TablePage.context';
+import { Minus } from '../../../icons';
 import cn from 'classnames';
 import { observer } from 'mobx-react-lite';
-import Tooltip from 'components/Common/Tooltip/Tooltip';
+import Tooltip from '../../../components/Common/Tooltip/Tooltip';
 import { useKey } from 'react-use';
 
 export default observer(function RemoveRowsButton() {

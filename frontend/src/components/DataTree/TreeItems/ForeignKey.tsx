@@ -1,11 +1,11 @@
 import React from 'react';
-import { ForeignKey as ForeignKeyType } from 'components/DataTree/dataTree.service';
-import { createOpenState } from 'components/DataTree/open.state';
-import TreeItem from 'components/DataTree/TreeItems/TreeItem';
-import MenuItem from 'components/Common/Menu/MenuItem';
-import { Key } from 'icons';
-import { PathState } from 'components/DataTree/path.state';
-import routes from 'lib/routes';
+import { ForeignKey as ForeignKeyType } from '../../../components/DataTree/dataTree.service';
+import { createOpenState } from '../../../components/DataTree/open.state';
+import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
+import MenuItem from '../../../components/Common/Menu/MenuItem';
+import { Key } from '../../../icons';
+import { PathState } from '../../../components/DataTree/path.state';
+import routes from '../../../lib/routes';
 
 export default function ForeignKey({
   sourceName,

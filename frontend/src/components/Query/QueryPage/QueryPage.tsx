@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import Editor, { useEditorRef } from 'components/Editor/Editor';
+import Editor, { useEditorRef } from '../../../components/Editor/Editor';
 import Header from './Header';
 import SelectDatabase from './SelectDatabase';
 import { toast } from 'react-toastify';
 import { QueryFieldsAndRowsQuery, useAPIContext } from 'graphql-react-provider';
-import QueryResult from 'components/Query/QueryResult';
+import QueryResult from '../../../components/Query/QueryResult';
 import cn from 'classnames';
-import { updateQuery, useQueries } from 'components/Query/query.service';
+import {
+  updateQuery,
+  useQueries,
+} from '../../../components/Query/query.service';
 import { useParams } from 'react-router-dom';
-import { QueryInLocalStore } from 'components/Query/types';
+import { QueryInLocalStore } from '../../../components/Query/types';
 import { IDisposable } from 'monaco-editor';
 import { useObserver } from 'mobx-react-lite';
-import { getSourceUrlAndDatabaseNameFromUrl } from 'lib/sourceUrl';
+import { getSourceUrlAndDatabaseNameFromUrl } from '../../../lib/sourceUrl';
 
 export default function QueryPage() {
   const { name } = useParams<{ name: string }>();

@@ -1,10 +1,10 @@
 import React from 'react';
-import { DataSourceTree } from 'components/DataTree/dataTree.service';
-import { createOpenState } from 'components/DataTree/open.state';
-import Table from 'components/DataTree/TreeItems/Table';
-import Schema from 'components/DataTree/TreeItems/Schema';
-import Database from 'components/DataTree/TreeItems/Database';
-import DataSource from 'components/DataTree/TreeItems/DataSource';
+import { DataSourceTree } from '../../components/DataTree/dataTree.service';
+import { createOpenState } from '../../components/DataTree/open.state';
+import Table from '../../components/DataTree/TreeItems/Table';
+import Schema from '../../components/DataTree/TreeItems/Schema';
+import Database from '../../components/DataTree/TreeItems/Database';
+import DataSource from '../../components/DataTree/TreeItems/DataSource';
 
 const top = 48;
 const paddingLeft = 8;

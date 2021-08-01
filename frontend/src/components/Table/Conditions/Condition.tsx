@@ -1,15 +1,18 @@
 import React, { useEffect, useRef } from 'react';
-import Menu from 'components/Common/Menu/Menu';
-import { ChevronDown } from 'icons';
-import Editor, { ExtendedEditor, useEditorRef } from 'components/Editor/Editor';
+import Menu from '../../../components/Common/Menu/Menu';
+import { ChevronDown } from '../../../icons';
+import Editor, {
+  ExtendedEditor,
+  useEditorRef,
+} from '../../../components/Editor/Editor';
 import { KeyCode } from 'monaco-editor';
 import {
   updateValue,
   useValue,
-} from 'components/KeyValueStore/keyValue.service';
-import MenuItem from 'components/Common/Menu/MenuItem';
+} from '../../../components/KeyValueStore/keyValue.service';
+import MenuItem from '../../../components/Common/Menu/MenuItem';
 import { observer } from 'mobx-react-lite';
-import { useTablePageContext } from 'components/Table/TablePage.context';
+import { useTablePageContext } from '../../../components/Table/TablePage.context';
 
 export default observer(function Condition({
   conditionType,

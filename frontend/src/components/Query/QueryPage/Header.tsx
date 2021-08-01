@@ -1,10 +1,10 @@
 import React from 'react';
-import Header from 'components/Common/Header';
-import { QueryInLocalStore } from 'components/Query/types';
-import { updateQuery } from 'components/Query/query.service';
+import Header from '../../../components/Common/Header';
+import { QueryInLocalStore } from '../../../components/Query/types';
+import { updateQuery } from '../../../components/Query/query.service';
 import { useObserver } from 'mobx-react-lite';
-import history from 'lib/history';
-import routes from 'lib/routes';
+import history from '../../../lib/history';
+import routes from '../../../lib/routes';
 
 export default function QueryPageHeader({
   query,

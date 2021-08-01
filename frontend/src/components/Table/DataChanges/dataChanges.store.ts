@@ -1,5 +1,5 @@
 import { useLocalObservable } from 'mobx-react-lite';
-import { TableDataService } from 'components/Table/TableData/tableData.service';
+import { TableDataService } from '../../../components/Table/TableData/tableData.service';
 
 export type DataChangesStore = ReturnType<typeof useDataChangesStore>;
 

@@ -1,8 +1,8 @@
 import React from 'react';
-import Input from 'components/Common/Form/Input';
-import { Form } from 'lib/useForm';
+import Input from '../../../components/Common/Form/Input';
+import { Form } from '../../../lib/useForm';
 import { useWatch } from 'react-hook-form';
-import FormGroup from 'components/Common/Form/FormGroup';
+import FormGroup from '../../../components/Common/Form/FormGroup';
 import Select from './Select';
 
 export type Option = {

@@ -1,6 +1,6 @@
 import React from 'react';
-import Menu from 'components/Common/Menu/Menu';
-import MenuItem from 'components/Common/Menu/MenuItem';
+import Menu from '../../../components/Common/Menu/Menu';
+import MenuItem from '../../../components/Common/Menu/MenuItem';
 
 export type Option = {
   label?: React.ReactNode;

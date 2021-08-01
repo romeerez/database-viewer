@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
-import { useTablePageContext } from 'components/Table/TablePage.context';
+import { useTablePageContext } from '../../../components/Table/TablePage.context';
 
 const tdPaddingXPx = '32px';
 

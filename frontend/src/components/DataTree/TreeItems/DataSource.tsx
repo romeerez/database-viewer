@@ -1,15 +1,15 @@
 import React from 'react';
-import { Postgresql } from 'icons';
-import MenuItem from 'components/Common/Menu/MenuItem';
-import TreeItem from 'components/DataTree/TreeItems/TreeItem';
-import { DataSourceTree } from 'components/DataTree/dataTree.service';
-import { createOpenState } from 'components/DataTree/open.state';
-import Database from 'components/DataTree/TreeItems/Database';
+import { Postgresql } from '../../../icons';
+import MenuItem from '../../../components/Common/Menu/MenuItem';
+import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
+import { DataSourceTree } from '../../../components/DataTree/dataTree.service';
+import { createOpenState } from '../../../components/DataTree/open.state';
+import Database from '../../../components/DataTree/TreeItems/Database';
 import { useObserver } from 'mobx-react-lite';
-import { PathState } from 'components/DataTree/path.state';
-import routes from 'lib/routes';
+import { PathState } from '../../../components/DataTree/path.state';
+import routes from '../../../lib/routes';
 import cn from 'classnames';
-import { modalsState } from 'components/DataTree/dataTree.state';
+import { modalsState } from '../../../components/DataTree/dataTree.state';
 
 export default function DataSource({
   top,

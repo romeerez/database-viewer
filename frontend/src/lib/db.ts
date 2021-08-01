@@ -1,7 +1,7 @@
 import { init, createStore } from './indexedDB';
-import { DataSourceInLocalStore } from 'components/DataSource/types';
-import { QueryInLocalStore } from 'components/Query/types';
-import { KeyValue } from 'components/KeyValueStore/types';
+import { DataSourceInLocalStore } from '../components/DataSource/types';
+import { QueryInLocalStore } from '../components/Query/types';
+import { KeyValue } from '../components/KeyValueStore/types';
 
 enum tableNames {
   dataSources = 'dataSources',

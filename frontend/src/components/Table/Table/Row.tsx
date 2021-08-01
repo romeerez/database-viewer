@@ -1,10 +1,10 @@
 import React from 'react';
-import { FieldInfo } from 'components/Table/TableData/tableData.store';
+import { FieldInfo } from '../../../components/Table/TableData/tableData.store';
 import { observer } from 'mobx-react-lite';
 import cn from 'classnames';
 import Cell from './Cell';
-import { CellType } from 'components/Table/Table/Table.types';
-import { useTablePageContext } from 'components/Table/TablePage.context';
+import { CellType } from '../../../components/Table/Table/Table.types';
+import { useTablePageContext } from '../../../components/Table/TablePage.context';
 
 export default observer(function Row({
   fields,

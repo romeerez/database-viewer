@@ -1,6 +1,6 @@
 import React from 'react';
-import Input from 'components/Common/Form/Input';
-import { useSearch } from 'components/Query/QueriesTree/queriesTree.service';
+import Input from '../../../components/Common/Form/Input';
+import { useSearch } from '../../../components/Query/QueriesTree/queriesTree.service';
 
 export default function Search() {
   const [search, setSearch] = useSearch();

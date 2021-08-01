@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { GetDataTreeQuery, useAPIContext } from 'graphql-react-provider';
-import { DataSourceInLocalStoreWithDriver } from 'components/DataSource/types';
+import { DataSourceInLocalStoreWithDriver } from '../../components/DataSource/types';
 import { useObserver } from 'mobx-react-lite';
 import {
   DataTreeState,
   noSearchOpenState,
   searchOpenState,
-} from 'components/DataTree/dataTree.state';
-import { dataSourcesStore } from 'components/DataSource/dataSource.store';
+} from '../../components/DataTree/dataTree.state';
+import { dataSourcesStore } from '../../components/DataSource/dataSource.store';
 
 export type DataSourceTree = Exclude<
   ReturnType<typeof mapDataTree>,

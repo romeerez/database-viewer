@@ -1,15 +1,15 @@
 import React from 'react';
 import * as yup from 'yup';
-import { useForm } from 'lib/useForm';
-import SelectGroup from 'components/Common/Form/SelectGroup';
-import InputGroup from 'components/Common/Form/InputGroup';
-import TextAreaGroup from 'components/Common/Form/TextAreaGroup';
+import { useForm } from '../../../lib/useForm';
+import SelectGroup from '../../../components/Common/Form/SelectGroup';
+import InputGroup from '../../../components/Common/Form/InputGroup';
+import TextAreaGroup from '../../../components/Common/Form/TextAreaGroup';
 import {
   useConnectURLAndOtherFields,
   useSubmit,
-} from 'components/DataSource/Form/dataSourceForm.service';
-import Button from 'components/Common/Button/Button';
-import { DataSourceInLocalStore } from 'components/DataSource/types';
+} from '../../../components/DataSource/Form/dataSourceForm.service';
+import Button from '../../../components/Common/Button/Button';
+import { DataSourceInLocalStore } from '../../../components/DataSource/types';
 
 const drivers = [
   { label: 'PostgreSQL', value: 'postgres' },

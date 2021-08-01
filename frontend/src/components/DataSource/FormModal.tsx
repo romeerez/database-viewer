@@ -1,6 +1,6 @@
 import React from 'react';
-import Modal from 'components/Common/Modal/Modal';
-import DataSourceForm from 'components/DataSource/Form/DataSourceForm';
+import Modal from '../../components/Common/Modal/Modal';
+import DataSourceForm from '../../components/DataSource/Form/DataSourceForm';
 
 export default function FormModal({
   open,

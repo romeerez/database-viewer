@@ -1,5 +1,5 @@
 import React from 'react';
-import FormModal from 'components/DataSource/FormModal';
+import FormModal from '../../../components/DataSource/FormModal';
 import { useToggle } from 'react-use';
 
 export default function DataSourceFormButton({

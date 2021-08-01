@@ -1,6 +1,6 @@
 import { useLocalObservable } from 'mobx-react-lite';
-import { TableDataService } from 'components/Table/TableData/tableData.service';
-import { DataChangesService } from 'components/Table/DataChanges/dataChanges.service';
+import { TableDataService } from '../../../components/Table/TableData/tableData.service';
+import { DataChangesService } from '../../../components/Table/DataChanges/dataChanges.service';
 
 export type Selection = Record<number, Record<number, true>>;
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import style from './style.module.css';
 import cn from 'classnames';
-import { PathState } from 'components/DataTree/path.state';
+import { PathState } from '../../../components/DataTree/path.state';
 import { useObserver } from 'mobx-react-lite';
 
 export default function Breadcrumbs() {

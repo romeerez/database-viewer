@@ -3,8 +3,8 @@ import {
   createOpenState,
   loadStateFromLocalStorage,
   saveStateToLocalStorage,
-} from 'components/DataTree/open.state';
-import { DataSourceInLocalStore } from 'components/DataSource/types';
+} from '../../components/DataTree/open.state';
+import { DataSourceInLocalStore } from '../../components/DataSource/types';
 
 export const DataTreeState = makeAutoObservable({
   search: '',

@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import Modal from 'components/Common/Modal/Modal';
-import Button from 'components/Common/Button/Button';
+import React from 'react';
+import Modal from '../../../components/Common/Modal/Modal';
+import Button from '../../../components/Common/Button/Button';
 
 export default function ConfirmModal({
   open,

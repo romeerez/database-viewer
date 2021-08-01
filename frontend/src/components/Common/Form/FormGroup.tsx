@@ -1,6 +1,6 @@
 import React from 'react';
-import { Form } from 'lib/useForm';
-import ErrorMessage from 'components/Common/Form/ErrorMessage';
+import { Form } from '../../../lib/useForm';
+import ErrorMessage from '../../../components/Common/Form/ErrorMessage';
 
 export type FormGroupProps = {
   form: Form;

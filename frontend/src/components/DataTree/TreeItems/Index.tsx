@@ -1,11 +1,11 @@
 import React from 'react';
-import { Index as IndexType } from 'components/DataTree/dataTree.service';
-import { createOpenState } from 'components/DataTree/open.state';
-import TreeItem from 'components/DataTree/TreeItems/TreeItem';
-import MenuItem from 'components/Common/Menu/MenuItem';
-import { Info } from 'icons';
-import { PathState } from 'components/DataTree/path.state';
-import routes from 'lib/routes';
+import { Index as IndexType } from '../../../components/DataTree/dataTree.service';
+import { createOpenState } from '../../../components/DataTree/open.state';
+import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
+import MenuItem from '../../../components/Common/Menu/MenuItem';
+import { Info } from '../../../icons';
+import { PathState } from '../../../components/DataTree/path.state';
+import routes from '../../../lib/routes';
 
 export default function Index({
   sourceName,

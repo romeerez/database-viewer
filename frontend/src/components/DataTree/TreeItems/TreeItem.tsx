@@ -1,10 +1,14 @@
 import React from 'react';
-import Appear from 'components/Common/Appear/Appear';
-import { ChevronRight, DotsHorizontalRounded, RightArrowAlt } from 'icons';
+import Appear from '../../../components/Common/Appear/Appear';
+import {
+  ChevronRight,
+  DotsHorizontalRounded,
+  RightArrowAlt,
+} from '../../../icons';
 import cn from 'classnames';
-import Menu from 'components/Common/Menu/Menu';
+import Menu from '../../../components/Common/Menu/Menu';
 import { Link, useRouteMatch } from 'react-router-dom';
-import { DataTreeState } from 'components/DataTree/dataTree.state';
+import { DataTreeState } from '../../../components/DataTree/dataTree.state';
 
 export default function TreeItem({
   open,

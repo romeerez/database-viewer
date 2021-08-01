@@ -1,6 +1,6 @@
 import React from 'react';
 import { useObserver } from 'mobx-react-lite';
-import { themeSwitcher } from 'components/Theme/themeSwitcher';
+import { themeSwitcher } from '../../components/Theme/themeSwitcher';
 
 export default function Theme({ children }: { children: React.ReactNode }) {
   const dark = useObserver(() => themeSwitcher.dark);

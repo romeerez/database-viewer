@@ -1,7 +1,7 @@
-import { Form } from 'lib/useForm';
+import { Form } from '../../../lib/useForm';
 import React from 'react';
-import { DataSourceInLocalStore } from 'components/DataSource/types';
-import { useSaveDataSource } from 'components/DataSource/dataSource.service';
+import { DataSourceInLocalStore } from '../../../components/DataSource/types';
+import { useSaveDataSource } from '../../../components/DataSource/dataSource.service';
 
 const urlAffectiveFields = ['host', 'port', 'user', 'password', 'database'];
 
