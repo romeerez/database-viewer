@@ -1,9 +1,5 @@
 {
   "name": "database-viewer",
-  "workspaces": [
-    "frontend",
-    "server"
-  ],
   "scripts": {
     "graphql-codegen": "graphql-codegen --require dotenv/config --config codegen.yml"
   },

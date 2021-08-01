@@ -1,4 +1,4 @@
-import { useCheckConnectionMutation } from 'generated/graphql';
+import { useAPIContext } from 'graphql-react-provider';
 import { dataSourcesStore } from 'components/DataSource/dataSource.store';
 import { useState } from 'react';
 import { useObserver } from 'mobx-react-lite';
@@ -17,6 +17,7 @@ export const useSaveDataSource = ({
   dataSource?: DataSourceInLocalStore;
   onClose(): void;
 }) => {
+  const { useCheckConnectionMutation } = useAPIContext();
   const [checkConnection] = useCheckConnectionMutation();
 
   const [loading, setLoading] = useState(false);

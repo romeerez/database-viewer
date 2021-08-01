@@ -1,0 +1,21 @@
+{
+  "name": "graphql-react-provider",
+  "version": "1.0.0",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsc --watch",
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "@apollo/client": "^3.4.1",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
+  },
+  "devDependencies": {
+    "@apollo/client": "^3.4.1",
+    "@types/react": "^17.0.15",
+    "typescript": "^4.3.5"
+  }
+}

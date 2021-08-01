@@ -1,10 +1,7 @@
 import { useDataStore } from 'components/Table/TableData/tableData.store';
 import { useEffect, useMemo } from 'react';
 import { buildQuery } from 'lib/queryBuilder';
-import {
-  useQueryFieldsAndRowsLazyQuery,
-  useQueryRowsLazyQuery,
-} from 'generated/graphql';
+import { useAPIContext } from 'graphql-react-provider';
 
 export type TableDataService = ReturnType<typeof useDataService>;
 
@@ -94,6 +91,9 @@ export const useDataService = () => {
     }),
     [store],
   );
+
+  const { useQueryFieldsAndRowsLazyQuery, useQueryRowsLazyQuery } =
+    useAPIContext();
 
   const [loadFieldsAndRows] = useQueryFieldsAndRowsLazyQuery({
     fetchPolicy: 'no-cache',

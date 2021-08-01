@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import Scrollbars from 'components/Common/Scrollbars';
 import { positionValues } from 'react-custom-scrollbars';
-import { Field } from 'generated/graphql';
+import { Field } from 'graphql-react-provider';
 import Scroll from 'react-custom-scrollbars';
 
 const cellClass = 'h-10 border-b border-l border-dark-4 max-w-sm truncate';

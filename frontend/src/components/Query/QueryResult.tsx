@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field, QueryResult as QueryResultType } from 'generated/graphql';
+import { Field, QueryResult as QueryResultType } from 'graphql-react-provider';
 import VirtualTable, { classes } from 'components/Common/VirtualTable';
 
 export default function QueryResult({

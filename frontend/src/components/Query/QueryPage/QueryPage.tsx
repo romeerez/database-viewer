@@ -3,10 +3,7 @@ import Editor, { useEditorRef } from 'components/Editor/Editor';
 import Header from './Header';
 import SelectDatabase from './SelectDatabase';
 import { toast } from 'react-toastify';
-import {
-  QueryFieldsAndRowsQuery,
-  useQueryFieldsAndRowsLazyQuery,
-} from 'generated/graphql';
+import { QueryFieldsAndRowsQuery, useAPIContext } from 'graphql-react-provider';
 import QueryResult from 'components/Query/QueryResult';
 import cn from 'classnames';
 import { updateQuery, useQueries } from 'components/Query/query.service';
@@ -66,6 +63,8 @@ const QueryPageInner = React.memo(
     data: QueryFieldsAndRowsQuery | undefined;
     setData(data: QueryFieldsAndRowsQuery | undefined): void;
   }) => {
+    const { useQueryFieldsAndRowsLazyQuery } = useAPIContext();
+
     const [performQuery] = useQueryFieldsAndRowsLazyQuery({
       fetchPolicy: 'no-cache',
       onCompleted(data) {

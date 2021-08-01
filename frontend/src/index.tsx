@@ -1,25 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { ApolloProvider } from '@apollo/client';
-import { client } from 'lib/apolloClient';
 import Theme from 'components/Theme/Theme';
 import Layout from 'components/Layout';
-import { Router } from 'react-router-dom';
+import { Router as ReactRouter } from 'react-router-dom';
 import history from 'lib/history';
 import { ToastContainer, Flip } from 'react-toastify';
+import Router from 'components/Router';
+import { APIProvider } from 'graphql-react-provider';
 import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router history={history}>
-      <ApolloProvider client={client}>
+    <ReactRouter history={history}>
+      <APIProvider uri={import.meta.env.VITE_GRAPHQL_URL as string}>
         <Theme>
-          <Layout />
+          <Layout>
+            <Router />
+          </Layout>
         </Theme>
         <ToastContainer position="bottom-right" transition={Flip} newestOnTop />
-      </ApolloProvider>
-    </Router>
+      </APIProvider>
+    </ReactRouter>
   </React.StrictMode>,
   document.getElementById('root'),
 );

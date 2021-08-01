@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { X } from 'icons';
+import React from 'react';
 import * as yup from 'yup';
 import { useForm } from 'lib/useForm';
 import SelectGroup from 'components/Common/Form/SelectGroup';
@@ -9,11 +8,7 @@ import {
   useConnectURLAndOtherFields,
   useSubmit,
 } from 'components/DataSource/Form/dataSourceForm.service';
-import { toast } from 'react-toastify';
-import { useCheckConnectionMutation } from 'generated/graphql';
 import Button from 'components/Common/Button/Button';
-import { dataSourcesStore } from 'components/DataSource/dataSource.store';
-import { useObserver } from 'mobx-react-lite';
 import { DataSourceInLocalStore } from 'components/DataSource/types';
 
 const drivers = [

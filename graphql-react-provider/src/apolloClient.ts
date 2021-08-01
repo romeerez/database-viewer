@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
-export const client = new ApolloClient({
-  uri: import.meta.env.VITE_GRAPHQL_URL as string,
+export const createClient = (uri: string) => new ApolloClient({
+  uri,
   cache: new InMemoryCache({
     typePolicies: {
       DataSource: {
@@ -10,6 +10,3 @@ export const client = new ApolloClient({
     },
   }),
 });
-
-// eslint-disable-next-line
-(window as any).apolloClient = client

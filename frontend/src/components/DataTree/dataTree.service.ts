@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { GetDataTreeQuery, useGetDataTreeLazyQuery } from 'generated/graphql';
+import { GetDataTreeQuery, useAPIContext } from 'graphql-react-provider';
 import { DataSourceInLocalStoreWithDriver } from 'components/DataSource/types';
 import { useObserver } from 'mobx-react-lite';
 import {
@@ -159,6 +159,8 @@ export const useDataTree = () => {
   const dataSourcesLocal = useObserver(() => dataSourcesStore.dataSources);
 
   const [tree, setTree] = useState<GetDataTreeQuery>();
+
+  const { useGetDataTreeLazyQuery } = useAPIContext();
 
   const [load] = useGetDataTreeLazyQuery({
     onCompleted(data) {

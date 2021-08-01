@@ -1,10 +1,6 @@
 import { Form } from 'lib/useForm';
-import React, { useState } from 'react';
+import React from 'react';
 import { DataSourceInLocalStore } from 'components/DataSource/types';
-import { useCheckConnectionMutation } from 'generated/graphql';
-import { dataSourcesStore } from 'components/DataSource/dataSource.store';
-import { useObserver } from 'mobx-react-lite';
-import { toast } from 'react-toastify';
 import { useSaveDataSource } from 'components/DataSource/dataSource.service';
 
 const urlAffectiveFields = ['host', 'port', 'user', 'password', 'database'];
