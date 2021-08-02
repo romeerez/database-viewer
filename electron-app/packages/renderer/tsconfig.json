@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "dom", "dom.iterable"],
+    "jsx": "react-jsx"
+  },
+
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "../preload/types/electron-api.d.ts"
+  ]
+}

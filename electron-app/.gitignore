@@ -1,0 +1,8 @@
+node_modules
+.DS_Store
+dist
+*.local
+thumbs.db
+types/env.d.ts
+
+.eslintcache

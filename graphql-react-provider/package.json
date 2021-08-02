@@ -2,7 +2,6 @@
   "name": "graphql-react-provider",
   "version": "1.0.0",
   "main": "src/index.tsx",
-  "types": "build/index.d.ts",
   "license": "MIT",
   "dependencies": {
     "types": "link:../types"
