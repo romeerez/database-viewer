@@ -7,7 +7,7 @@ export const getConstraints = async (
   schemaNames: string[],
   tableNames: string[],
 ): Promise<Constraint[]> => {
-  const { rows } = await db.query<Constraint>(
+  return await db.query<Constraint[]>(
     `
         SELECT tc.table_schema    as     "schemaName",
                tc.table_name      as     "tableName",
@@ -24,6 +24,4 @@ export const getConstraints = async (
         GROUP BY "schemaName", "tableName", "name", "type"
     `,
   );
-
-  return rows;
 };

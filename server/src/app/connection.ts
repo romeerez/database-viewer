@@ -1,13 +1,6 @@
 import { MercuriusContext } from 'mercurius';
 import { ConnectionPool, DB } from 'types';
-import { Client } from 'pg';
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import Result from 'pg/lib/result';
-
-// eslint-disable-next-line
-Result.prototype._parseRowAsArray = (row: any) => row
+import { Adapter } from 'pg-adapter';
 
 type Connection = { db: DB; connect?: Promise<void> };
 
@@ -15,6 +8,9 @@ const globalPool: Record<
   string,
   { connection: Connection; counter: number; closingPromise?: Promise<void> }
 > = {};
+
+const jsonParser = (value: Buffer, pos: number, size: number) =>
+  JSON.parse(value.slice(pos, pos + size).toString());
 
 export const getConnection = async (ctx: MercuriusContext, url: string) => {
   if (!ctx.connectionPool[url]) {
@@ -24,8 +20,10 @@ export const getConnection = async (ctx: MercuriusContext, url: string) => {
     if (globalPool[url]) {
       globalPool[url].counter++;
     } else {
-      const db = new Client({
-        connectionString: url,
+      const db = Adapter.fromURL(url);
+      Object.assign(db.decodeTypes, {
+        114: jsonParser, // for json
+        3802: jsonParser, // for jsonb
       });
 
       const connection: Connection = { db };
@@ -63,7 +61,7 @@ export const stopRequestConnections = async (
       if (connection.connect) await connection.connect;
       globalPool[url].counter--;
       if (globalPool[url].counter === 0) {
-        globalPool[url].closingPromise = connection.db.end();
+        globalPool[url].closingPromise = connection.db.close();
         await globalPool[url].closingPromise;
         delete globalPool[url];
       }

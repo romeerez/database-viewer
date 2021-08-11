@@ -17,7 +17,7 @@ export const getDatabases = async (
     ];
   }
 
-  const { rows } = await db.query<{ name: string }>(
+  const rows = await db.query<{ name: string }[]>(
     'SELECT datname as name FROM pg_database WHERE NOT datistemplate',
   );
 

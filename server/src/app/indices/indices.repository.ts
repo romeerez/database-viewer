@@ -7,7 +7,7 @@ export const getIndices = async (
   schemaNames: string[],
   tableNames: string[],
 ): Promise<Index[]> => {
-  const { rows } = await db.query<Index>(
+  return await db.query<Index[]>(
     `
     SELECT
       nspname "schemaName",
@@ -26,6 +26,4 @@ export const getIndices = async (
     GROUP BY "schemaName", "tableName", "name", "isUnique", "isPrimary"
   `,
   );
-
-  return rows;
 };

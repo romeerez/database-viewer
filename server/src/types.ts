@@ -1,7 +1,7 @@
 import { MercuriusLoaders } from 'mercurius';
-import { Client } from 'pg';
+import { Adapter } from 'pg-adapter';
 
-export type DB = Client;
+export type DB = Adapter;
 
 export type ConnectionPool = Record<
   string,

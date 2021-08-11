@@ -7,7 +7,7 @@ export const getColumns = async (
   schemaNames: string[],
   tableNames: string[],
 ): Promise<Column[]> => {
-  const { rows } = await db.query<Column>(
+  return await db.query<Column[]>(
     `
         SELECT table_schema         "schemaName",
                table_name           "tableName",
@@ -20,6 +20,4 @@ export const getColumns = async (
           AND table_name IN (${tableNames.map(quote).join(', ')})
     `,
   );
-
-  return rows;
 };

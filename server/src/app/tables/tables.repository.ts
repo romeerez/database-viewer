@@ -7,7 +7,7 @@ export const getTables = async (
   schemaNames: string[],
   url: string,
 ): Promise<Pick<Table, 'url' | 'schemaName' | 'name'>[]> => {
-  const { rows } = await db.query<{ schemaName: string; name: string }>(
+  const rows = await db.query<{ schemaName: string; name: string }[]>(
     `
     SELECT
       table_schema "schemaName",

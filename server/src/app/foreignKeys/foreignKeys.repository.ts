@@ -7,7 +7,7 @@ export const getForeignKeys = async (
   schemaNames: string[],
   tableNames: string[],
 ): Promise<ForeignKey[]> => {
-  const { rows } = await db.query<ForeignKey>(
+  return await db.query<ForeignKey[]>(
     `
         SELECT tc.table_schema           as "schemaName",
                tc.table_name             as "tableName",
@@ -31,6 +31,4 @@ export const getForeignKeys = async (
         GROUP BY "schemaName", "tableName", "name", "foreignTableSchemaName", "foreignTableName"
     `,
   );
-
-  return rows;
 };
