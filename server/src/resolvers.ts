@@ -1,20 +1,17 @@
 import { IResolvers } from 'mercurius';
-import { checkConnection, getConnection } from 'app/connection';
 import { GraphQLEnumType } from 'graphql';
-import { executeQuery } from 'app/query/query.repository';
+import * as dataLoader from 'data-loader';
 
 export const resolvers: IResolvers = {
   Query: {
-    dataSources: async (root, { urls }) => urls.map((url: string) => ({ url })),
-    executeQuery: async (root, { url, query }, ctx) => {
-      const db = await getConnection(ctx, url);
-      return await executeQuery(db, query);
+    dataSources: async (root, params) => dataLoader.getDataSources(params),
+    executeQuery: async (root, params, ctx) => {
+      return await dataLoader.executeQuery(ctx.getDB, params);
     },
   },
   Mutation: {
-    async checkConnection(root, { url }, ctx) {
-      const db = await getConnection(ctx, url);
-      return await checkConnection(db);
+    async checkConnection(root, params, ctx) {
+      return await dataLoader.checkConnection(ctx.getDB, params);
     },
   },
   ConstraintType: new GraphQLEnumType({
@@ -25,5 +22,5 @@ export const resolvers: IResolvers = {
       CHECK: { value: 'CHECK' },
       EXCLUDE: { value: 'EXCLUDE' },
     },
-  }) as any,
+  }) as never,
 };

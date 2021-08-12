@@ -6,8 +6,9 @@ import { resolvers } from './resolvers';
 import { loaders } from './loaders';
 import { loadSchemaFiles } from 'mercurius-codegen';
 import fastify, { FastifyRequest } from 'fastify';
-import { stopRequestConnections } from 'app/connection';
+import { getConnection, stopRequestConnections } from './connection';
 import cors from 'fastify-cors';
+import { DB } from 'data-loader';
 
 const app = fastify({
   logger: {
@@ -19,8 +20,8 @@ app.register(cors, {
   origin: true,
 });
 
-export const buildContext = (req: FastifyRequest) => ({
-  connectionPool: req.connectionPool,
+export const buildContext = ({ connectionPool }: FastifyRequest) => ({
+  getDB: (url: string): Promise<DB> => getConnection(connectionPool, url),
 });
 
 const { schema } = loadSchemaFiles('src/*.gql', {

@@ -7,6 +7,7 @@
     "start:prod": "NODE_ENV=production NODE_PATH=build/src node ./dist/src/server"
   },
   "dependencies": {
+    "data-loader": "link:../data-loader",
     "@types/node": "^15.0.1",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",

@@ -5,7 +5,6 @@
     "lib": ["ES2019"],
     "outDir": "build",
     "strict": true,
-    "baseUrl": "./src",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

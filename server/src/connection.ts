@@ -1,6 +1,6 @@
-import { MercuriusContext } from 'mercurius';
-import { ConnectionPool, DB } from 'types';
+import { ConnectionPool } from './types';
 import { Adapter } from 'pg-adapter';
+import { DB } from 'data-loader';
 
 type Connection = { db: DB; connect?: Promise<void> };
 
@@ -12,8 +12,11 @@ const globalPool: Record<
 const jsonParser = (value: Buffer, pos: number, size: number) =>
   JSON.parse(value.slice(pos, pos + size).toString());
 
-export const getConnection = async (ctx: MercuriusContext, url: string) => {
-  if (!ctx.connectionPool[url]) {
+export const getConnection = async (
+  connectionPool: ConnectionPool,
+  url: string,
+): Promise<DB> => {
+  if (!connectionPool[url]) {
     const closingPromise = globalPool[url]?.closingPromise;
     if (closingPromise) await closingPromise;
 
@@ -40,10 +43,10 @@ export const getConnection = async (ctx: MercuriusContext, url: string) => {
       };
     }
 
-    ctx.connectionPool[url] = globalPool[url].connection;
+    connectionPool[url] = globalPool[url].connection;
   }
 
-  const connection = ctx.connectionPool[url];
+  const connection = connectionPool[url];
   if (connection.connect) await connection.connect;
   return connection.db;
 };

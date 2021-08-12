@@ -1,7 +1,5 @@
 import { MercuriusLoaders } from 'mercurius';
-import { Adapter } from 'pg-adapter';
-
-export type DB = Adapter;
+import { GetDB, DB } from 'data-loader';
 
 export type ConnectionPool = Record<
   string,
@@ -10,15 +8,13 @@ export type ConnectionPool = Record<
 
 declare module 'fastify' {
   export interface FastifyRequest {
-    // eslint-disable-next-line
-    connectionPool: ConnectionPool
+    connectionPool: ConnectionPool;
   }
 }
 
 declare module 'mercurius' {
   export interface MercuriusContext {
-    // eslint-disable-next-line
-    connectionPool: ConnectionPool
+    getDB: GetDB;
   }
 }
 
