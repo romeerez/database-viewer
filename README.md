@@ -16,6 +16,9 @@ A tool to work with databases, currently only PostgreSQL supported and currently
 
 Before begin, install Postgres
 
+[Here is a link](https://www.postgresqltutorial.com/postgresql-sample-database/)
+to a sample database with instructions
+
 To launch in browser:
 ```shell
 cd web-graphql-frontend
