@@ -51,7 +51,7 @@ export default function Modal({
             {closeButton && (
               <button
                 type="button"
-                className="flex absolute top-4 right-4"
+                className="flex absolute top-4 right-4 z-50"
                 onClick={onClose}
               >
                 <X size={24} />
