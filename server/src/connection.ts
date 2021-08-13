@@ -9,6 +9,9 @@ const globalPool: Record<
   { connection: Connection; counter: number; closingPromise?: Promise<void> }
 > = {};
 
+const toInt = (value: Buffer, pos: number, size: number) =>
+  parseInt(value.toString(undefined, pos, pos + size));
+
 const jsonParser = (value: Buffer, pos: number, size: number) =>
   JSON.parse(value.slice(pos, pos + size).toString());
 
@@ -25,6 +28,7 @@ export const getConnection = async (
     } else {
       const db = Adapter.fromURL(url);
       Object.assign(db.decodeTypes, {
+        26: toInt,
         114: jsonParser, // for json
         3802: jsonParser, // for jsonb
       });

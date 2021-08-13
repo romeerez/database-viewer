@@ -1,11 +1,18 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
+import { ElectronApi } from '../types/electron-api';
 
 const apiKey = 'electron';
 /**
  * @see https://github.com/electron/electron/issues/21437#issuecomment-573522360
  */
-const api: ElectronApi = {
+const electronApi: ElectronApi = {
   versions: process.versions,
+  api: {
+    CheckConnection: (arg) => ipcRenderer.invoke('CheckConnection', arg),
+    GetDataTreeQuery: (arg) => ipcRenderer.invoke('GetDataTreeQuery', arg),
+    QueryFieldsAndRows: (arg) => ipcRenderer.invoke('QueryFieldsAndRows', arg),
+    QueryRows: (arg) => ipcRenderer.invoke('QueryRows', arg),
+  },
 };
 
 if (import.meta.env.MODE !== 'test') {
@@ -15,7 +22,7 @@ if (import.meta.env.MODE !== 'test') {
    *
    * @see https://www.electronjs.org/docs/api/context-bridge
    */
-  contextBridge.exposeInMainWorld(apiKey, api);
+  contextBridge.exposeInMainWorld(apiKey, electronApi);
 } else {
   /**
    * Recursively Object.freeze() on objects and functions
@@ -40,10 +47,9 @@ if (import.meta.env.MODE !== 'test') {
     return Object.freeze(obj);
   };
 
-  deepFreeze(api);
+  deepFreeze(electronApi);
 
-  window[apiKey] = api;
-
-  // Need for Spectron tests
-  window.electronRequire = require;
+  Object.assign(window, {
+    [apiKey]: electronApi,
+  });
 }

@@ -135,7 +135,10 @@ const loadTableItems =
       tableNames: string[],
     ) => Promise<T[]>,
   ) =>
-  async (getDB: GetDB, tables: Table[]) => {
+  async (
+    getDB: GetDB,
+    tables: { url: string; name: string; schemaName: string }[],
+  ) => {
     if (tables.length === 0) return [];
 
     const map = new Map<

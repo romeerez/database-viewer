@@ -6,8 +6,8 @@
   },
 
   "include": [
+    "../preload/types/electron-api.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "../preload/types/electron-api.d.ts"
   ]
 }

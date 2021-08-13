@@ -23,11 +23,6 @@ loadAndSetEnv(process.env.MODE, process.cwd());
 export default defineConfig({
   root: PACKAGE_ROOT,
   plugins: [reactRefresh(), tsconfigPaths(), reactJsx()],
-  resolve: {
-    alias: {
-      frontend: resolve(__dirname, '..', 'frontend', 'src'),
-    },
-  },
   base: '',
   server: {
     fsServe: {

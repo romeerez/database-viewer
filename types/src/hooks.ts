@@ -9,14 +9,14 @@ import {
   QueryRowsQueryVariables,
 } from './data';
 
-type FetchPolicy = 'no-cache';
+export type FetchPolicy = 'no-cache';
 
 type Mutation<Variables, Result> = () => [
   (arg: { variables: Variables }) => Promise<MutationResult<Result>>,
   MutationResult<Result>,
 ];
 
-type MutationResult<Result> = { data?: Result | null };
+export type MutationResult<Result> = { data?: Result | null };
 
 type LazyQuery<Variables, Result> = (arg: {
   fetchPolicy?: FetchPolicy;
