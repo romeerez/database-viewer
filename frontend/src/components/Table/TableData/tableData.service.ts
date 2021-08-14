@@ -18,7 +18,7 @@ export const useDataService = () => {
       getQueryParams: () => store.queryParams,
       getSourceUrl: () => store.sourceUrl,
       getDefaults: () => store.defaults,
-      getPrimaryColumnNames: () => store.primaryColumnNames,
+      getPrimaryColumns: () => store.primaryColumns,
       loadFieldsAndRows() {
         const { sourceUrl, params } = store;
         if (!sourceUrl) return;

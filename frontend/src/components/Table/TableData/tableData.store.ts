@@ -60,10 +60,12 @@ export const useDataStore = () => {
             toast(error.message, { type: 'error' });
           }
         },
-        get primaryColumnNames(): string[] | undefined {
-          return store.fields
-            ?.filter((field) => field.isPrimary)
-            .map((field) => field.name);
+        get primaryColumns(): { name: string; index: number }[] {
+          return (
+            store.fields
+              ?.filter((field) => field.isPrimary)
+              .map((field, index) => ({ name: field.name, index: index })) || []
+          );
         },
         get sourceUrl() {
           const { sourceName } = store.params;

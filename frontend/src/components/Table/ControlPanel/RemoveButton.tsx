@@ -9,11 +9,12 @@ import { useKey } from 'react-use';
 export default observer(function RemoveRowsButton() {
   const { selectionService } = useTablePageContext();
   const disabled = !selectionService.hasSelection();
+  const removeRows = () => selectionService.removeRows();
 
   useKey(
     'y',
     (e) => {
-      if (e.ctrlKey) selectionService.removeRows();
+      if (e.ctrlKey) removeRows();
     },
     {},
   );
@@ -26,7 +27,10 @@ export default observer(function RemoveRowsButton() {
           disabled && 'opacity-50',
         )}
         disabled={disabled}
-        onClick={selectionService.removeRows}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          removeRows();
+        }}
       >
         <Minus size={20} />
       </button>
