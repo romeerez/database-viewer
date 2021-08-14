@@ -24,9 +24,7 @@ export const useFloatingInputService = ({
     () => ({
       setCell(cell: Cell) {
         store.setCell(cell);
-        store.setValue(
-          dataChangesService.getValue(cell.row, cell.column) || '',
-        );
+        store.setValue(dataChangesService.getValue(cell.row, cell.column));
         service.cancelBlur();
         service.showInputs();
 
@@ -40,7 +38,7 @@ export const useFloatingInputService = ({
         }
       },
       setPreventBlur: store.setPreventBlur,
-      getIsNullAllowed: () => store.isEmptyAllowed,
+      getIsRaw: () => store.isRaw,
       getValue: () => store.value,
       getShowInputs: () => store.showInputs,
       getCell: () => store.cell,
@@ -54,18 +52,17 @@ export const useFloatingInputService = ({
         const fields = tableDataService.getFields();
         const field = fields && fields[cell.column];
 
-        return store.isEmptyAllowed
-          ? 'empty'
-          : defaultValue || (!field?.isNullable ? 'required' : 'null');
+        return store.value === null || store.isRaw
+          ? defaultValue || (!field?.isNullable ? 'required' : 'null')
+          : 'empty';
       },
-      setValue(valueString: string) {
-        store.setValue(valueString);
-        const value = valueString || (store.isEmptyAllowed ? '' : null);
-        selectionService.setValue(value);
+      setValue(value: string) {
+        store.setValue(value);
+        selectionService.setValue(value, store.isRaw);
       },
-      setIsEmptyAllowed(isEmptyAllowed: boolean) {
-        store.setIsEmptyAllowed(isEmptyAllowed);
-        service.setValue(store.value);
+      setIsRaw(isRaw: boolean) {
+        store.setIsRaw(isRaw);
+        selectionService.setValue(store.value, isRaw);
       },
       initBlur() {
         store.setBlurTimeout(setTimeout(service.onBlur, 50));

@@ -17,18 +17,18 @@ export type Cell = {
 export const useFloatingInputStore = () => {
   const store = useLocalObservable(() => ({
     cell: undefined as Cell | undefined,
-    value: '',
-    isEmptyAllowed: true,
+    value: null as string | null,
+    isRaw: false,
     preventBlur: false,
     blurTimeout: undefined as BlurTimeout,
     showInputs: false,
     setCell(cell: Cell) {
       store.cell = cell;
     },
-    setIsEmptyAllowed(value: boolean) {
-      store.isEmptyAllowed = value;
+    setIsRaw(value: boolean) {
+      store.isRaw = value;
     },
-    setValue(value: string) {
+    setValue(value: string | null) {
       store.value = value;
     },
     setPreventBlur(value: boolean) {

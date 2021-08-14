@@ -51,7 +51,7 @@ export default observer(function TextArea() {
       onChange={onChange}
       onBlur={onBlur}
       placeholder={placeholder}
-      value={value}
+      value={value || ''}
     />
   );
 });

@@ -12,17 +12,19 @@ export const usePreviewChangesService = () => {
   const primaryColumns = tableDataService.getPrimaryColumns();
   const { schemaName, tableName } = tableDataService.getParams();
   const fields = tableDataService.getFields();
+  const defaults = tableDataService.getDefaults();
 
   return {
     editorRef,
     getValue() {
-      if (!fields) return '';
+      if (!fields || !defaults) return '';
 
       return buildTransaction({
         schemaName,
         tableName,
         primaryColumns,
         fields,
+        defaults,
         removedRows,
         rowChanges,
         newRows,

@@ -37,6 +37,7 @@ export const buildTransaction = ({
   tableName,
   primaryColumns,
   fields,
+  defaults,
   removedRows,
   rowChanges,
   newRows,
@@ -45,12 +46,18 @@ export const buildTransaction = ({
   tableName: string;
   primaryColumns: { name: string; index: number }[];
   fields: { name: string }[];
+  defaults: (string | undefined)[];
   removedRows: (string | null)[][];
   rowChanges: {
     row: (string | null)[];
-    changes: { columnName: { name: string }; value: string | null }[];
+    changes: {
+      columnName: string;
+      columnIndex: number;
+      isRaw: boolean;
+      value: string | null;
+    }[];
   }[];
-  newRows: (string | null)[][];
+  newRows: { value: string | null; isRaw: boolean }[][];
 }) => {
   const result = ['BEGIN TRANSACTION;'];
 
@@ -65,11 +72,17 @@ export const buildTransaction = ({
 
     rowChanges.forEach(({ row, changes }) =>
       result.push(
-        `UPDATE ${table} SET ${changes
+        `UPDATE ${table}\nSET ${changes
           .map(
-            ({ columnName, value }) => `"${columnName.name}" = ${quote(value)}`,
+            ({ columnName, columnIndex, value, isRaw }) =>
+              `"${columnName}" = ${valueToSql(
+                isRaw,
+                defaults,
+                columnIndex,
+                value,
+              )}`,
           )
-          .join(', ')} WHERE ${getWhere(primaryColumns, row)};`,
+          .join(', ')}\nWHERE ${getWhere(primaryColumns, row)};`,
       ),
     );
   }
@@ -77,9 +90,11 @@ export const buildTransaction = ({
   if (fields) {
     newRows.forEach((row) =>
       result.push(
-        `INSERT INTO "${tableName}" (${fields.map(
-          (field) => field.name,
-        )}) VALUES (${row.map((value) => quote(value))});`,
+        `INSERT INTO ${table} (${fields
+          .map((field) => field.name)
+          .join(', ')})\nVALUES (${row
+          .map(({ value, isRaw }, i) => valueToSql(isRaw, defaults, i, value))
+          .join(', ')});`,
       ),
     );
   }
@@ -87,6 +102,19 @@ export const buildTransaction = ({
   result.push('COMMIT TRANSACTION;');
 
   return result.join('\n\n');
+};
+
+const valueToSql = (
+  isRaw: boolean,
+  defaults: (string | undefined)[],
+  columnIndex: number,
+  value: null | string,
+) => {
+  if (value === null) {
+    return defaults[columnIndex] ? 'DEFAULT' : 'NULL';
+  } else {
+    return isRaw ? value : quote(value);
+  }
 };
 
 const getWhere = (

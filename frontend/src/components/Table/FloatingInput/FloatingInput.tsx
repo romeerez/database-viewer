@@ -1,8 +1,8 @@
-import React, { ReactNode, useRef } from 'react';
-import { useTablePageContext } from '../../../components/Table/TablePage.context';
+import React, { ReactNode } from 'react';
+import { useTablePageContext } from '../TablePage.context';
 import { observer } from 'mobx-react-lite';
-import ToggleEmpty from '../../../components/Table/FloatingInput/ToggleEmpty';
-import TextArea from '../../../components/Table/FloatingInput/TextArea';
+import ToggleEmpty from './ToggleRaw';
+import TextArea from './TextArea';
 
 export default observer(function FloatingInput({
   children,

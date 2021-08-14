@@ -14,6 +14,7 @@ export const useDataChangesService = ({
   return useMemo(
     () => ({
       getValue: store.getValue,
+      getIsRaw: store.getIsRaw,
       setValue: store.setValue,
       removeRows: store.removeRows,
       getRemovedRows: store.getRemovedRows,

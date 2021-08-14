@@ -1,7 +1,5 @@
 import { useLocalObservable } from 'mobx-react-lite';
-import { TableDataService } from '../../../components/Table/TableData/tableData.service';
-
-export type DataChangesStore = ReturnType<typeof useDataChangesStore>;
+import { TableDataService } from '../TableData/tableData.service';
 
 export const useDataChangesStore = ({
   tableDataService,
@@ -12,6 +10,7 @@ export const useDataChangesStore = ({
     removedRows: {} as Record<string, true>,
     changes: {} as Record<string, Record<string, string | null>>,
     newRows: {} as Record<string, true>,
+    raw: {} as Record<string, Record<string, true>>,
     getRemovedRows() {
       return (
         tableDataService.getRows()?.filter((_, i) => store.removedRows[i]) || []
@@ -24,18 +23,26 @@ export const useDataChangesStore = ({
 
       return Object.keys(store.changes).map((rowIndex) => ({
         row: rows[parseInt(rowIndex)],
-        changes: Object.keys(store.changes[rowIndex]).map((columnIndex) => ({
-          columnName: fields[parseInt(columnIndex)],
-          value: store.changes[rowIndex][columnIndex],
-        })),
+        changes: Object.keys(store.changes[rowIndex]).map((columnIndex) => {
+          const index = parseInt(columnIndex);
+          return {
+            columnName: fields[index].name,
+            columnIndex: index,
+            isRaw: store.raw[rowIndex]?.[columnIndex] || false,
+            value: store.changes[rowIndex][columnIndex],
+          };
+        }),
       }));
     },
     getNewRows() {
       const rows = tableDataService.getRows();
       if (!rows) return [];
 
-      return Object.keys(store.newRows).map(
-        (rowIndex) => rows[parseInt(rowIndex)],
+      return Object.keys(store.newRows).map((rowIndex) =>
+        rows[parseInt(rowIndex)].map((value, columnIndex) => ({
+          value,
+          isRaw: store.raw[rowIndex]?.[columnIndex] || false,
+        })),
       );
     },
     setNewRow(index: number) {
@@ -58,14 +65,22 @@ export const useDataChangesStore = ({
         }
       });
     },
-    getValue(rowIndex: number, columnIndex: number) {
+    getValue(rowIndex: number, columnIndex: number): string | null {
       const change = store.changes[rowIndex];
       if (change && columnIndex in change) {
         return change[columnIndex];
       }
-      return tableDataService.getRows()?.[rowIndex]?.[columnIndex];
+      return tableDataService.getRows()?.[rowIndex]?.[columnIndex] ?? null;
     },
-    setValue(rowIndex: number, columnIndex: number, value: string | null) {
+    getIsRaw(rowIndex: number, columnIndex: number) {
+      return store.raw[rowIndex]?.[columnIndex] || false;
+    },
+    setValue(
+      rowIndex: number,
+      columnIndex: number,
+      value: string | null,
+      raw: boolean,
+    ) {
       const row = tableDataService.getRows()?.[rowIndex];
       if (!row) return;
 
@@ -85,6 +100,19 @@ export const useDataChangesStore = ({
           change[columnIndex] = value;
         } else {
           store.changes[rowIndex] = { [columnIndex]: value };
+        }
+      }
+
+      store.setRaw(rowIndex, columnIndex, raw);
+    },
+    setRaw(rowIndex: number, columnIndex: number, raw: boolean) {
+      if (raw) {
+        if (!store.raw[rowIndex]) store.raw[rowIndex] = {};
+        store.raw[rowIndex][columnIndex] = true;
+      } else if (store.raw[rowIndex]?.[columnIndex]) {
+        delete store.raw[rowIndex]?.[columnIndex];
+        if (Object.keys(store.raw[rowIndex]).length === 0) {
+          delete store.raw[rowIndex];
         }
       }
     },

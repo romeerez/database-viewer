@@ -40,13 +40,14 @@ export const useSelectionStore = ({
     selectFrom: undefined as undefined | Cell,
     selectTo: undefined as undefined | Cell,
     focusedCell: undefined as undefined | Cell,
-    setValue(value: string | null) {
+    setValue(value: string | null, raw: boolean) {
       for (const row in store.selection) {
         for (const column in store.selection[row]) {
           dataChangesService.setValue(
             row as unknown as number,
             column as unknown as number,
             value,
+            raw,
           );
         }
       }

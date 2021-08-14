@@ -1,8 +1,8 @@
 import React from 'react';
 import cn from 'classnames';
 import { observer } from 'mobx-react-lite';
-import { CellType } from '../../../components/Table/Table/Table.types';
-import { useTablePageContext } from '../../../components/Table/TablePage.context';
+import { CellType } from './Table.types';
+import { useTablePageContext } from '../TablePage.context';
 
 export default observer(function Row({
   rowIndex,
@@ -22,6 +22,8 @@ export default observer(function Row({
   const { dataChangesService, selectionService } = useTablePageContext();
 
   const value = dataChangesService.getValue(rowIndex, columnIndex);
+  const isRaw = dataChangesService.getIsRaw(rowIndex, columnIndex);
+
   const isChanged =
     isRowChanged && dataChangesService.isValueChanged(rowIndex, columnIndex);
 
@@ -54,7 +56,7 @@ export default observer(function Row({
           isSelected && 'bg-lighter-4',
         )}
       >
-        {value === null
+        {value === null || (value === '' && isRaw)
           ? defaultValue || 'null'
           : value?.length === 0
           ? 'empty'

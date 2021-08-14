@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "main": "src/index.tsx",
   "private": true,
+  "scripts": {
+    "check-ts": "tsc --noEmit"
+  },
   "dependencies": {
     "@hookform/error-message": "^2.0.0",
     "@styled-icons/bootstrap": "^10.33.0",
