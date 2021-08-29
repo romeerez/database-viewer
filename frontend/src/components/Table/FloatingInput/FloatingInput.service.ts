@@ -1,19 +1,19 @@
 import { useMemo } from 'react';
-import {
-  Cell,
-  useFloatingInputStore,
-} from '../../../components/Table/FloatingInput/FloatingInput.store';
-import { TableDataService } from '../../../components/Table/TableData/tableData.service';
-import { SelectionService } from '../../../components/Table/Selection/selection.service';
-import { DataChangesService } from '../../../components/Table/DataChanges/dataChanges.service';
+import { useFloatingInputStore } from './FloatingInput.store';
+import { TableDataService } from '../TableData/tableData.service';
+import { SelectionService } from '../Selection/selection.service';
+import { DataChangesService } from '../DataChanges/dataChanges.service';
+import { TableService } from '../Table/Table.service';
 
 export type FloatingInputService = ReturnType<typeof useFloatingInputService>;
 
 export const useFloatingInputService = ({
+  tableService,
   tableDataService,
   dataChangesService,
   selectionService,
 }: {
+  tableService: TableService;
   tableDataService: TableDataService;
   dataChangesService: DataChangesService;
   selectionService: SelectionService;
@@ -22,26 +22,48 @@ export const useFloatingInputService = ({
 
   const service = useMemo(
     () => ({
-      setCell(cell: Cell) {
-        store.setCell(cell);
-        store.setValue(dataChangesService.getValue(cell.row, cell.column));
-        service.cancelBlur();
-        service.showInputs();
-
-        const focused = selectionService.getFocusedCell();
-        const focusedRow = focused && 'rowIndex' in focused && focused.rowIndex;
-        const focusedColumn =
-          focused && 'columnIndex' in focused && focused.columnIndex;
-
-        if (focusedRow !== cell.row || focusedColumn !== cell.column) {
-          selectionService.selectAndFocusCell(cell.row, cell.column);
-        }
-      },
-      setPreventBlur: store.setPreventBlur,
       getIsRaw: () => store.isRaw,
       getValue: () => store.value,
-      getShowInputs: () => store.showInputs,
       getCell: () => store.cell,
+      isSingleCell: () => {
+        const columnsCount = tableDataService.getFields()?.length;
+        const rowsCount = tableDataService.getRows()?.length;
+        return (
+          !columnsCount || !rowsCount || (columnsCount === 1 && rowsCount === 1)
+        );
+      },
+      focus() {
+        const focusedCell = selectionService.getFocusedDataCell();
+        if (!focusedCell) return;
+
+        const { row, column } = focusedCell;
+
+        service.setCell({ row, column });
+      },
+      setCell(cell?: { row: number; column: number }) {
+        if (!cell) {
+          store.setCell();
+          return;
+        }
+
+        const td = tableService.getCell(cell.row, cell.column);
+        if (!td) {
+          store.setCell();
+          return;
+        }
+
+        store.setCell({
+          row: cell.row,
+          column: cell.column,
+          offsetTop: td.offsetTop,
+          offsetLeft: td.offsetLeft,
+          minWidth: td.offsetWidth,
+          minHeight: td.offsetHeight,
+          className: (td.dataset as { bgClass: string }).bgClass,
+        });
+
+        store.setValue(dataChangesService.getValue(cell.row, cell.column));
+      },
       getPlaceholder() {
         const { cell } = store;
         if (!cell) return;
@@ -64,27 +86,40 @@ export const useFloatingInputService = ({
         store.setIsRaw(isRaw);
         selectionService.setValue(store.value, isRaw);
       },
-      initBlur() {
-        store.setBlurTimeout(setTimeout(service.onBlur, 50));
+      focusPrev() {
+        service.focusOther('prev');
       },
-      cancelBlur() {
-        const timeout = store.blurTimeout;
-        if (timeout) {
-          store.setBlurTimeout(undefined);
-          clearTimeout(timeout);
-        }
+      focusNext() {
+        service.focusOther('next');
       },
-      onBlur() {
-        if (store.preventBlur) return;
+      focusOther(type: 'prev' | 'next') {
+        const { cell } = store;
+        const columnsCount = tableDataService.getFields()?.length;
+        const rowsCount = tableDataService.getRows()?.length;
 
-        selectionService.clearSelection();
-        store.setShowInputs(false);
-      },
-      showInputs() {
-        store.setShowInputs(true);
+        if (!cell || !columnsCount || !rowsCount) return;
+        let { row, column } = cell;
+
+        column += type === 'prev' ? -1 : 1;
+        if (column < 0 || column >= columnsCount) {
+          column = type === 'prev' ? columnsCount - 1 : 0;
+          row += type === 'prev' ? -1 : 1;
+          if (row < 0 || row >= rowsCount) {
+            row = type === 'prev' ? rowsCount - 1 : 0;
+          }
+        }
+
+        selectionService.selectAndFocusCell(row, column);
+        service.focus();
       },
     }),
-    [store, tableDataService],
+    [
+      store,
+      tableService,
+      tableDataService,
+      dataChangesService,
+      selectionService,
+    ],
   );
 
   return service;

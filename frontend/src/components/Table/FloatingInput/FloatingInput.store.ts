@@ -10,8 +10,6 @@ export type Cell = {
   minWidth: number;
   minHeight: number;
   className: string;
-  prevElement?: HTMLElement;
-  nextElement?: HTMLElement;
 };
 
 export const useFloatingInputStore = () => {
@@ -22,7 +20,7 @@ export const useFloatingInputStore = () => {
     preventBlur: false,
     blurTimeout: undefined as BlurTimeout,
     showInputs: false,
-    setCell(cell: Cell) {
+    setCell(cell?: Cell) {
       store.cell = cell;
     },
     setIsRaw(value: boolean) {

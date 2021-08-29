@@ -94,7 +94,7 @@ input, textarea {
   background: none;
 }
 
-input:focus, button:focus, textarea:focus {
+:focus, input:focus, button:focus, textarea:focus {
   outline: none;
 }
 
@@ -108,6 +108,10 @@ input::placeholder {
 
 button[disabled] {
   cursor: default;
+}
+
+td {
+  padding: 0;
 }
 
 [hidden] {

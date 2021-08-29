@@ -1,29 +1,9 @@
 import { useLocalObservable } from 'mobx-react-lite';
-import { TableDataService } from '../../../components/Table/TableData/tableData.service';
-import { DataChangesService } from '../../../components/Table/DataChanges/dataChanges.service';
+import { TableDataService } from '../TableData/tableData.service';
+import { DataChangesService } from '../DataChanges/dataChanges.service';
+import { Cell, CellType } from '../Table/Table.service';
 
 export type Selection = Record<number, Record<number, true>>;
-
-export enum CellType {
-  row = 'row',
-  column = 'column',
-  cell = 'cell',
-}
-
-export type Cell =
-  | {
-      type: CellType.cell;
-      rowIndex: number;
-      columnIndex: number;
-    }
-  | {
-      type: CellType.row;
-      rowIndex: number;
-    }
-  | {
-      type: CellType.column;
-      columnIndex: number;
-    };
 
 export const useSelectionStore = ({
   tableDataService,
@@ -39,7 +19,26 @@ export const useSelectionStore = ({
     selectedColumns: {} as Record<number, true>,
     selectFrom: undefined as undefined | Cell,
     selectTo: undefined as undefined | Cell,
+    prevFocusedCell: undefined as undefined | Cell,
     focusedCell: undefined as undefined | Cell,
+    get focusedDataCell() {
+      const cell = store.focusedCell;
+      if (!cell) return undefined;
+
+      if (cell.type === CellType.cell) {
+        return {
+          row: cell.row,
+          column: cell.column,
+        };
+      } else if (
+        tableDataService.getFields()?.length &&
+        tableDataService.getRows()?.length
+      ) {
+        return cell.type === CellType.column
+          ? { row: 0, column: cell.column }
+          : { row: cell.row, column: 0 };
+      }
+    },
     setValue(value: string | null, raw: boolean) {
       for (const row in store.selection) {
         for (const column in store.selection[row]) {
@@ -64,6 +63,10 @@ export const useSelectionStore = ({
     isCellSelected(row: number, cell: number) {
       return Boolean(store.selection[row]?.[cell]);
     },
+    isFocusedDataCell(row: number, column: number) {
+      const cell = store.focusedDataCell;
+      return cell ? cell.row === row && cell.column === column : false;
+    },
     getRowNumbers() {
       return Object.keys(store.selection);
     },
@@ -83,10 +86,11 @@ export const useSelectionStore = ({
     setSelectFrom(cell?: Cell) {
       store.selectFrom = cell;
     },
-    setSelectTo(cell: Cell) {
+    setSelectTo(cell?: Cell) {
       store.selectTo = cell;
     },
     setFocusedCell(cell: Cell) {
+      store.prevFocusedCell = store.focusedCell;
       store.focusedCell = cell;
     },
     forEachSelectedCell(cb: (row: string, column: string) => void) {
@@ -96,7 +100,13 @@ export const useSelectionStore = ({
         }
       }
     },
-    applySelection(from: Cell, to: Cell) {
+    applySelection() {
+      const from = store.selectFrom;
+      const to = store.selectTo;
+      if (!from || !to) {
+        return;
+      }
+
       let minRow: number | undefined,
         maxRow: number | undefined,
         minColumn: number | undefined,
@@ -117,14 +127,14 @@ export const useSelectionStore = ({
         maxRow = rowsLength;
       }
 
-      if ('rowIndex' in from && 'rowIndex' in to) {
-        minRow = Math.min(from.rowIndex, to.rowIndex);
-        maxRow = Math.max(from.rowIndex, to.rowIndex);
+      if ('row' in from && 'row' in to) {
+        minRow = Math.min(from.row, to.row);
+        maxRow = Math.max(from.row, to.row);
       }
 
-      if ('columnIndex' in from && 'columnIndex' in to) {
-        minColumn = Math.min(from.columnIndex, to.columnIndex);
-        maxColumn = Math.max(from.columnIndex, to.columnIndex);
+      if ('column' in from && 'column' in to) {
+        minColumn = Math.min(from.column, to.column);
+        maxColumn = Math.max(from.column, to.column);
       }
 
       if (
@@ -150,6 +160,7 @@ export const useSelectionStore = ({
       }
 
       store.selection = selection;
+      store.selectedColumns = {};
 
       if (Object.keys(selection).length < rowsLength) return;
 

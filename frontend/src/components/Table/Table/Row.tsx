@@ -1,10 +1,9 @@
 import React from 'react';
-import { FieldInfo } from '../../../components/Table/TableData/tableData.store';
+import { FieldInfo } from '../TableData/tableData.store';
 import { observer } from 'mobx-react-lite';
 import cn from 'classnames';
 import Cell from './Cell';
-import { CellType } from '../../../components/Table/Table/Table.types';
-import { useTablePageContext } from '../../../components/Table/TablePage.context';
+import { useTablePageContext } from '../TablePage.context';
 
 export default observer(function Row({
   fields,
@@ -13,8 +12,12 @@ export default observer(function Row({
   fields: FieldInfo[];
   rowIndex: number;
 }) {
-  const { tableDataService, dataChangesService, selectionService } =
-    useTablePageContext();
+  const {
+    tableService,
+    tableDataService,
+    dataChangesService,
+    selectionService,
+  } = useTablePageContext();
   const defaults = tableDataService.getDefaults();
 
   if (!defaults) return null;
@@ -29,8 +32,8 @@ export default observer(function Row({
   return (
     <tr>
       <td
-        {...selectionService.getRowProps(rowIndex)}
-        data-type={CellType.rowNumber}
+        {...tableService.getRowProps(rowIndex)}
+        tabIndex={-1}
         className={cn(
           'h-10 border-b border-l border-dark-4 sticky -left-px w-px',
           isNew

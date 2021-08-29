@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useTablePageContext } from '../TablePage.context';
 import { observer } from 'mobx-react-lite';
 import ToggleEmpty from './ToggleRaw';
@@ -9,79 +9,48 @@ export default observer(function FloatingInput({
 }: {
   children: ReactNode;
 }) {
-  const { floatingInputService } = useTablePageContext();
+  const { floatingInputService, tableService } = useTablePageContext();
 
-  const onInputsWrapMouseDown = (e: React.MouseEvent) => {
+  const onWrapMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
-  const onFocus = (e: { target: EventTarget | null }) => {
-    const target = e.target as HTMLTableCellElement;
-    if (target.tagName !== 'TD') return;
-
-    const { rowIndex, columnIndex } = target.dataset;
-    const row = +(rowIndex as string);
-    const column = +(columnIndex as string);
-
-    let prev = target.previousElementSibling as HTMLTableCellElement | null;
-    if (!prev || prev.tabIndex === -1) {
-      prev = target.parentElement?.previousElementSibling
-        ?.lastElementChild as HTMLTableCellElement | null;
-    }
-
-    let next = target.nextElementSibling as HTMLTableCellElement | null;
-    if (!next) {
-      next = target.parentElement?.nextElementSibling
-        ?.children[1] as HTMLTableCellElement | null;
-    }
-
-    floatingInputService.setCell({
-      row,
-      column,
-      offsetTop: target.offsetTop,
-      offsetLeft: target.offsetLeft,
-      minWidth: target.offsetWidth,
-      minHeight: target.offsetHeight,
-      className: (target.dataset as { bgClass: string }).bgClass,
-      prevElement: prev || undefined,
-      nextElement: next || undefined,
-    });
-  };
-
-  const focusPrev = (e: React.FocusEvent) => {
-    floatingInputService.cancelBlur();
-    const prev = floatingInputService.getCell()?.prevElement;
-    if (prev) {
-      e.preventDefault();
-      onFocus({ target: prev });
-    }
-  };
-
-  const focusNext = (e: React.FocusEvent) => {
-    floatingInputService.cancelBlur();
-    const next = floatingInputService.getCell()?.nextElement;
-    if (next) {
-      e.preventDefault();
-      onFocus({ target: next });
-    }
-  };
-
-  const hideInputs = !floatingInputService.getShowInputs();
   const cell = floatingInputService.getCell();
 
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (!cell) {
+      return;
+    }
+    if (e.key === 'Escape') {
+      floatingInputService.setCell();
+      const td = tableService.getCell(cell.row, cell.column);
+      td?.focus();
+    }
+  };
+
+  useEffect(() => {
+    if (!cell) return;
+
+    const listener = () => floatingInputService.setCell();
+    document.addEventListener('mousedown', listener);
+    return () => document.removeEventListener('mousedown', listener);
+  }, [cell]);
+
+  const isSingleCell = floatingInputService.isSingleCell();
+
   return (
-    <div onFocusCapture={onFocus}>
+    <>
       {children}
-      <div onMouseDownCapture={onInputsWrapMouseDown}>
+      <div onMouseDownCapture={onWrapMouseDown} onKeyDown={onKeyDown}>
         <div
-          hidden={hideInputs || !cell?.prevElement}
+          hidden={isSingleCell}
           tabIndex={0}
-          onFocus={focusPrev}
+          onFocus={floatingInputService.focusPrev}
         />
         <div
-          className="absolute flex flex-col items-start"
-          hidden={hideInputs}
+          className="absolute flex flex-col items-start z-10"
+          hidden={!cell}
           style={{
             top: cell && `${cell.offsetTop}px`,
             left: cell && `${cell.offsetLeft}px`,
@@ -91,11 +60,11 @@ export default observer(function FloatingInput({
           <ToggleEmpty />
         </div>
         <div
-          hidden={hideInputs || !cell?.nextElement}
+          hidden={isSingleCell}
           tabIndex={0}
-          onFocus={focusNext}
+          onFocus={floatingInputService.focusNext}
         />
       </div>
-    </div>
+    </>
   );
 });

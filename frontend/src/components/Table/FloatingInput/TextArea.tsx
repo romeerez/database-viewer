@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
-import { useTablePageContext } from '../../../components/Table/TablePage.context';
+import { useTablePageContext } from '../TablePage.context';
 
 const tdPaddingXPx = '32px';
 
@@ -42,14 +42,14 @@ export default observer(function TextArea() {
     floatingInputService.setValue(e.target.value);
   };
 
-  const onBlur = floatingInputService.initBlur;
+  // const onBlur = floatingInputService.initBlur;
 
   return (
     <textarea
       ref={textAreaRef}
       className="ring rounded-sm px-4 py-2.5 text-sm whitespace-nowrap overflow-hidden w-0 h-0 placeholder-light-9 block resize-none"
       onChange={onChange}
-      onBlur={onBlur}
+      // onBlur={onBlur}
       placeholder={placeholder}
       value={value || ''}
     />

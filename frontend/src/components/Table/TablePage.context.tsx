@@ -1,10 +1,13 @@
-import { createContext, useContext } from 'react';
-import { SelectionService } from '../../components/Table/Selection/selection.service';
-import { TableDataService } from '../../components/Table/TableData/tableData.service';
-import { DataChangesService } from '../../components/Table/DataChanges/dataChanges.service';
-import { FloatingInputService } from '../../components/Table/FloatingInput/FloatingInput.service';
+import { createContext, RefObject, useContext } from 'react';
+import { SelectionService } from './Selection/selection.service';
+import { TableDataService } from './TableData/tableData.service';
+import { DataChangesService } from './DataChanges/dataChanges.service';
+import { FloatingInputService } from './FloatingInput/FloatingInput.service';
+import { TableService } from './Table/Table.service';
 
 export type TablePageContextValues = {
+  tableRef: RefObject<HTMLTableElement>;
+  tableService: TableService;
   tableDataService: TableDataService;
   dataChangesService: DataChangesService;
   selectionService: SelectionService;

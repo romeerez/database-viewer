@@ -1,7 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
 import { observer } from 'mobx-react-lite';
-import { CellType } from './Table.types';
 import { useTablePageContext } from '../TablePage.context';
 
 export default observer(function Row({
@@ -19,7 +18,8 @@ export default observer(function Row({
   isNew: boolean;
   defaultValue?: string;
 }) {
-  const { dataChangesService, selectionService } = useTablePageContext();
+  const { tableService, dataChangesService, selectionService } =
+    useTablePageContext();
 
   const value = dataChangesService.getValue(rowIndex, columnIndex);
   const isRaw = dataChangesService.getIsRaw(rowIndex, columnIndex);
@@ -27,15 +27,13 @@ export default observer(function Row({
   const isChanged =
     isRowChanged && dataChangesService.isValueChanged(rowIndex, columnIndex);
 
+  const isFocused = selectionService.isFocusedDataCell(rowIndex, columnIndex);
   const isSelected = selectionService.isCellSelected(rowIndex, columnIndex);
 
   return (
     <td
-      data-type={CellType.value}
-      {...selectionService.getCellProps(rowIndex, columnIndex)}
+      {...tableService.getCellProps(rowIndex, columnIndex)}
       data-bg-class="bg-dark-4"
-      data-row-index={rowIndex}
-      data-column-index={columnIndex}
       tabIndex={0}
       className={cn(
         'h-10 border-b border-l',
@@ -52,7 +50,8 @@ export default observer(function Row({
     >
       <div
         className={cn(
-          'min-w-full min-h-full flex items-center max-w-sm truncate px-4 pointer-events-none',
+          'min-w-full min-h-full flex items-center max-w-sm truncate px-4 pointer-events-none relative rounded-sm',
+          isFocused && 'ring z-10',
           isSelected && 'bg-lighter-4',
         )}
       >
