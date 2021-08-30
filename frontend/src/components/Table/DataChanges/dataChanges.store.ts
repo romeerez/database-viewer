@@ -11,6 +11,19 @@ export const useDataChangesStore = ({
     changes: {} as Record<string, Record<string, string | null>>,
     newRows: {} as Record<string, true>,
     raw: {} as Record<string, Record<string, true>>,
+    isLoading: false,
+    setIsLoading(value: boolean) {
+      store.isLoading = value;
+    },
+    reset() {
+      Object.assign(store, {
+        removedRows: {},
+        changes: {},
+        newRows: {},
+        raw: {},
+        isLoading: false,
+      });
+    },
     getRemovedRows() {
       return (
         tableDataService.getRows()?.filter((_, i) => store.removedRows[i]) || []

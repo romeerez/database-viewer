@@ -48,6 +48,10 @@ export const useDataStore = () => {
         rows: undefined as QueryResult['rows'] | undefined,
         count: undefined as number | undefined,
         queryParams,
+        get databaseUrl() {
+          const { sourceUrl } = store;
+          return sourceUrl ? `${sourceUrl}/${params.databaseName}` : undefined;
+        },
         get loading(): boolean {
           return (
             !store.tree || store.count === undefined || store.rows === undefined

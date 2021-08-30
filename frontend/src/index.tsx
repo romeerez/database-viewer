@@ -1,14 +1,14 @@
 import React from 'react';
-import './index.css';
 import Theme from './components/Theme/Theme';
 import Layout from './components/Layout';
 import { Router as ReactRouter } from 'react-router-dom';
 import history from './lib/history';
 import { ToastContainer, Flip } from 'react-toastify';
 import Router from './components/Router';
-import 'react-toastify/dist/ReactToastify.css';
 import { APIContext as APIContextType } from 'types';
 import { APIContext } from './lib/apiContext';
+import 'react-toastify/dist/ReactToastify.css';
+import './index.css';
 
 export const DatabaseViewer = ({
   apiContext,
@@ -28,6 +28,7 @@ export const DatabaseViewer = ({
             position="bottom-right"
             transition={Flip}
             newestOnTop
+            theme="colored"
           />
         </ReactRouter>
       </APIContext.Provider>

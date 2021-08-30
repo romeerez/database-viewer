@@ -16,17 +16,27 @@ export const executeQuery = async (
   db: DB,
   query: string,
 ): Promise<QueryResult> => {
-  const { fields, result } = await db.arraysWithFields<QueryResult['rows']>(
-    query,
-  );
+  try {
+    const { fields, result = [] } = await db.arraysWithFields<
+      QueryResult['rows']
+    >(query);
 
-  return {
-    fields: fields.map((field) => ({
-      name: field.name,
-      type: field.dataTypeID,
-    })),
-    rows: result,
-  };
+    return {
+      fields: fields.map((field) => ({
+        name: field.name,
+        type: field.dataTypeID,
+      })),
+      rows: result,
+    };
+  } catch (error) {
+    try {
+      await db.exec('ROLLBACK');
+    } catch (_) {
+      // ignore
+    }
+
+    throw error;
+  }
 };
 
 export const checkConnection = async (db: DB) => {

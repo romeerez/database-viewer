@@ -39,6 +39,18 @@ export const useSelectionStore = ({
           : { row: cell.row, column: 0 };
       }
     },
+    reset() {
+      Object.assign(store, {
+        selecting: false,
+        selection: {},
+        previousSelection: {},
+        selectedColumns: {},
+        selectFrom: undefined,
+        selectTo: undefined,
+        prevFocusedCell: undefined,
+        focusedCell: undefined,
+      });
+    },
     setValue(value: string | null, raw: boolean) {
       for (const row in store.selection) {
         for (const column in store.selection[row]) {

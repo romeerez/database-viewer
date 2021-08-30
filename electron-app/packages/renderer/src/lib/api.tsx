@@ -30,20 +30,29 @@ const createUseMutationQuery =
 
 const createUseLazyQuery =
   <Variables, Result>(
-    fetchData: (arg: { variables: Variables }) => Promise<Result>,
+    fetchData: (arg: {
+      variables: Variables;
+    }) => Promise<{ data: Result } | { error: Error }>,
   ) =>
   ({
     onCompleted,
+    onError,
   }: {
     fetchPolicy?: FetchPolicy;
     onCompleted?(data: Result): void;
+    onError?(error: Error): void;
   } = {}): [(arg: { variables: Variables }) => void, { data?: Result }] => {
     const [data, setData] = useState<Result>();
 
     const load = useCallback(async (arg: { variables: Variables }) => {
       const result = await fetchData(arg);
-      onCompleted?.(result);
-      setData(result);
+      if ('error' in result) {
+        onError?.(result.error);
+      } else {
+        const { data } = result;
+        onCompleted?.(data);
+        setData(data);
+      }
     }, []);
 
     return [load, { data }];

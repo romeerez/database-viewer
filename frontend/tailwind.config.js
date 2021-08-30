@@ -33,6 +33,7 @@ module.exports = {
       green: {
         1: 'var(--color-green-1)',
         2: 'var(--color-green-2)',
+        3: 'var(--color-green-3)',
       },
       accent: {
         DEFAULT: 'var(--color-accent)',
@@ -49,6 +50,7 @@ module.exports = {
       },
       error: {
         DEFAULT: 'var(--color-error)',
+        dark: 'var(--color-error-dark)',
       },
       transparent: {
         DEFAULT: 'transparent',

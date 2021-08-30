@@ -1,11 +1,16 @@
-import { useDataStore } from '../../../components/Table/TableData/tableData.store';
+import { useDataStore } from './tableData.store';
 import { useEffect, useMemo } from 'react';
 import { buildQuery } from '../../../lib/queryBuilder';
 import { useAPIContext } from '../../../lib/apiContext';
+import { ErrorService } from '../Error/error.service';
 
 export type TableDataService = ReturnType<typeof useDataService>;
 
-export const useDataService = () => {
+export const useDataService = ({
+  errorService,
+}: {
+  errorService: ErrorService;
+}) => {
   const store = useDataStore();
 
   const service = useMemo(
@@ -19,13 +24,14 @@ export const useDataService = () => {
       getSourceUrl: () => store.sourceUrl,
       getDefaults: () => store.defaults,
       getPrimaryColumns: () => store.primaryColumns,
+      getDatabaseUrl: () => store.databaseUrl,
       loadFieldsAndRows() {
-        const { sourceUrl, params } = store;
-        if (!sourceUrl) return;
+        const { databaseUrl, params } = store;
+        if (!databaseUrl) return;
 
         loadFieldsAndRows({
           variables: {
-            url: `${sourceUrl}/${params.databaseName}`,
+            url: databaseUrl,
             query: buildQuery({
               schemaName: params.schemaName,
               tableName: params.tableName,
@@ -36,12 +42,12 @@ export const useDataService = () => {
         });
       },
       loadCount() {
-        const { sourceUrl, params } = store;
-        if (!sourceUrl) return;
+        const { databaseUrl, params } = store;
+        if (!databaseUrl) return;
 
         loadCount({
           variables: {
-            url: `${sourceUrl}/${params.databaseName}`,
+            url: databaseUrl,
             query: buildQuery({
               schemaName: params.schemaName,
               tableName: params.tableName,
@@ -52,12 +58,12 @@ export const useDataService = () => {
         });
       },
       loadRows() {
-        const { sourceUrl, params } = store;
-        if (!sourceUrl) return;
+        const { databaseUrl, params } = store;
+        if (!databaseUrl) return;
 
         loadRows({
           variables: {
-            url: `${sourceUrl}/${params.databaseName}`,
+            url: databaseUrl,
             query: buildQuery({
               schemaName: params.schemaName,
               tableName: params.tableName,
@@ -100,6 +106,7 @@ export const useDataService = () => {
     onCompleted(data) {
       const result = data.executeQuery;
       store.update({ rawFields: result.fields, rows: result.rows });
+      errorService.setError();
     },
   });
 
@@ -115,6 +122,7 @@ export const useDataService = () => {
     fetchPolicy: 'no-cache',
     onCompleted(data) {
       store.update({ rows: data.executeQuery.rows });
+      errorService.setError();
     },
   });
 

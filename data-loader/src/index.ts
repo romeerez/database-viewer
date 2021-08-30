@@ -4,7 +4,6 @@ import {
   QueryDataSourcesArgs,
   QueryExecuteQueryArgs,
   QueryResult,
-  Table,
   Type,
 } from 'types';
 import { GetDB, DB, Await } from './types';

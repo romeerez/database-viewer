@@ -73,15 +73,14 @@ export const buildTransaction = ({
     rowChanges.forEach(({ row, changes }) =>
       result.push(
         `UPDATE ${table}\nSET ${changes
-          .map(
-            ({ columnName, columnIndex, value, isRaw }) =>
-              `"${columnName}" = ${valueToSql(
-                isRaw,
-                defaults,
-                columnIndex,
-                value,
-              )}`,
-          )
+          .map(({ columnName, columnIndex, value, isRaw }) => {
+            return `"${columnName}" = ${valueToSql(
+              isRaw,
+              defaults,
+              columnIndex,
+              value,
+            )}`;
+          })
           .join(', ')}\nWHERE ${getWhere(primaryColumns, row)};`,
       ),
     );
@@ -113,7 +112,7 @@ const valueToSql = (
   if (value === null) {
     return defaults[columnIndex] ? 'DEFAULT' : 'NULL';
   } else {
-    return isRaw ? value : quote(value);
+    return isRaw ? (value.length === 0 ? 'NULL' : value) : quote(value);
   }
 };
 

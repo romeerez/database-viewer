@@ -13,6 +13,8 @@ import { useDataChangesService } from './DataChanges/dataChanges.service';
 import FloatingInput from '../../components/Table/FloatingInput/FloatingInput';
 import { useFloatingInputService } from './FloatingInput/FloatingInput.service';
 import { useTableService } from './Table/Table.service';
+import { useErrorService } from './Error/error.service';
+import Error from './Error/Error';
 
 export default function TablePage() {
   const { pathname } = useLocation();
@@ -23,8 +25,12 @@ export default function TablePage() {
 const TablePageReMountable = () => {
   const tableRef = useRef<HTMLTableElement>(null);
   const tableService = useTableService({ tableRef });
-  const tableDataService = useDataService();
-  const dataChangesService = useDataChangesService({ tableDataService });
+  const errorService = useErrorService();
+  const tableDataService = useDataService({ errorService });
+  const dataChangesService = useDataChangesService({
+    tableDataService,
+    errorService,
+  });
   const selectionService = useSelectionService({
     tableDataService,
     dataChangesService,
@@ -46,9 +52,10 @@ const TablePageReMountable = () => {
         dataChangesService,
         selectionService,
         floatingInputService,
+        errorService,
       }}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full overflow-hidden">
         <Header />
         <ControlPanel />
         <Conditions />
@@ -59,6 +66,7 @@ const TablePageReMountable = () => {
             </FloatingInput>
           </Selection>
         </Scrollbars>
+        <Error isMain />
       </div>
     </TablePageContext.Provider>
   );

@@ -9,6 +9,8 @@ import {
   QueryRowsQueryVariables,
 } from 'types';
 
+export type Result<T> = { data: T } | { error: Error };
+
 interface ElectronApi {
   versions: NodeJS.ProcessVersions;
   api: {
@@ -17,13 +19,13 @@ interface ElectronApi {
     }) => Promise<CheckConnectionMutation>;
     GetDataTreeQuery: (arg: {
       variables: GetDataTreeQueryVariables;
-    }) => Promise<GetDataTreeQuery>;
+    }) => Promise<Result<GetDataTreeQuery>>;
     QueryFieldsAndRows: (arg: {
       variables: QueryFieldsAndRowsQueryVariables;
-    }) => Promise<QueryFieldsAndRowsQuery>;
+    }) => Promise<Result<QueryFieldsAndRowsQuery>>;
     QueryRows: (arg: {
       variables: QueryRowsQueryVariables;
-    }) => Promise<QueryRowsQuery>;
+    }) => Promise<Result<QueryRowsQuery>>;
   };
 }
 

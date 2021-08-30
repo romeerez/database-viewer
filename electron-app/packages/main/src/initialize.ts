@@ -46,6 +46,7 @@ async function createWindow() {
       enableRemoteModule: env.MODE === 'test', // Spectron tests can't work with enableRemoteModule: false
     },
   });
+  mainWindow.maximize();
 
   /**
    * If you install `show: true` then it can cause issues when trying to close the window.

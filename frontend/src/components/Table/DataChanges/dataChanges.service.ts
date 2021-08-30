@@ -1,17 +1,24 @@
-import { useMemo } from 'react';
-import { useDataChangesStore } from '../../../components/Table/DataChanges/dataChanges.store';
-import { TableDataService } from '../../../components/Table/TableData/tableData.service';
+import { useEffect, useMemo } from 'react';
+import { useDataChangesStore } from './dataChanges.store';
+import { TableDataService } from '../TableData/tableData.service';
+import { buildTransaction } from '../../../lib/queryBuilder';
+import { useAPIContext } from '../../../lib/apiContext';
+import { toast } from 'react-toastify';
+import { ErrorService } from '../Error/error.service';
 
 export type DataChangesService = ReturnType<typeof useDataChangesService>;
 
 export const useDataChangesService = ({
   tableDataService,
+  errorService,
 }: {
   tableDataService: TableDataService;
+  errorService: ErrorService;
 }) => {
   const store = useDataChangesStore({ tableDataService });
+  const { useQueryRowsLazyQuery } = useAPIContext();
 
-  return useMemo(
+  const service = useMemo(
     () => ({
       getValue: store.getValue,
       getIsRaw: store.getIsRaw,
@@ -20,6 +27,7 @@ export const useDataChangesService = ({
       getRemovedRows: store.getRemovedRows,
       getRowChanges: store.getRowChanges,
       getNewRows: store.getNewRows,
+      getIsLoading: () => store.isLoading,
       addRow() {
         const fields = tableDataService.getFields();
         const rows = tableDataService.getRows();
@@ -68,7 +76,62 @@ export const useDataChangesService = ({
           delete store.newRows[rows.length];
         }
       },
+      getChangesQuery() {
+        const removedRows = service.getRemovedRows();
+        const rowChanges = service.getRowChanges();
+        const newRows = service.getNewRows();
+        const primaryColumns = tableDataService.getPrimaryColumns();
+        const { schemaName, tableName } = tableDataService.getParams();
+        const fields = tableDataService.getFields();
+        const defaults = tableDataService.getDefaults();
+
+        if (!fields || !defaults) return '';
+
+        return buildTransaction({
+          schemaName,
+          tableName,
+          primaryColumns,
+          fields,
+          defaults,
+          removedRows,
+          rowChanges,
+          newRows,
+        });
+      },
+      submitUpdate(query: string) {
+        const databaseUrl = tableDataService.getDatabaseUrl();
+        if (query.length === 0 || !databaseUrl) {
+          return;
+        }
+
+        store.setIsLoading(true);
+        executeQuery({
+          variables: {
+            url: databaseUrl,
+            query,
+          },
+        });
+      },
     }),
     [store, tableDataService],
   );
+
+  const [executeQuery] = useQueryRowsLazyQuery({
+    fetchPolicy: 'no-cache',
+    onCompleted() {
+      errorService.setError();
+      tableDataService.sync();
+      toast('Success', { type: 'success' });
+      store.setIsLoading(false);
+    },
+    onError(error) {
+      errorService.setError(error.message);
+      store.setIsLoading(false);
+    },
+  });
+
+  const rows = tableDataService.getRows();
+  useEffect(() => store.reset(), [rows, store]);
+
+  return service;
 };

@@ -27,11 +27,14 @@
   --color-blue: #3f51b5;
   --color-blue-darker: #324191;
   --color-error: #f87171;
+  --color-error-dark: #501212;
   --color-yellow-1: #f2c94c;
   --color-yellow-2: #636316;
   --color-yellow-3: #3e3e21;
   --color-green-1: #1a5d29;
   --color-green-2: #183e21;
+  --color-green-3: #15793d;
+  --toastify-color-success: var(--color-green-3);
 }
 
 .light-mode {
@@ -61,11 +64,14 @@
   --color-blue: #3f51b5;
   --color-blue-darker: #324191;
   --color-error: #f87171;
+  --color-error-dark: #501212;
   --color-yellow-1: #f2c94c;
   --color-yellow-2: #636316;
   --color-yellow-3: #3e3e21;
   --color-green-1: #1a5d29;
   --color-green-2: #183e21;
+  --color-green-3: #15793d;
+  --toastify-color-success: var(--color-green-3);
 }
 
 html {

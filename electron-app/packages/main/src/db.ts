@@ -12,6 +12,9 @@ const connectionPool: Record<
 const toInt = (value: Buffer, pos: number, size: number) =>
   parseInt(value.toString(undefined, pos, pos + size));
 
+const trueCode = 't'.charCodeAt(0);
+const toBoolean = (value: Buffer, pos: number) => value[pos] === trueCode;
+
 const jsonParser = (value: Buffer, pos: number, size: number) =>
   JSON.parse(value.slice(pos, pos + size).toString());
 
@@ -25,9 +28,11 @@ export const getDB = async (url: string) => {
         21: toInt,
         23: toInt,
         26: toInt,
+        16: toBoolean,
         114: jsonParser, // for json
         3802: jsonParser, // for jsonb
         // parsing a data is skipped because causes bug in table view
+        // date is parsed as an object and can't be rendered by React
       },
     });
 

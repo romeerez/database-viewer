@@ -21,6 +21,7 @@ export type MutationResult<Result> = { data?: Result | null };
 type LazyQuery<Variables, Result> = (arg: {
   fetchPolicy?: FetchPolicy;
   onCompleted?(data: Result): void;
+  onError?(error: Error): void;
 }) => [(arg: { variables: Variables }) => void, { data?: Result }];
 
 export type UseCheckConnectionMutation = Mutation<

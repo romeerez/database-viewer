@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider, ApolloError, ServerError } from '@apollo/client';
 import { createClient } from './apolloClient';
 import {
   useCheckConnectionMutation,
@@ -16,11 +16,34 @@ export type {
   QueryResult,
 } from './generated/graphql';
 
+type SimplifiedErrorOptions<T> = Omit<T, 'onError'> & {
+  onError?(error: Error): void;
+};
+
+const simplifyError = <T extends { onError?(error: ApolloError): void }, R>(
+  fn: (options: SimplifiedErrorOptions<T>) => R,
+) => {
+  return (options: SimplifiedErrorOptions<T>) => {
+    return fn({
+      ...options,
+      onError(error: ApolloError) {
+        options.onError?.(
+          new Error(
+            (error.networkError as ServerError)?.result.errors
+              .map((error: Error) => error.message)
+              .join('; ') || error.message,
+          ),
+        );
+      },
+    });
+  };
+};
+
 const contextValues = {
   useCheckConnectionMutation,
-  useGetDataTreeLazyQuery,
-  useQueryFieldsAndRowsLazyQuery,
-  useQueryRowsLazyQuery,
+  useGetDataTreeLazyQuery: simplifyError(useGetDataTreeLazyQuery),
+  useQueryFieldsAndRowsLazyQuery: simplifyError(useQueryFieldsAndRowsLazyQuery),
+  useQueryRowsLazyQuery: simplifyError(useQueryRowsLazyQuery),
 };
 
 export const APIProvider = ({

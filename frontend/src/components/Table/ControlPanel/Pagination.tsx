@@ -89,7 +89,7 @@ export default observer(function Pagination() {
           <ChevronLeft size={20} />
         </button>
       </Tooltip>
-      <div className="flex items-center mx-1">
+      <div className="flex items-center mx-1 text-sm">
         <Menu
           tooltip="Change page size"
           className="flex-shrink-0"

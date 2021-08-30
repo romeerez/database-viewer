@@ -24,12 +24,23 @@ ipcMain.handle(
   },
 );
 
-ipcMain.handle(
+const handle = <Arg, T>(channel: string, handler: (arg: Arg) => Promise<T>) => {
+  ipcMain.handle(channel, async (_, arg) => {
+    try {
+      return { data: await handler(arg) };
+    } catch (error) {
+      return { error };
+    }
+  });
+};
+
+handle(
   'GetDataTreeQuery',
-  async (
-    _,
-    { variables: { urls } }: { variables: GetDataTreeQueryVariables },
-  ): Promise<GetDataTreeQuery> => {
+  async ({
+    variables: { urls },
+  }: {
+    variables: GetDataTreeQueryVariables;
+  }): Promise<GetDataTreeQuery> => {
     if (typeof urls === 'string') urls = [urls];
     const dataSources = dataLoader.getDataSources({ urls });
 
@@ -96,24 +107,26 @@ ipcMain.handle(
   },
 );
 
-ipcMain.handle(
+handle(
   'QueryFieldsAndRows',
-  async (
-    _,
-    { variables }: { variables: QueryFieldsAndRowsQueryVariables },
-  ): Promise<QueryFieldsAndRowsQuery> => {
+  async ({
+    variables,
+  }: {
+    variables: QueryFieldsAndRowsQueryVariables;
+  }): Promise<QueryFieldsAndRowsQuery> => {
     return {
       executeQuery: await dataLoader.executeQuery(getDB, variables),
     };
   },
 );
 
-ipcMain.handle(
+handle(
   'QueryRows',
-  async (
-    _,
-    { variables }: { variables: QueryRowsQueryVariables },
-  ): Promise<QueryRowsQuery> => {
+  async ({
+    variables,
+  }: {
+    variables: QueryRowsQueryVariables;
+  }): Promise<QueryRowsQuery> => {
     return {
       executeQuery: await dataLoader.executeQuery(getDB, variables),
     };

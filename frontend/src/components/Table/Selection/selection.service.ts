@@ -2,7 +2,7 @@ import { useSelectionStore } from './selection.store';
 import { TableDataService } from '../TableData/tableData.service';
 import { DataChangesService } from '../DataChanges/dataChanges.service';
 import { Cell, CellType } from '../Table/Table.service';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 type SelectionStore = ReturnType<typeof useSelectionStore>;
 
@@ -198,6 +198,9 @@ export const useSelectionService = ({
     }),
     [store, dataChangesService, floatingInputService, tableDataService],
   );
+
+  const rows = tableDataService.getRows();
+  useEffect(() => store.reset(), [store, rows]);
 
   return service;
 };

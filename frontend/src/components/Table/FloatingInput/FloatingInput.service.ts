@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useFloatingInputStore } from './FloatingInput.store';
 import { TableDataService } from '../TableData/tableData.service';
 import { SelectionService } from '../Selection/selection.service';
@@ -25,6 +25,7 @@ export const useFloatingInputService = ({
       getIsRaw: () => store.isRaw,
       getValue: () => store.value,
       getCell: () => store.cell,
+      hide: () => service.setCell(),
       isSingleCell: () => {
         const columnsCount = tableDataService.getFields()?.length;
         const rowsCount = tableDataService.getRows()?.length;
@@ -121,6 +122,9 @@ export const useFloatingInputService = ({
       selectionService,
     ],
   );
+
+  const rows = tableDataService.getRows();
+  useEffect(() => service.hide(), [service, rows]);
 
   return service;
 };

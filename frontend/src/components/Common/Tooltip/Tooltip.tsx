@@ -29,7 +29,7 @@ export default function Tooltip({
         <div
           ref={setTooltipRef}
           {...getTooltipProps()}
-          className="bg-dark-6 px-2 py-1 rounded z-50"
+          className="bg-dark-6 text-sm px-2 py-1 rounded z-50"
         >
           {text}
           {hotkey && ' '}
