@@ -50,7 +50,7 @@ export default function Menu({
         open={isOpen}
         onClose={close}
         className={cn(
-          'absolute z-50 text-md top-full bg-primary-gradient-lighter min-w-full rounded py-1 shadow',
+          'absolute z-40 text-md top-full bg-primary-gradient-lighter min-w-full rounded py-1 shadow',
           menuClass,
         )}
         style={menuStyle}

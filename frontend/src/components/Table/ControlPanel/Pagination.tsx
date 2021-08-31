@@ -8,15 +8,20 @@ import {
 } from '../../../icons';
 import Menu from '../../../components/Common/Menu/Menu';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
-import { useTablePageContext } from '../../../components/Table/TablePage.context';
+import { useTablePageContext } from '../TablePage.context';
 import cn from 'classnames';
 import Tooltip from '../../../components/Common/Tooltip/Tooltip';
 import { observer } from 'mobx-react-lite';
 import { useKey } from 'react-use';
+import { ConfirmLoosingChanges } from './ControlPanel';
 
 const limits = [10, 25, 50, 100, 500, 1000, undefined];
 
-export default observer(function Pagination() {
+export default observer(function Pagination({
+  confirmLoosingChanges,
+}: {
+  confirmLoosingChanges: ConfirmLoosingChanges;
+}) {
   const { tableDataService } = useTablePageContext();
   const count = tableDataService.getCount();
   const { offset, limit } = tableDataService.getQueryParams();
@@ -31,19 +36,30 @@ export default observer(function Pagination() {
   const isNextPageDisabled =
     !lastPageOffset || undefined || offset >= lastPageOffset;
 
-  const openFirstPage = () =>
-    !isPrevPageDisabled && tableDataService.setOffset(0);
+  const openFirstPage = confirmLoosingChanges(
+    () => !isPrevPageDisabled && tableDataService.setOffset(0),
+  );
 
-  const openPreviousPage = () =>
-    !isPrevPageDisabled && limit && tableDataService.setOffset(offset - limit);
+  const openPreviousPage = confirmLoosingChanges(
+    () =>
+      !isPrevPageDisabled &&
+      limit &&
+      tableDataService.setOffset(offset - limit),
+  );
 
-  const openNextPage = () =>
-    !isNextPageDisabled && limit && tableDataService.setOffset(offset + limit);
+  const openNextPage = confirmLoosingChanges(
+    () =>
+      !isNextPageDisabled &&
+      limit &&
+      tableDataService.setOffset(offset + limit),
+  );
 
-  const openLastPage = () =>
-    !isNextPageDisabled &&
-    lastPageOffset &&
-    tableDataService.setOffset(lastPageOffset);
+  const openLastPage = confirmLoosingChanges(
+    () =>
+      !isNextPageDisabled &&
+      lastPageOffset &&
+      tableDataService.setOffset(lastPageOffset),
+  );
 
   useKey(
     'ArrowUp',
@@ -109,10 +125,10 @@ export default observer(function Pagination() {
               {limits.map((limit, i) => (
                 <MenuItem
                   key={i}
-                  onClick={() => {
+                  onClick={confirmLoosingChanges(() => {
                     toggle();
                     tableDataService.setLimit(limit);
-                  }}
+                  })}
                 >
                   {limit || 'All'}
                 </MenuItem>

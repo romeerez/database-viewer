@@ -27,6 +27,7 @@ export const useDataChangesService = ({
       getRemovedRows: store.getRemovedRows,
       getRowChanges: store.getRowChanges,
       getNewRows: store.getNewRows,
+      hasChanges: () => store.hasChanges,
       getIsLoading: () => store.isLoading,
       addRow() {
         const fields = tableDataService.getFields();
@@ -37,13 +38,6 @@ export const useDataChangesService = ({
 
         const row = new Array(fields.length).fill(null);
         store.addRow(row);
-      },
-      hasChanges() {
-        return (
-          Object.keys(store.removedRows).length > 0 ||
-          Object.keys(store.changes).length > 0 ||
-          Object.keys(store.newRows).length > 0
-        );
       },
       isRowRemoved(rowIndex: number) {
         return Boolean(store.removedRows[rowIndex]);

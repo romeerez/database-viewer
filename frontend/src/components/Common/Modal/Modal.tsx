@@ -4,6 +4,7 @@ import Scrollbars from '../../../components/Common/Scrollbars';
 import cn from 'classnames';
 import style from './style.module.css';
 import { X } from '../../../icons';
+import { useKey } from 'react-use';
 
 export default function Modal({
   open,
@@ -11,13 +12,14 @@ export default function Modal({
   children,
   className,
   closeButton,
-  ...props
+  closeOnEscape,
 }: {
   open: boolean;
   onClose: () => void;
   children: (onClose: () => void) => React.ReactNode;
   className?: string;
   closeButton?: boolean;
+  closeOnEscape?: boolean;
 }) {
   const [isOpen, setOpen] = React.useState(open);
   const close = () => setOpen(false);
@@ -25,6 +27,10 @@ export default function Modal({
   React.useEffect(() => {
     setOpen(open);
   }, [open]);
+
+  useKey('Escape', () => {
+    if (closeOnEscape) close();
+  });
 
   if (!open) return null;
 
@@ -35,7 +41,6 @@ export default function Modal({
         isOpen ? style.open : style.closed,
       )}
       onClick={close}
-      {...props}
     >
       <Scrollbars>
         <div className={'max-h-full h-full w-full py-10 flex-center'}>

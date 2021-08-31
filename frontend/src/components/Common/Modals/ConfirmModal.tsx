@@ -8,21 +8,31 @@ export default function ConfirmModal({
   onConfirm,
   text,
   loading = false,
+  cancelText = 'Cancel',
+  confirmText = 'Delete',
 }: {
   open: boolean;
   onClose(): void;
   onConfirm(close: () => void): void;
   text: React.ReactNode;
   loading?: boolean;
+  cancelText?: string;
+  confirmText?: string;
 }) {
   return (
-    <Modal open={open} onClose={onClose} className="max-w-md" closeButton>
+    <Modal
+      open={open}
+      onClose={onClose}
+      className="max-w-md"
+      closeButton
+      closeOnEscape
+    >
       {(close) => (
         <>
           <div className="py-4 px-10 text-center">{text}</div>
           <div className="flex-center pb-4">
             <button className="btn mr-2" onClick={close}>
-              Cancel
+              {cancelText}
             </button>
             <Button
               addClass="focus-visible"
@@ -30,7 +40,7 @@ export default function ConfirmModal({
               loading={loading}
               onClick={() => onConfirm(close)}
             >
-              Delete
+              {confirmText}
             </Button>
           </div>
         </>

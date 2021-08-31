@@ -12,6 +12,13 @@ export const useDataChangesStore = ({
     newRows: {} as Record<string, true>,
     raw: {} as Record<string, Record<string, true>>,
     isLoading: false,
+    get hasChanges() {
+      return (
+        Object.keys(store.removedRows).length > 0 ||
+        Object.keys(store.changes).length > 0 ||
+        Object.keys(store.newRows).length > 0
+      );
+    },
     setIsLoading(value: boolean) {
       store.isLoading = value;
     },
