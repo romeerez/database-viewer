@@ -71,19 +71,45 @@ export const useDataChangesStore = ({
     addRow(row: string[]) {
       tableDataService.getRows()?.push(row);
     },
-    removeRows(rows: string[]) {
-      rows.forEach((indexString) => {
-        if (store.newRows[indexString]) {
-          const index = parseInt(indexString);
-          const rows = tableDataService.getRows();
-          if (!rows) return;
+    removeRows(stringIndices: string[]) {
+      if (stringIndices.some((row) => store.newRows[row])) {
+        const rows = tableDataService.getRows();
+        if (!rows) return;
 
-          tableDataService.setRows(rows.filter((_, i) => i !== index));
-          delete store.newRows[rows.length];
-        } else {
-          store.removedRows[indexString] = true;
-        }
+        stringIndices.forEach((row) => delete store.newRows[row]);
+
+        const numberIndices = stringIndices.map((row) => parseInt(row));
+        tableDataService.setRows(
+          rows.filter((_, i) => !numberIndices.includes(i)),
+        );
+      }
+
+      stringIndices.forEach((row) => {
+        store.removedRows[row] = true;
       });
+    },
+    unmarkRemovedRows(rows: string[]) {
+      rows.forEach((row) => {
+        delete store.removedRows[row];
+      });
+    },
+    undoChanges(change: Record<string, string[]>) {
+      for (const row in change) {
+        const rowChanges = store.changes[row];
+        if (!rowChanges) {
+          continue;
+        }
+
+        change[row].forEach((column) => {
+          if (rowChanges?.[column]) {
+            delete rowChanges[column];
+          }
+        });
+
+        if (Object.keys(rowChanges).length === 0) {
+          delete store.changes[row];
+        }
+      }
     },
     getValue(rowIndex: number, columnIndex: number): string | null {
       const change = store.changes[rowIndex];

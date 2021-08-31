@@ -28,6 +28,8 @@ export const useSelectionService = ({
       isCellSelected: store.isCellSelected,
       setValue: store.setValue,
       clearSelection: store.clearSelection,
+      getChangeInfo: store.getChangeInfo,
+      getHasChangesInSelection: () => store.hasChangesInSelection,
       getFocusedCell: () => store.focusedCell,
       getFocusedDataCell: () => store.focusedDataCell,
       getIsSelecting: () => store.selecting,

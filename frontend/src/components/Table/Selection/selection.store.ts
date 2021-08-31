@@ -21,6 +21,24 @@ export const useSelectionStore = ({
     selectTo: undefined as undefined | Cell,
     prevFocusedCell: undefined as undefined | Cell,
     focusedCell: undefined as undefined | Cell,
+    get hasChangesInSelection() {
+      for (const row in store.selection) {
+        if (
+          dataChangesService.isNewRow(row) ||
+          dataChangesService.isRowRemoved(row)
+        ) {
+          return true;
+        }
+
+        for (const column in store.selection[row]) {
+          if (dataChangesService.isValueChanged(row, column)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    },
     get focusedDataCell() {
       const cell = store.focusedCell;
       if (!cell) return undefined;
@@ -38,6 +56,33 @@ export const useSelectionStore = ({
           ? { row: 0, column: cell.column }
           : { row: cell.row, column: 0 };
       }
+    },
+    getChangeInfo() {
+      const result: {
+        add: string[];
+        remove: string[];
+        change: Record<string, string[]>;
+      } = { add: [], remove: [], change: {} };
+      const { add, remove, change } = result;
+
+      for (const row in store.selection) {
+        if (dataChangesService.isNewRow(row)) {
+          add.push(row);
+          continue;
+        } else if (dataChangesService.isRowRemoved(row)) {
+          remove.push(row);
+          continue;
+        }
+
+        for (const column in store.selection[row]) {
+          if (dataChangesService.isValueChanged(row, column)) {
+            if (!change[row]) change[row] = [];
+            change[row].push(column);
+          }
+        }
+      }
+
+      return result;
     },
     reset() {
       Object.assign(store, {

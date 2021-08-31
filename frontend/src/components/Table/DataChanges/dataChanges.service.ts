@@ -27,6 +27,8 @@ export const useDataChangesService = ({
       getRemovedRows: store.getRemovedRows,
       getRowChanges: store.getRowChanges,
       getNewRows: store.getNewRows,
+      unmarkRemovedRows: store.unmarkRemovedRows,
+      undoChanges: store.undoChanges,
       hasChanges: () => store.hasChanges,
       getIsLoading: () => store.isLoading,
       addRow() {
@@ -39,16 +41,16 @@ export const useDataChangesService = ({
         const row = new Array(fields.length).fill(null);
         store.addRow(row);
       },
-      isRowRemoved(rowIndex: number) {
+      isRowRemoved(rowIndex: number | string) {
         return Boolean(store.removedRows[rowIndex]);
       },
       isRowChanged(rowIndex: number) {
         return Boolean(store.changes[rowIndex]);
       },
-      isValueChanged(rowIndex: number, columnIndex: number) {
+      isValueChanged(rowIndex: number | string, columnIndex: number | string) {
         return store.changes[rowIndex]?.[columnIndex] !== undefined;
       },
-      isNewRow(rowIndex: number) {
+      isNewRow(rowIndex: number | string) {
         return store.newRows[rowIndex] || false;
       },
       revertCell(row: string, column: string) {

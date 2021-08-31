@@ -8,6 +8,7 @@ import Pagination from '../ControlPanel/Pagination';
 import Tooltip from '../../Common/Tooltip/Tooltip';
 import PreviewAndSubmitButtons from './PreviewAndSubmitButtons';
 import ConfirmModal from '../../Common/Modals/ConfirmModal';
+import UndoButton from './UndoButton';
 
 export type ConfirmLoosingChanges = (fn: () => void) => () => void;
 
@@ -67,6 +68,7 @@ export default observer(function ControlPanel() {
             <Sync size={20} />
           </button>
         </Tooltip>
+        <UndoButton />
         <Tooltip text="Add row" hotkey="alt++">
           <button
             className="w-8 h-8 flex-center rounded hover:bg-lighter"
