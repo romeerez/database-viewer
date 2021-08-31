@@ -62,7 +62,7 @@ export const getDatabases = async (db: DB, url: string) => {
   }
 
   const rows = await db.query<{ name: string }[]>(
-    'SELECT datname AS name FROM pg_database WHERE NOT datistemplate',
+    'SELECT datname AS name FROM pg_database WHERE NOT datistemplate ORDER BY datname',
   );
 
   return rows.map((row) => {
@@ -115,6 +115,7 @@ export const getTables = async (
       table_name "name"
     FROM information_schema.tables
     WHERE table_schema IN (${schemaNames.map(quote).join(', ')})
+    ORDER BY table_name
   `,
   );
 
@@ -151,6 +152,7 @@ export const getColumns = async (
         FROM information_schema.columns
         WHERE table_schema IN (${schemaNames.map(quote).join(', ')})
           AND table_name IN (${tableNames.map(quote).join(', ')})
+        ORDER BY column_name
     `,
   );
 };
@@ -177,6 +179,7 @@ export const getIndices = async (
     WHERE n.nspname IN (${schemaNames.map(quote).join(', ')})
       AND t.relname IN (${tableNames.map(quote).join(', ')})
     GROUP BY "schemaName", "tableName", "name", "isUnique", "isPrimary"
+    ORDER BY "name"
   `,
   );
 };
@@ -208,6 +211,7 @@ export const getForeignKeys = async (
           AND tc.table_schema IN (${schemaNames.map(quote).join(', ')})
           AND tc.table_name IN (${tableNames.map(quote).join(', ')})
         GROUP BY "schemaName", "tableName", "name", "foreignTableSchemaName", "foreignTableName"
+        ORDER BY "name"
     `,
   );
 };
@@ -232,6 +236,7 @@ export const getConstraints = async (
           AND tc.table_schema IN (${schemaNames.map(quote).join(', ')})
           AND tc.table_name IN (${tableNames.map(quote).join(', ')})
         GROUP BY "schemaName", "tableName", "name", "type"
+        ORDER BY "name"
     `,
   );
 };
@@ -255,6 +260,7 @@ export const getTriggers = async (
       WHERE event_object_schema IN (${schemaNames.map(quote).join(', ')})
         AND event_object_table IN (${tableNames.map(quote).join(', ')})
       GROUP BY event_object_schema, event_object_table, trigger_schema, trigger_name, action_timing, action_condition, action_statement
+      ORDER BY trigger_name
     `,
   );
 };
