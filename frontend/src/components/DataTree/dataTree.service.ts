@@ -29,6 +29,8 @@ export type Constraint = TableTree['constraints'][number];
 
 export type ForeignKey = TableTree['foreignKeys'][number];
 
+export type Trigger = TableTree['triggers'][number];
+
 const lowerCache: Record<string, string> = {};
 
 const toLower = (string: string) =>

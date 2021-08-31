@@ -193,3 +193,4 @@ export const getColumns = loadTableItems(repo.getColumns);
 export const getIndices = loadTableItems(repo.getIndices);
 export const getForeignKeys = loadTableItems(repo.getForeignKeys);
 export const getConstraints = loadTableItems(repo.getConstraints);
+export const getTriggers = loadTableItems(repo.getTriggers);

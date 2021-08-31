@@ -1,3 +1,7 @@
+.editor :global(.mtk18) {
+  color: #43bf98 !important;
+}
+
 .editor :global(.mtk20) {
   color: #ce9178 !important;
 }

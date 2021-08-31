@@ -43,6 +43,14 @@ query GetDataTree($urls: [String!]!) {
             type
             columnNames
           }
+          triggers {
+            triggerSchema
+            name
+            events
+            activation
+            condition
+            definition
+          }
         }
       }
     }

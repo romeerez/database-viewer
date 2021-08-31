@@ -24,3 +24,4 @@ export { ListCheck } from '@styled-icons/boxicons-regular/ListCheck';
 export { TableChart as Logo } from '@styled-icons/material-rounded/TableChart';
 export { Upload } from '@styled-icons/material/Upload';
 export { Spinner3 as Spinner } from '@styled-icons/evil';
+export { Text as Trigger } from '@styled-icons/boxicons-regular/Text';

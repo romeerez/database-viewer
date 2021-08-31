@@ -31,10 +31,10 @@ export type Constraint = {
 };
 
 export enum ConstraintType {
-  PrimaryKey = 'PRIMARY_KEY',
-  Unique = 'UNIQUE',
-  Check = 'CHECK',
-  Exclude = 'EXCLUDE'
+  PrimaryKey = 'PrimaryKey',
+  Unique = 'Unique',
+  Check = 'Check',
+  Exclude = 'Exclude'
 }
 
 export type DataSource = {
@@ -133,6 +133,19 @@ export type Table = {
   indices: Array<Index>;
   foreignKeys: Array<ForeignKey>;
   constraints: Array<Constraint>;
+  triggers: Array<Trigger>;
+};
+
+export type Trigger = {
+  __typename?: 'Trigger';
+  schemaName: Scalars['String'];
+  tableName: Scalars['String'];
+  triggerSchema: Scalars['String'];
+  name: Scalars['String'];
+  events: Array<Scalars['String']>;
+  activation: Scalars['String'];
+  condition?: Maybe<Scalars['String']>;
+  definition: Scalars['String'];
 };
 
 export type Type = {
@@ -189,6 +202,9 @@ export type GetDataTreeQuery = (
           )>, constraints: Array<(
             { __typename?: 'Constraint' }
             & Pick<Constraint, 'schemaName' | 'tableName' | 'name' | 'type' | 'columnNames'>
+          )>, triggers: Array<(
+            { __typename?: 'Trigger' }
+            & Pick<Trigger, 'triggerSchema' | 'name' | 'events' | 'activation' | 'condition' | 'definition'>
           )> }
         )> }
       )> }

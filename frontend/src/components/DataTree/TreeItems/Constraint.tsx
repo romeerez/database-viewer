@@ -37,7 +37,7 @@ export default function Constraint({
       title={
         <div className="flex-center">
           {name}
-          <div className="text-sm ml-2 text-light-4">
+          <div className="text-sm ml-2 text-light-6">
             ({constraint.columnNames.join(', ')})
           </div>
         </div>

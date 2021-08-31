@@ -1,26 +1,15 @@
 import React from 'react';
-import { Index as IndexType } from '../../../components/DataTree/dataTree.service';
-import { createOpenState } from '../../../components/DataTree/open.state';
-import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
+import { Index as IndexType } from '../dataTree.service';
+import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import { Info } from '../../../icons';
-import { PathState } from '../../../components/DataTree/path.state';
-import routes from '../../../lib/routes';
 
 export default function Index({
-  sourceName,
-  databaseName,
-  schemaName,
   paddingLeft,
   index,
-  openState,
 }: {
-  sourceName: string;
-  databaseName: string;
-  schemaName: string;
   paddingLeft: number;
   index: IndexType;
-  openState: ReturnType<typeof createOpenState>;
 }) {
   const { name } = index;
 
@@ -42,7 +31,7 @@ export default function Index({
       title={
         <div className="flex-center">
           {name}
-          <div className="text-sm ml-2 text-light-4">
+          <div className="text-sm ml-2 text-light-6">
             ({index.columnNames.join(', ')})
             {index.isUnique && <span className="ml-2">UNIQUE</span>}
           </div>

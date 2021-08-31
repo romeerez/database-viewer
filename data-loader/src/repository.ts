@@ -9,6 +9,7 @@ import {
   Constraint,
   ForeignKey,
   Index,
+  Trigger,
 } from 'types';
 import { quote } from 'pg-adapter';
 
@@ -61,7 +62,7 @@ export const getDatabases = async (db: DB, url: string) => {
   }
 
   const rows = await db.query<{ name: string }[]>(
-    'SELECT datname as name FROM pg_database WHERE NOT datistemplate',
+    'SELECT datname AS name FROM pg_database WHERE NOT datistemplate',
   );
 
   return rows.map((row) => {
@@ -187,18 +188,18 @@ export const getForeignKeys = async (
 ): Promise<ForeignKey[]> => {
   return await db.query<ForeignKey[]>(
     `
-        SELECT tc.table_schema           as "schemaName",
-               tc.table_name             as "tableName",
-               ccu.table_schema          as "foreignTableSchemaName",
-               ccu.table_name            as "foreignTableName",
-               tc.constraint_name        as "name",
+        SELECT tc.table_schema           AS "schemaName",
+               tc.table_name             AS "tableName",
+               ccu.table_schema          AS "foreignTableSchemaName",
+               ccu.table_name            AS "foreignTableName",
+               tc.constraint_name        AS "name",
                (
                    SELECT json_agg(kcu.column_name)
                    FROM information_schema.key_column_usage kcu
                    WHERE kcu.constraint_name = tc.constraint_name
                      AND kcu.table_schema = tc.table_schema
-               )                         as "columnNames",
-               json_agg(ccu.column_name) as "foreignColumnNames"
+               )                         AS "columnNames",
+               json_agg(ccu.column_name) AS "foreignColumnNames"
         FROM information_schema.table_constraints tc
                  JOIN information_schema.constraint_column_usage ccu
                       ON ccu.constraint_name = tc.constraint_name
@@ -218,10 +219,10 @@ export const getConstraints = async (
 ): Promise<Constraint[]> => {
   return await db.query<Constraint[]>(
     `
-        SELECT tc.table_schema    as     "schemaName",
-               tc.table_name      as     "tableName",
-               tc.constraint_name as     "name",
-               tc.constraint_type as     "type",
+        SELECT tc.table_schema    AS     "schemaName",
+               tc.table_name      AS     "tableName",
+               tc.constraint_name AS     "name",
+               tc.constraint_type AS     "type",
                json_agg(ccu.column_name) "columnNames"
         FROM information_schema.table_constraints tc
                  JOIN information_schema.constraint_column_usage ccu
@@ -231,6 +232,29 @@ export const getConstraints = async (
           AND tc.table_schema IN (${schemaNames.map(quote).join(', ')})
           AND tc.table_name IN (${tableNames.map(quote).join(', ')})
         GROUP BY "schemaName", "tableName", "name", "type"
+    `,
+  );
+};
+
+export const getTriggers = async (
+  db: DB,
+  schemaNames: string[],
+  tableNames: string[],
+): Promise<Trigger[]> => {
+  return await db.query<Trigger[]>(
+    `
+      SELECT event_object_schema AS "schemaName",
+             event_object_table AS "tableName",
+             trigger_schema AS "triggerSchema",
+             trigger_name AS name,
+             json_agg(event_manipulation) AS events,
+             action_timing AS activation,
+             action_condition AS condition,
+             action_statement AS definition
+      FROM information_schema.triggers
+      WHERE event_object_schema IN (${schemaNames.map(quote).join(', ')})
+        AND event_object_table IN (${tableNames.map(quote).join(', ')})
+      GROUP BY event_object_schema, event_object_table, trigger_schema, trigger_name, action_timing, action_condition, action_statement
     `,
   );
 };

@@ -63,5 +63,11 @@ export const loaders: MercuriusLoaders = {
         tables.map(({ obj }) => obj),
       );
     },
+    async triggers(tables, ctx) {
+      return await dataLoader.getTriggers(
+        ctx.getDB,
+        tables.map(({ obj }) => obj),
+      );
+    },
   },
 };

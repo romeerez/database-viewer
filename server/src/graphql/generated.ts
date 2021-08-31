@@ -89,6 +89,7 @@ export type Table = {
   indices: Array<Index>;
   foreignKeys: Array<ForeignKey>;
   constraints: Array<Constraint>;
+  triggers: Array<Trigger>;
 };
 
 export type Column = {
@@ -132,10 +133,10 @@ export type Constraint = {
 };
 
 export enum ConstraintType {
-  PRIMARY_KEY = 'PRIMARY_KEY',
-  UNIQUE = 'UNIQUE',
-  CHECK = 'CHECK',
-  EXCLUDE = 'EXCLUDE',
+  PrimaryKey = 'PrimaryKey',
+  Unique = 'Unique',
+  Check = 'Check',
+  Exclude = 'Exclude',
 }
 
 export type Type = {
@@ -157,7 +158,23 @@ export type Field = {
   type: Scalars['Int'];
 };
 
+export type Trigger = {
+  __typename?: 'Trigger';
+  schemaName: Scalars['String'];
+  tableName: Scalars['String'];
+  triggerSchema: Scalars['String'];
+  name: Scalars['String'];
+  events: Array<Scalars['String']>;
+  activation: Scalars['String'];
+  condition?: Maybe<Scalars['String']>;
+  definition: Scalars['String'];
+};
+
 export type ResolverTypeWrapper<T> = Promise<T> | T;
+
+export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
+  resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
+};
 
 export type LegacyStitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string;
@@ -173,6 +190,7 @@ export type StitchingResolver<TResult, TParent, TContext, TArgs> =
   | NewStitchingResolver<TResult, TParent, TContext, TArgs>;
 export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
   | ResolverFn<TResult, TParent, TContext, TArgs>
+  | ResolverWithResolve<TResult, TParent, TContext, TArgs>
   | StitchingResolver<TResult, TParent, TContext, TArgs>;
 
 export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
@@ -283,6 +301,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   QueryResult: ResolverTypeWrapper<QueryResult>;
   Field: ResolverTypeWrapper<Field>;
+  Trigger: ResolverTypeWrapper<Trigger>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -303,6 +322,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   QueryResult: QueryResult;
   Field: Field;
+  Trigger: Trigger;
 };
 
 export type QueryResolvers<
@@ -387,6 +407,11 @@ export type TableResolvers<
   >;
   constraints?: Resolver<
     Array<ResolversTypes['Constraint']>,
+    ParentType,
+    ContextType
+  >;
+  triggers?: Resolver<
+    Array<ResolversTypes['Trigger']>,
     ParentType,
     ContextType
   >;
@@ -501,6 +526,25 @@ export type FieldResolvers<
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TriggerResolvers<
+  ContextType = MercuriusContext,
+  ParentType extends ResolversParentTypes['Trigger'] = ResolversParentTypes['Trigger'],
+> = {
+  schemaName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tableName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  triggerSchema?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  events?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  activation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  condition?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  definition?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = MercuriusContext> = {
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
@@ -515,6 +559,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
   Type?: TypeResolvers<ContextType>;
   QueryResult?: QueryResultResolvers<ContextType>;
   Field?: FieldResolvers<ContextType>;
+  Trigger?: TriggerResolvers<ContextType>;
 };
 
 /**
@@ -577,6 +622,7 @@ export interface Loaders<
     indices?: LoaderResolver<Array<Index>, Table, {}, TContext>;
     foreignKeys?: LoaderResolver<Array<ForeignKey>, Table, {}, TContext>;
     constraints?: LoaderResolver<Array<Constraint>, Table, {}, TContext>;
+    triggers?: LoaderResolver<Array<Trigger>, Table, {}, TContext>;
   };
 
   Column?: {
@@ -659,6 +705,17 @@ export interface Loaders<
   Field?: {
     name?: LoaderResolver<Scalars['String'], Field, {}, TContext>;
     type?: LoaderResolver<Scalars['Int'], Field, {}, TContext>;
+  };
+
+  Trigger?: {
+    schemaName?: LoaderResolver<Scalars['String'], Trigger, {}, TContext>;
+    tableName?: LoaderResolver<Scalars['String'], Trigger, {}, TContext>;
+    triggerSchema?: LoaderResolver<Scalars['String'], Trigger, {}, TContext>;
+    name?: LoaderResolver<Scalars['String'], Trigger, {}, TContext>;
+    events?: LoaderResolver<Array<Scalars['String']>, Trigger, {}, TContext>;
+    activation?: LoaderResolver<Scalars['String'], Trigger, {}, TContext>;
+    condition?: LoaderResolver<Maybe<Scalars['String']>, Trigger, {}, TContext>;
+    definition?: LoaderResolver<Scalars['String'], Trigger, {}, TContext>;
   };
 }
 declare module 'mercurius' {

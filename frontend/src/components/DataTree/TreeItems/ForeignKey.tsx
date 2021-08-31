@@ -37,7 +37,7 @@ export default function ForeignKey({
       title={
         <div className="flex-center">
           {name}
-          <div className="ml-2 text-sm text-light-4">
+          <div className="ml-2 text-sm text-light-6">
             ({foreignKey.columnNames.join(', ')}) →{' '}
             {foreignKey.foreignTableName} (
             {foreignKey.foreignColumnNames.join(', ')})

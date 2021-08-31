@@ -39,8 +39,7 @@ export default function QueriesTree() {
           !queryToDelete ? null : (
             <>
               Are you sure to delete{' '}
-              <span className="text-accent">{queryToDelete.name}</span> data
-              source?
+              <span className="text-accent">{queryToDelete.name}</span> query?
             </>
           )
         }

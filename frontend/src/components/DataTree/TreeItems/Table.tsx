@@ -1,15 +1,16 @@
 import React from 'react';
-import { TableTree } from '../../../components/DataTree/dataTree.service';
-import { createOpenState } from '../../../components/DataTree/open.state';
-import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
+import { TableTree } from '../dataTree.service';
+import { createOpenState } from '../open.state';
+import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import { Table as TableIcon } from '../../../icons';
 import { useObserver } from 'mobx-react-lite';
-import { PathState } from '../../../components/DataTree/path.state';
-import Column from '../../../components/DataTree/TreeItems/Column';
-import Constraint from '../../../components/DataTree/TreeItems/Constraint';
-import ForeignKey from '../../../components/DataTree/TreeItems/ForeignKey';
-import Index from '../../../components/DataTree/TreeItems/Index';
+import { PathState } from '../path.state';
+import Column from '../TreeItems/Column';
+import Constraint from '../TreeItems/Constraint';
+import ForeignKey from '../TreeItems/ForeignKey';
+import Index from '../TreeItems/Index';
+import Trigger from '../TreeItems/Trigger';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
 
@@ -91,13 +92,12 @@ export default function Table({
         />
       ))}
       {table.indices.map((index) => (
-        <Index
-          key={index.name}
-          sourceName={sourceName}
-          databaseName={databaseName}
-          schemaName={schemaName}
-          index={index}
-          openState={openState}
+        <Index key={index.name} index={index} paddingLeft={innerPaddingLeft} />
+      ))}
+      {table.triggers.map((trigger) => (
+        <Trigger
+          key={trigger.name}
+          trigger={trigger}
           paddingLeft={innerPaddingLeft}
         />
       ))}

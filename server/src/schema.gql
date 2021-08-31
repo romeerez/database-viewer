@@ -34,6 +34,7 @@ type Table {
   indices: [Index!]!
   foreignKeys: [ForeignKey!]!
   constraints: [Constraint!]!
+  triggers: [Trigger!]!
 }
 
 type Column {
@@ -73,10 +74,10 @@ type Constraint {
 }
 
 enum ConstraintType {
-  PRIMARY_KEY
-  UNIQUE
-  CHECK
-  EXCLUDE
+  PrimaryKey
+  Unique
+  Check
+  Exclude
 }
 
 type Type {
@@ -93,4 +94,15 @@ type QueryResult {
 type Field {
   name: String!
   type: Int!
+}
+
+type Trigger {
+  schemaName: String!
+  tableName: String!
+  triggerSchema: String!
+  name: String!
+  events: [String!]!
+  activation: String!
+  condition: String
+  definition: String!
 }

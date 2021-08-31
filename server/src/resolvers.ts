@@ -17,10 +17,10 @@ export const resolvers: IResolvers = {
   ConstraintType: new GraphQLEnumType({
     name: 'ConstraintType',
     values: {
-      PRIMARY_KEY: { value: 'PRIMARY KEY' },
-      UNIQUE: { value: 'UNIQUE' },
-      CHECK: { value: 'CHECK' },
-      EXCLUDE: { value: 'EXCLUDE' },
+      PrimaryKey: { value: 'PRIMARY KEY' },
+      Unique: { value: 'UNIQUE' },
+      Check: { value: 'CHECK' },
+      Exclude: { value: 'EXCLUDE' },
     },
   }) as never,
 };

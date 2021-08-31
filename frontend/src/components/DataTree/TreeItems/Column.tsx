@@ -48,7 +48,7 @@ export default function Column({
       title={
         <div className="flex-center">
           {name}
-          <div className="text-sm ml-2 text-light-4">
+          <div className="text-sm ml-2 text-light-6">
             {column.type}
             {!isPrimary && !isNullable && <span> not null</span>}
             {column.default && <span> = {column.default}</span>}

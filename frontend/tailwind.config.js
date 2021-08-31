@@ -23,7 +23,7 @@ module.exports = {
         9: 'var(--color-light-9)',
         // 8: 'var(--color-light-8)',
         // 7: 'var(--color-light-7)',
-        // 6: 'var(--color-light-6)',
+        6: 'var(--color-light-6)',
         5: 'var(--color-light-5)',
         4: 'var(--color-light-4)',
         3: 'var(--color-light-3)',
