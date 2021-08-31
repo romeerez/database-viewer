@@ -1,0 +1,15 @@
+.editor :global(.mtk20) {
+  color: #ce9178 !important;
+}
+
+.editor .vimStatusBar {
+  background: #1e1e1e;
+}
+
+.editor .vimStatusBar input {
+  background: none;
+}
+
+.editor.disableCurrentLineHighlight :global(.view-overlays) :global(.current-line) {
+  border: 0;
+}

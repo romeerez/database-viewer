@@ -1,18 +1,13 @@
-import React, { useEffect, useRef } from 'react';
-import Menu from '../../../components/Common/Menu/Menu';
-import { ChevronDown } from '../../../icons';
-import Editor, {
-  ExtendedEditor,
-  useEditorRef,
-} from '../../../components/Editor/Editor';
+import React, { useEffect, useRef, useState } from 'react';
+import Menu from '../../Common/Menu/Menu';
+import { ChevronDown, X } from '../../../icons';
+import Editor, { ExtendedEditor, useEditorRef } from '../../Editor/Editor';
 import { KeyCode } from 'monaco-editor';
-import {
-  updateValue,
-  useValue,
-} from '../../../components/KeyValueStore/keyValue.service';
-import MenuItem from '../../../components/Common/Menu/MenuItem';
+import { updateValue, useValue } from '../../KeyValueStore/keyValue.service';
+import MenuItem from '../../Common/Menu/MenuItem';
 import { observer } from 'mobx-react-lite';
-import { useTablePageContext } from '../../../components/Table/TablePage.context';
+import { useTablePageContext } from '../TablePage.context';
+import cn from 'classnames';
 
 export default observer(function Condition({
   conditionType,
@@ -50,22 +45,16 @@ function ConditionInner({
   const onSubmitRef = useRef(onSubmit);
   onSubmitRef.current = onSubmit;
 
-  const historyKey = `${sourceUrl}/${databaseName}/${schemaName}/${tableName}.${conditionType}`;
+  const conditionKey = `${sourceUrl}/${databaseName}/${schemaName}/${tableName}.${conditionType}`;
+  const historyKey = `${conditionKey}.history`;
+  const valueKey = `${conditionKey}.value`;
 
   const { data: history = [] } = useValue<string[]>(historyKey);
-  const historyRef = useRef(history);
-  historyRef.current = history;
-
-  const submit = (value: string) => {
-    if (value) {
-      const history = historyRef.current;
-      updateValue(historyKey, [
-        value,
-        ...history.filter((query) => query !== value),
-      ]);
-    }
-    onSubmitRef.current(value);
-  };
+  useValue<string>(valueKey, {
+    onLoad(value) {
+      if (value) editorRef.current?.setValue(value);
+    },
+  });
 
   const selectQuery = (query: string) => {
     const editor = editorRef.current as ExtendedEditor;
@@ -73,10 +62,18 @@ function ConditionInner({
     onSubmitRef.current(query);
   };
 
+  const removeFromHistory = (query: string) => {
+    updateValue<string[]>(historyKey, (history = []) =>
+      history.filter((item) => item !== query),
+    );
+  };
+
+  const [hasValue, setHasValue] = useState(false);
+
   useEffect(() => {
     const editor = editorRef.current as ExtendedEditor;
 
-    const disposable = editorRef.current?.onKeyDown((e) => {
+    const keyDown = editorRef.current?.onKeyDown((e) => {
       if (e.keyCode == KeyCode.Enter) {
         // We only prevent enter when the suggest model is not active
         // eslint-disable-next-line
@@ -85,18 +82,36 @@ function ConditionInner({
         );
         if (obj.model.state === 0) {
           e.preventDefault();
-          submit(editor.getValue().trim());
+          const value = editor.getValue().trim();
+          if (value) {
+            updateValue<string[]>(historyKey, (history = []) => [
+              value,
+              ...history.filter((query) => query !== value),
+            ]);
+          }
+          onSubmitRef.current(value);
         }
       }
     });
 
-    return () => disposable?.dispose();
+    const change = editorRef.current?.onDidChangeModelContent(() => {
+      const value = editor.getValue();
+      setHasValue(value.length > 0);
+      updateValue<string>(valueKey, () => value);
+    });
+
+    return () => {
+      keyDown?.dispose();
+      change?.dispose();
+    };
   }, []);
 
   const sqlCondition = conditionType === 'where' ? 'WHERE' : 'ORDER BY';
 
+  const clear = () => editorRef.current?.setValue('');
+
   return (
-    <div className="flex w-full">
+    <div className="flex w-full relative">
       <Menu
         className="flex-shrink-0"
         button={(toggle) => (
@@ -122,8 +137,18 @@ function ConditionInner({
                   toggle();
                   selectQuery(query);
                 }}
+                className="font-mono text-xs justify-between pr-1"
               >
                 {query}
+                <button
+                  className="h-7 w-7 ml-2 flex-center rounded duration-200 transition hover:bg-dark-4"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeFromHistory(query);
+                  }}
+                >
+                  <X size={20} />
+                </button>
               </MenuItem>
             ))}
           </>
@@ -140,8 +165,19 @@ function ConditionInner({
           sourceUrl={sourceUrl}
           databaseName={databaseName}
           schemaName={schemaName}
+          highlightCurrentLine={false}
+          hideVerticalScrollBar
         />
       </div>
+      <button
+        className={cn(
+          'h-8 w-8 absolute top-0.5 right-2 flex-center transition duration-200',
+          !hasValue && 'opacity-0',
+        )}
+        onClick={clear}
+      >
+        <X size={20} />
+      </button>
     </div>
   );
 }

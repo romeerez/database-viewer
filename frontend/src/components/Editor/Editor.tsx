@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { editor as MonacoEditor } from 'monaco-editor';
-import { useDataTree } from '../../components/DataTree/dataTree.service';
-import { enableSuggestions } from '../../components/Editor/suggestions';
-import { useExecuteWidget } from '../../components/Editor/executeWidget';
-import './style.css';
-import { useVim } from '../../components/Editor/useVim';
+import { useDataTree } from '../DataTree/dataTree.service';
+import { enableSuggestions } from './suggestions';
+import { useExecuteWidget } from './executeWidget';
+import { useVim } from './useVim';
 import { useOnWindowResize } from '../../lib/onWindowResize';
+import cn from 'classnames';
+import style from './style.module.css';
 
 MonacoEditor.setTheme('vs-dark');
 
@@ -37,6 +38,8 @@ export default function Editor({
   singleLine,
   suggestionsPrepend,
   autoHeight,
+  highlightCurrentLine = true,
+  hideVerticalScrollBar,
 }: {
   editorRef: { current?: ExtendedEditor };
   sourceUrl?: string;
@@ -50,6 +53,8 @@ export default function Editor({
   singleLine?: boolean;
   suggestionsPrepend?: string;
   autoHeight?: boolean;
+  highlightCurrentLine?: boolean;
+  hideVerticalScrollBar?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const statusBarRef = useRef<HTMLDivElement>(null);
@@ -84,6 +89,14 @@ export default function Editor({
         top: paddingTop,
         bottom: paddingBottom,
       },
+      ...(hideVerticalScrollBar && {
+        overviewRulerLanes: 0,
+        hideCursorInOverviewRuler: true,
+        scrollbar: {
+          vertical: 'hidden',
+        },
+        overviewRulerBorder: false,
+      }),
     };
 
     if (singleLine) {
@@ -146,11 +159,18 @@ export default function Editor({
 
   return (
     <div className="h-full flex flex-col">
-      <div ref={ref} className="flex-grow" />
+      <div
+        ref={ref}
+        className={cn(
+          'flex-grow',
+          style.editor,
+          !highlightCurrentLine && style.disableCurrentLineHighlight,
+        )}
+      />
       {!disableVim && (
         <div
           ref={statusBarRef}
-          className="flex-shrink-0 h-6 editor-vim-statusbar"
+          className={cn('flex-shrink-0 h-6', style.vimStatusBar)}
         />
       )}
     </div>
