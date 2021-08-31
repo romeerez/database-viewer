@@ -72,44 +72,4 @@ export const createOpenState = ({
       if (item) item.open = open;
       if (onChange) onChange(this.items);
     },
-    getDataSource(sourceName: string) {
-      return this.getItem(sourceName);
-    },
-    setDataSource(sourceName: string, open: boolean) {
-      this.setItem(open, sourceName);
-    },
-    getDatabase(sourceName: string, databaseName: string) {
-      return this.getItem(sourceName, databaseName);
-    },
-    setDatabase(sourceName: string, databaseName: string, open: boolean) {
-      this.setItem(open, sourceName, databaseName);
-    },
-    getSchema(sourceName: string, databaseName: string, schemaName: string) {
-      return this.getItem(sourceName, databaseName, schemaName);
-    },
-    setSchema(
-      sourceName: string,
-      databaseName: string,
-      schemaName: string,
-      open: boolean,
-    ) {
-      this.setItem(open, sourceName, databaseName, schemaName);
-    },
-    getTable(
-      sourceName: string,
-      databaseName: string,
-      schemaName: string,
-      tableName: string,
-    ) {
-      return this.getItem(sourceName, databaseName, schemaName, tableName);
-    },
-    setTable(
-      sourceName: string,
-      databaseName: string,
-      schemaName: string,
-      tableName: string,
-      open: boolean,
-    ) {
-      this.setItem(open, sourceName, databaseName, schemaName, tableName);
-    },
   });

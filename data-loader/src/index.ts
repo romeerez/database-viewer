@@ -90,6 +90,36 @@ export const getTables = async (
   );
 };
 
+export const getViews = async (
+  getDB: GetDB,
+  schemas: { url: string; name: string }[],
+) => {
+  if (schemas.length === 0) return [];
+
+  const urls = schemas.map((obj) => obj.url);
+  const uniqueUrls = Array.from(new Set(urls));
+
+  const groupedViews: Record<
+    string,
+    Await<ReturnType<typeof repo.getViews>>
+  > = {};
+
+  await Promise.all(
+    uniqueUrls.map(async (url) => {
+      const schemaNames = schemas
+        .filter((obj) => obj.url === url)
+        .map((obj) => obj.name);
+
+      const db = await getDB(url);
+      groupedViews[url] = await repo.getViews(db, schemaNames, url);
+    }),
+  );
+
+  return schemas.map((obj) =>
+    groupedViews[obj.url].filter((table) => table.schemaName === obj.name),
+  );
+};
+
 export const getSchemaDataTypes = async (
   getDB: GetDB,
   schemas: { url: string; name: string }[],

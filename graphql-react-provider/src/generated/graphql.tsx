@@ -124,6 +124,7 @@ export type Schema = {
   url: Scalars['String'];
   name: Scalars['String'];
   tables: Array<Table>;
+  views: Array<View>;
   types: Array<Type>;
 };
 
@@ -156,6 +157,14 @@ export type Type = {
   schemaName: Scalars['String'];
   id: Scalars['Int'];
   name: Scalars['String'];
+};
+
+export type View = {
+  __typename?: 'View';
+  url: Scalars['String'];
+  schemaName: Scalars['String'];
+  name: Scalars['String'];
+  columns: Array<Column>;
 };
 
 export type CheckConnectionMutationVariables = Exact<{
@@ -208,6 +217,13 @@ export type GetDataTreeQuery = (
           )>, triggers: Array<(
             { __typename?: 'Trigger' }
             & Pick<Trigger, 'triggerSchema' | 'name' | 'events' | 'activation' | 'condition' | 'definition'>
+          )> }
+        )>, views: Array<(
+          { __typename?: 'View' }
+          & Pick<View, 'name'>
+          & { columns: Array<(
+            { __typename?: 'Column' }
+            & Pick<Column, 'name' | 'type' | 'isNullable'>
           )> }
         )> }
       )> }
@@ -332,6 +348,14 @@ export const GetDataTreeDocument = gql`
             activation
             condition
             definition
+          }
+        }
+        views {
+          name
+          columns {
+            name
+            type
+            isNullable
           }
         }
       }

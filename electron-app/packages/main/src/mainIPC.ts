@@ -55,22 +55,37 @@ handle(
     );
 
     const schemasFlat = schemas.flat();
-    const [schemaTypes, tables] = await Promise.all([
+    const [
+      schemaTypes,
+      { tables, columns, indices, foreignKeys, constraints, triggers },
+      { views, viewColumns },
+    ] = await Promise.all([
       dataLoader.getSchemaDataTypes(getDB, schemasFlat),
-      dataLoader.getTables(getDB, schemasFlat),
-    ]);
+      dataLoader.getTables(getDB, schemasFlat).then(async (tables) => {
+        const tablesFlat = tables.flat();
+        const [columns, indices, foreignKeys, constraints, triggers] =
+          await Promise.all([
+            dataLoader.getColumns(getDB, tablesFlat),
+            dataLoader.getIndices(getDB, tablesFlat),
+            dataLoader.getForeignKeys(getDB, tablesFlat),
+            dataLoader.getConstraints(getDB, tablesFlat),
+            dataLoader.getTriggers(getDB, tablesFlat),
+          ]);
 
-    const tablesFlat = tables.flat();
-    const [columns, indices, foreignKeys, constraints] = await Promise.all([
-      dataLoader.getColumns(getDB, tablesFlat),
-      dataLoader.getIndices(getDB, tablesFlat),
-      dataLoader.getForeignKeys(getDB, tablesFlat),
-      dataLoader.getConstraints(getDB, tablesFlat),
+        return { tables, columns, indices, foreignKeys, constraints, triggers };
+      }),
+      dataLoader.getViews(getDB, schemasFlat).then(async (views) => {
+        const viewsFlat = views.flat();
+        const viewColumns = await dataLoader.getColumns(getDB, viewsFlat);
+
+        return { views, viewColumns };
+      }),
     ]);
 
     let databaseIndex = -1;
     let schemaIndex = -1;
     let tableIndex = -1;
+    let viewIndex = -1;
 
     return {
       dataSources: dataSources.map((obj, dataSourceIndex) => ({
@@ -96,6 +111,15 @@ handle(
                     indices: indices[tableIndex],
                     foreignKeys: foreignKeys[tableIndex],
                     constraints: constraints[tableIndex],
+                    triggers: triggers[tableIndex],
+                  };
+                }),
+                views: views[schemaIndex].map((view) => {
+                  viewIndex++;
+
+                  return {
+                    ...view,
+                    columns: viewColumns[viewIndex],
                   };
                 }),
               };

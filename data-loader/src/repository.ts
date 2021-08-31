@@ -115,8 +115,29 @@ export const getTables = async (
       table_name "name"
     FROM information_schema.tables
     WHERE table_schema IN (${schemaNames.map(quote).join(', ')})
+      AND table_type = 'BASE TABLE'
     ORDER BY table_name
   `,
+  );
+
+  return rows.map((table) => ({ ...table, url }));
+};
+
+export const getViews = async (
+  db: DB,
+  schemaNames: string[],
+  url: string,
+): Promise<Pick<Table, 'url' | 'schemaName' | 'name'>[]> => {
+  const rows = await db.query<{ schemaName: string; name: string }[]>(
+    `
+      SELECT
+        table_schema "schemaName",
+        table_name "name"
+      FROM information_schema.tables
+      WHERE table_schema IN (${schemaNames.map(quote).join(', ')})
+        AND table_type = 'VIEW'
+      ORDER BY table_name
+    `,
   );
 
   return rows.map((table) => ({ ...table, url }));
@@ -152,7 +173,7 @@ export const getColumns = async (
         FROM information_schema.columns
         WHERE table_schema IN (${schemaNames.map(quote).join(', ')})
           AND table_name IN (${tableNames.map(quote).join(', ')})
-        ORDER BY column_name
+        ORDER BY ordinal_position
     `,
   );
 };

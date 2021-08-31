@@ -1,14 +1,17 @@
 import React from 'react';
-import { SchemaTree } from '../../../components/DataTree/dataTree.service';
-import { createOpenState } from '../../../components/DataTree/open.state';
-import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
-import MenuItem from '../../../components/Common/Menu/MenuItem';
+import { SchemaTree } from '../dataTree.service';
+import { createOpenState } from '../open.state';
+import TreeItem from '../TreeItems/TreeItem';
+import MenuItem from '../../Common/Menu/MenuItem';
 import { FlowChart } from '../../../icons';
-import Table from '../../../components/DataTree/TreeItems/Table';
+import Folder from '../TreeItems/Folder';
 import { useObserver } from 'mobx-react-lite';
-import { PathState } from '../../../components/DataTree/path.state';
+import { PathState } from '../path.state';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
+import { Folder as FolderType } from '../dataTree.types';
+import Table from './Table';
+import View from './View';
 
 export default function Schema({
   sourceName,
@@ -27,11 +30,14 @@ export default function Schema({
 }) {
   const { name } = schema;
   const open = useObserver(() =>
-    openState.getSchema(sourceName, databaseName, name),
+    openState.getItem(sourceName, databaseName, name),
   );
 
-  const innerTop = top + 32;
-  const innerPaddingLeft = paddingLeft + 16;
+  const folderTop = top + 32;
+  const folderPaddingLeft = paddingLeft + 16;
+
+  const innerTop = folderTop + 32;
+  const innerPaddingLeft = folderPaddingLeft + 16;
 
   return (
     <TreeItem
@@ -45,7 +51,7 @@ export default function Schema({
       title={name}
       open={open}
       setOpen={(open) =>
-        openState.setSchema(sourceName, databaseName, name, open)
+        openState.setItem(open, sourceName, databaseName, name)
       }
       openTree={() => PathState.setPath([sourceName, databaseName, name])}
       to={routes.schema(sourceName, databaseName, name)}
@@ -56,18 +62,52 @@ export default function Schema({
         </>
       )}
     >
-      {schema.tables.map((table) => (
-        <Table
-          key={table.name}
-          sourceName={sourceName}
-          databaseName={databaseName}
-          schemaName={name}
-          table={table}
-          top={innerTop}
-          openState={openState}
-          paddingLeft={innerPaddingLeft}
-        />
-      ))}
+      <Folder
+        sourceName={sourceName}
+        databaseName={databaseName}
+        schemaName={schema.name}
+        type={FolderType.tables}
+        count={schema.tables.length}
+        top={folderTop}
+        paddingLeft={folderPaddingLeft}
+        openState={openState}
+      >
+        {schema.tables.map((table) => (
+          <Table
+            key={table.name}
+            sourceName={sourceName}
+            databaseName={databaseName}
+            schemaName={schema.name}
+            table={table}
+            top={innerTop}
+            openState={openState}
+            paddingLeft={innerPaddingLeft}
+          />
+        ))}
+      </Folder>
+      <Folder
+        sourceName={sourceName}
+        databaseName={databaseName}
+        schemaName={schema.name}
+        type={FolderType.views}
+        count={schema.views.length}
+        top={folderTop}
+        paddingLeft={folderPaddingLeft}
+        openState={openState}
+      >
+        {schema.views.map((view) => (
+          <View
+            key={view.name}
+            sourceName={sourceName}
+            databaseName={databaseName}
+            schemaName={schema.name}
+            view={view}
+            top={innerTop}
+            openState={openState}
+            paddingLeft={innerPaddingLeft}
+          />
+        ))}
+      </Folder>
     </TreeItem>
   );
 }

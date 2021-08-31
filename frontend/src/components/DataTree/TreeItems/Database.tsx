@@ -1,14 +1,14 @@
 import React from 'react';
 import { Database as DatabaseIcon } from '../../../icons';
-import { createOpenState } from '../../../components/DataTree/open.state';
+import { createOpenState } from '../open.state';
 import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import Schema from '../../../components/DataTree/TreeItems/Schema';
 import { useObserver } from 'mobx-react-lite';
-import { PathState } from '../../../components/DataTree/path.state';
+import { PathState } from '../path.state';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
-import { DatabaseTree } from '../../../components/DataTree/dataTree.service';
+import { DatabaseTree } from '../dataTree.service';
 
 export default function Database({
   sourceName,
@@ -24,7 +24,7 @@ export default function Database({
   openState: ReturnType<typeof createOpenState>;
 }) {
   const { name } = database;
-  const open = useObserver(() => openState.getDatabase(sourceName, name));
+  const open = useObserver(() => openState.getItem(sourceName, name));
   const innerTop = top + 32;
   const innerPaddingLeft = paddingLeft + 16;
 
@@ -42,7 +42,7 @@ export default function Database({
       )}
       title={name}
       open={open}
-      setOpen={(open) => openState.setDatabase(sourceName, name, open)}
+      setOpen={(open) => openState.setItem(open, sourceName, name)}
       openTree={() => PathState.setPath([sourceName, name])}
       to={routes.database(sourceName, name)}
       menu={() => (

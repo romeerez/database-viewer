@@ -23,6 +23,7 @@ type Schema {
   url: String!
   name: String!
   tables: [Table!]!
+  views: [View!]!
   types: [Type!]!
 }
 
@@ -35,6 +36,13 @@ type Table {
   foreignKeys: [ForeignKey!]!
   constraints: [Constraint!]!
   triggers: [Trigger!]!
+}
+
+type View {
+  url: String!
+  schemaName: String!
+  name: String!
+  columns: [Column!]!
 }
 
 type Column {

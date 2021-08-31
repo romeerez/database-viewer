@@ -52,6 +52,14 @@ query GetDataTree($urls: [String!]!) {
             definition
           }
         }
+        views {
+          name
+          columns {
+            name
+            type
+            isNullable
+          }
+        }
       }
     }
   }

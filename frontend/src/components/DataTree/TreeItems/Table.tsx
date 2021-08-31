@@ -33,7 +33,7 @@ export default function Table({
 }) {
   const { name } = table;
   const open = useObserver(() =>
-    openState.getTable(sourceName, databaseName, schemaName, name),
+    openState.getItem(sourceName, databaseName, schemaName, 'tables', name),
   );
   const innerPaddingLeft = paddingLeft + 36;
 
@@ -48,7 +48,14 @@ export default function Table({
       title={name}
       open={open}
       setOpen={(open) =>
-        openState.setTable(sourceName, databaseName, schemaName, name, open)
+        openState.setItem(
+          open,
+          sourceName,
+          databaseName,
+          schemaName,
+          'tables',
+          name,
+        )
       }
       openTree={() =>
         PathState.setPath([sourceName, databaseName, schemaName, name])

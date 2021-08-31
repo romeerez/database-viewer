@@ -21,6 +21,8 @@ export type SchemaTree = DatabaseTree['schemas'][number];
 
 export type TableTree = SchemaTree['tables'][number];
 
+export type ViewTree = SchemaTree['views'][number];
+
 export type Column = TableTree['columns'][number];
 
 export type Index = TableTree['indices'][number];

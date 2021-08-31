@@ -13,6 +13,6 @@ export default {
     databaseName = ':databaseName',
     schemaName = ':schemaName',
     tableName = ':tableName',
-  ) => `/data/${sourceName}/${databaseName}/${schemaName}/${tableName}`,
+  ) => `/data/${sourceName}/${databaseName}/${schemaName}/table/${tableName}`,
   query: (name = ':name') => `/queries/${name}`,
 };

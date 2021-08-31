@@ -25,3 +25,5 @@ export { TableChart as Logo } from '@styled-icons/material-rounded/TableChart';
 export { Upload } from '@styled-icons/material/Upload';
 export { Spinner3 as Spinner } from '@styled-icons/evil';
 export { Text as Trigger } from '@styled-icons/boxicons-regular/Text';
+export { Folder } from '@styled-icons/boxicons-regular/Folder';
+export { Pageview } from '@styled-icons/material/Pageview';

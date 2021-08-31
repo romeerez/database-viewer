@@ -77,6 +77,7 @@ export type Schema = {
   url: Scalars['String'];
   name: Scalars['String'];
   tables: Array<Table>;
+  views: Array<View>;
   types: Array<Type>;
 };
 
@@ -90,6 +91,14 @@ export type Table = {
   foreignKeys: Array<ForeignKey>;
   constraints: Array<Constraint>;
   triggers: Array<Trigger>;
+};
+
+export type View = {
+  __typename?: 'View';
+  url: Scalars['String'];
+  schemaName: Scalars['String'];
+  name: Scalars['String'];
+  columns: Array<Column>;
 };
 
 export type Column = {
@@ -292,6 +301,7 @@ export type ResolversTypes = {
   Database: ResolverTypeWrapper<Database>;
   Schema: ResolverTypeWrapper<Schema>;
   Table: ResolverTypeWrapper<Table>;
+  View: ResolverTypeWrapper<View>;
   Column: ResolverTypeWrapper<Column>;
   Index: ResolverTypeWrapper<Index>;
   ForeignKey: ResolverTypeWrapper<ForeignKey>;
@@ -314,6 +324,7 @@ export type ResolversParentTypes = {
   Database: Database;
   Schema: Schema;
   Table: Table;
+  View: View;
   Column: Column;
   Index: Index;
   ForeignKey: ForeignKey;
@@ -387,6 +398,7 @@ export type SchemaResolvers<
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   tables?: Resolver<Array<ResolversTypes['Table']>, ParentType, ContextType>;
+  views?: Resolver<Array<ResolversTypes['View']>, ParentType, ContextType>;
   types?: Resolver<Array<ResolversTypes['Type']>, ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -415,6 +427,17 @@ export type TableResolvers<
     ParentType,
     ContextType
   >;
+  isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ViewResolvers<
+  ContextType = MercuriusContext,
+  ParentType extends ResolversParentTypes['View'] = ResolversParentTypes['View'],
+> = {
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  schemaName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  columns?: Resolver<Array<ResolversTypes['Column']>, ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -552,6 +575,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
   Database?: DatabaseResolvers<ContextType>;
   Schema?: SchemaResolvers<ContextType>;
   Table?: TableResolvers<ContextType>;
+  View?: ViewResolvers<ContextType>;
   Column?: ColumnResolvers<ContextType>;
   Index?: IndexResolvers<ContextType>;
   ForeignKey?: ForeignKeyResolvers<ContextType>;
@@ -611,6 +635,7 @@ export interface Loaders<
     url?: LoaderResolver<Scalars['String'], Schema, {}, TContext>;
     name?: LoaderResolver<Scalars['String'], Schema, {}, TContext>;
     tables?: LoaderResolver<Array<Table>, Schema, {}, TContext>;
+    views?: LoaderResolver<Array<View>, Schema, {}, TContext>;
     types?: LoaderResolver<Array<Type>, Schema, {}, TContext>;
   };
 
@@ -623,6 +648,13 @@ export interface Loaders<
     foreignKeys?: LoaderResolver<Array<ForeignKey>, Table, {}, TContext>;
     constraints?: LoaderResolver<Array<Constraint>, Table, {}, TContext>;
     triggers?: LoaderResolver<Array<Trigger>, Table, {}, TContext>;
+  };
+
+  View?: {
+    url?: LoaderResolver<Scalars['String'], View, {}, TContext>;
+    schemaName?: LoaderResolver<Scalars['String'], View, {}, TContext>;
+    name?: LoaderResolver<Scalars['String'], View, {}, TContext>;
+    columns?: LoaderResolver<Array<Column>, View, {}, TContext>;
   };
 
   Column?: {

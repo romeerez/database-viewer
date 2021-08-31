@@ -31,6 +31,12 @@ export const loaders: MercuriusLoaders = {
         schemas.map(({ obj }) => obj),
       );
     },
+    async views(schemas, ctx) {
+      return await dataLoader.getViews(
+        ctx.getDB,
+        schemas.map(({ obj }) => obj),
+      );
+    },
     async types(schemas, ctx) {
       return await dataLoader.getSchemaDataTypes(
         ctx.getDB,
@@ -67,6 +73,14 @@ export const loaders: MercuriusLoaders = {
       return await dataLoader.getTriggers(
         ctx.getDB,
         tables.map(({ obj }) => obj),
+      );
+    },
+  },
+  View: {
+    async columns(views, ctx) {
+      return await dataLoader.getColumns(
+        ctx.getDB,
+        views.map(({ obj }) => obj),
       );
     },
   },

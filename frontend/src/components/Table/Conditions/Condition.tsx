@@ -45,7 +45,7 @@ function ConditionInner({
   const onSubmitRef = useRef(onSubmit);
   onSubmitRef.current = onSubmit;
 
-  const conditionKey = `${sourceUrl}/${databaseName}/${schemaName}/${tableName}.${conditionType}`;
+  const conditionKey = `${sourceUrl}/${databaseName}/${schemaName}/table/${tableName}.${conditionType}`;
   const historyKey = `${conditionKey}.history`;
   const valueKey = `${conditionKey}.value`;
 
