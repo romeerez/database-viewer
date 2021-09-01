@@ -108,6 +108,9 @@ export const useDataService = ({
       store.update({ rawFields: result.fields, rows: result.rows });
       errorService.setError();
     },
+    onError(error) {
+      errorService.setError(error.message);
+    },
   });
 
   const [loadCount] = useQueryRowsLazyQuery({
@@ -116,6 +119,9 @@ export const useDataService = ({
       const count = data.executeQuery.rows[0][0];
       store.update({ count: count ? parseInt(count) : 0 });
     },
+    onError(error) {
+      errorService.setError(error.message);
+    },
   });
 
   const [loadRows] = useQueryRowsLazyQuery({
@@ -123,6 +129,9 @@ export const useDataService = ({
     onCompleted(data) {
       store.update({ rows: data.executeQuery.rows });
       errorService.setError();
+    },
+    onError(error) {
+      errorService.setError(error.message);
     },
   });
 

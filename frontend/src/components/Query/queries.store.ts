@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { QueryInLocalStore } from '../../components/Query/types';
+import { QueryInLocalStore } from './types';
 import { queriesDb } from '../../lib/db';
 import { Status } from '../../lib/indexedDB';
 

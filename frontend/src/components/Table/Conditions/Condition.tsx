@@ -133,22 +133,24 @@ function ConditionInner({
             {history.map((query, i) => (
               <MenuItem
                 key={i}
+                component="div"
                 onClick={() => {
                   toggle();
                   selectQuery(query);
                 }}
-                className="font-mono text-xs justify-between pr-1"
+                className="font-mono text-xs pl-0 pr-0 relative"
               >
-                {query}
-                <button
-                  className="h-7 w-7 ml-2 flex-center rounded duration-200 transition hover:bg-dark-4"
+                <button className="pl-3 pr-11 h-full w-full">{query}</button>
+                <div
+                  tabIndex="0"
+                  className="absolute right-2 h-7 w-7 ml-2 flex-center rounded duration-200 transition hover:bg-dark-4"
                   onClick={(e) => {
                     e.stopPropagation();
                     removeFromHistory(query);
                   }}
                 >
                   <X size={20} />
-                </button>
+                </div>
               </MenuItem>
             ))}
           </>
