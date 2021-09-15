@@ -1,11 +1,12 @@
 import { useLocalObservable } from 'mobx-react-lite';
 import { Field, GetDataTreeQuery, QueryResult } from 'types';
-import { useDataTree } from '../../../components/DataTree/dataTree.service';
+import { useDataTree } from '../../DataTree/dataTree.service';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useRouteMatch } from 'react-router-dom';
-import { dataSourcesStore } from '../../../components/DataSource/dataSource.store';
+import { dataSourcesStore } from '../../DataSource/dataSource.store';
 import { observable } from 'mobx';
+import { getTypeName } from '../../../lib/utils';
 
 const defaultLimit = 10;
 
@@ -61,7 +62,7 @@ export const useDataStore = () => {
           try {
             return getFieldsInfo(store);
           } catch (error) {
-            toast(error.message, { type: 'error' });
+            toast((error as Error).message, { type: 'error' });
           }
         },
         get primaryColumns(): { name: string; index: number }[] {
@@ -148,8 +149,7 @@ const getFieldsInfo = ({
   const schemaTypes = schema.types;
 
   return rawFields.map(({ name, type: typeId }) => {
-    const schemaType = schemaTypes.find((type) => type.id === typeId);
-    const type = schemaType || sourceTypes.find((type) => type.id === typeId);
+    const type = getTypeName(typeId, schemaTypes, sourceTypes);
     if (!type) {
       throw new Error(`Can't find type for ${name} column`);
     }
@@ -165,7 +165,7 @@ const getFieldsInfo = ({
 
     return {
       name,
-      type: type.name,
+      type: type,
       isPrimary,
       isNullable: !column.isNullable,
       default: column.default || undefined,

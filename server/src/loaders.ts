@@ -37,6 +37,12 @@ export const loaders: MercuriusLoaders = {
         schemas.map(({ obj }) => obj),
       );
     },
+    async procedures(schemas, ctx) {
+      return await dataLoader.getProcedures(
+        ctx.getDB,
+        schemas.map(({ obj }) => obj),
+      );
+    },
     async types(schemas, ctx) {
       return await dataLoader.getSchemaDataTypes(
         ctx.getDB,

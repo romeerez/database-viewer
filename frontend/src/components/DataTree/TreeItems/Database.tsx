@@ -8,15 +8,17 @@ import { useObserver } from 'mobx-react-lite';
 import { PathState } from '../path.state';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
-import { DatabaseTree } from '../dataTree.service';
+import { DatabaseTree, DataSourceTree } from '../dataTree.service';
 
 export default function Database({
+  source,
   sourceName,
   top,
   paddingLeft,
   database,
   openState,
 }: {
+  source: DataSourceTree;
   sourceName: string;
   top: number;
   paddingLeft: number;
@@ -55,6 +57,7 @@ export default function Database({
       {database.schemas.map((schema) => (
         <Schema
           key={schema.name}
+          source={source}
           sourceName={sourceName}
           databaseName={name}
           schema={schema}

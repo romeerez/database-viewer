@@ -1,5 +1,5 @@
-import React from 'react';
-import { SchemaTree } from '../dataTree.service';
+import React, { useMemo } from 'react';
+import { DataSourceTree, SchemaTree } from '../dataTree.service';
 import { createOpenState } from '../open.state';
 import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../Common/Menu/MenuItem';
@@ -12,8 +12,10 @@ import cn from 'classnames';
 import { Folder as FolderType } from '../dataTree.types';
 import Table from './Table';
 import View from './View';
+import Procedure from './Procedure';
 
 export default function Schema({
+  source,
   sourceName,
   databaseName,
   top,
@@ -21,6 +23,7 @@ export default function Schema({
   schema,
   openState,
 }: {
+  source: DataSourceTree;
   sourceName: string;
   databaseName: string;
   top: number;
@@ -38,6 +41,15 @@ export default function Schema({
 
   const innerTop = folderTop + 32;
   const innerPaddingLeft = folderPaddingLeft + 16;
+
+  const [routines, triggers, aggregates] = useMemo(
+    () => [
+      schema.procedures.filter((proc) => proc.kind === 'f' && !proc.isTrigger),
+      schema.procedures.filter((proc) => proc.isTrigger),
+      schema.procedures.filter((proc) => proc.kind === 'a'),
+    ],
+    [schema.procedures],
+  );
 
   return (
     <TreeItem
@@ -104,6 +116,66 @@ export default function Schema({
             view={view}
             top={innerTop}
             openState={openState}
+            paddingLeft={innerPaddingLeft}
+          />
+        ))}
+      </Folder>
+      <Folder
+        sourceName={sourceName}
+        databaseName={databaseName}
+        schemaName={schema.name}
+        type={FolderType.routines}
+        count={routines.length}
+        top={folderTop}
+        paddingLeft={folderPaddingLeft}
+        openState={openState}
+      >
+        {routines.map((routine) => (
+          <Procedure
+            key={routine.name}
+            source={source}
+            schema={schema}
+            procedure={routine}
+            paddingLeft={innerPaddingLeft}
+          />
+        ))}
+      </Folder>
+      <Folder
+        sourceName={sourceName}
+        databaseName={databaseName}
+        schemaName={schema.name}
+        type={FolderType.triggers}
+        count={triggers.length}
+        top={folderTop}
+        paddingLeft={folderPaddingLeft}
+        openState={openState}
+      >
+        {triggers.map((routine) => (
+          <Procedure
+            key={routine.name}
+            source={source}
+            schema={schema}
+            procedure={routine}
+            paddingLeft={innerPaddingLeft}
+          />
+        ))}
+      </Folder>
+      <Folder
+        sourceName={sourceName}
+        databaseName={databaseName}
+        schemaName={schema.name}
+        type={FolderType.aggregates}
+        count={aggregates.length}
+        top={folderTop}
+        paddingLeft={folderPaddingLeft}
+        openState={openState}
+      >
+        {aggregates.map((routine) => (
+          <Procedure
+            key={routine.name}
+            source={source}
+            schema={schema}
+            procedure={routine}
             paddingLeft={innerPaddingLeft}
           />
         ))}

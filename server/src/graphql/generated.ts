@@ -78,6 +78,7 @@ export type Schema = {
   name: Scalars['String'];
   tables: Array<Table>;
   views: Array<View>;
+  procedures: Array<Procedure>;
   types: Array<Type>;
 };
 
@@ -99,6 +100,18 @@ export type View = {
   schemaName: Scalars['String'];
   name: Scalars['String'];
   columns: Array<Column>;
+};
+
+export type Procedure = {
+  __typename?: 'Procedure';
+  schemaName: Scalars['String'];
+  name: Scalars['String'];
+  returnSet: Scalars['Boolean'];
+  returnType: Scalars['Int'];
+  kind: Scalars['String'];
+  argTypes?: Maybe<Array<Scalars['Int']>>;
+  argModes?: Maybe<Array<Scalars['String']>>;
+  argNames?: Maybe<Array<Scalars['String']>>;
 };
 
 export type Column = {
@@ -302,13 +315,14 @@ export type ResolversTypes = {
   Schema: ResolverTypeWrapper<Schema>;
   Table: ResolverTypeWrapper<Table>;
   View: ResolverTypeWrapper<View>;
+  Procedure: ResolverTypeWrapper<Procedure>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Column: ResolverTypeWrapper<Column>;
   Index: ResolverTypeWrapper<Index>;
   ForeignKey: ResolverTypeWrapper<ForeignKey>;
   Constraint: ResolverTypeWrapper<Constraint>;
   ConstraintType: ConstraintType;
   Type: ResolverTypeWrapper<Type>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   QueryResult: ResolverTypeWrapper<QueryResult>;
   Field: ResolverTypeWrapper<Field>;
   Trigger: ResolverTypeWrapper<Trigger>;
@@ -325,12 +339,13 @@ export type ResolversParentTypes = {
   Schema: Schema;
   Table: Table;
   View: View;
+  Procedure: Procedure;
+  Int: Scalars['Int'];
   Column: Column;
   Index: Index;
   ForeignKey: ForeignKey;
   Constraint: Constraint;
   Type: Type;
-  Int: Scalars['Int'];
   QueryResult: QueryResult;
   Field: Field;
   Trigger: Trigger;
@@ -399,6 +414,11 @@ export type SchemaResolvers<
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   tables?: Resolver<Array<ResolversTypes['Table']>, ParentType, ContextType>;
   views?: Resolver<Array<ResolversTypes['View']>, ParentType, ContextType>;
+  procedures?: Resolver<
+    Array<ResolversTypes['Procedure']>,
+    ParentType,
+    ContextType
+  >;
   types?: Resolver<Array<ResolversTypes['Type']>, ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -438,6 +458,33 @@ export type ViewResolvers<
   schemaName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   columns?: Resolver<Array<ResolversTypes['Column']>, ParentType, ContextType>;
+  isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProcedureResolvers<
+  ContextType = MercuriusContext,
+  ParentType extends ResolversParentTypes['Procedure'] = ResolversParentTypes['Procedure'],
+> = {
+  schemaName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  returnSet?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  returnType?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  kind?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  argTypes?: Resolver<
+    Maybe<Array<ResolversTypes['Int']>>,
+    ParentType,
+    ContextType
+  >;
+  argModes?: Resolver<
+    Maybe<Array<ResolversTypes['String']>>,
+    ParentType,
+    ContextType
+  >;
+  argNames?: Resolver<
+    Maybe<Array<ResolversTypes['String']>>,
+    ParentType,
+    ContextType
+  >;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -576,6 +623,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
   Schema?: SchemaResolvers<ContextType>;
   Table?: TableResolvers<ContextType>;
   View?: ViewResolvers<ContextType>;
+  Procedure?: ProcedureResolvers<ContextType>;
   Column?: ColumnResolvers<ContextType>;
   Index?: IndexResolvers<ContextType>;
   ForeignKey?: ForeignKeyResolvers<ContextType>;
@@ -636,6 +684,7 @@ export interface Loaders<
     name?: LoaderResolver<Scalars['String'], Schema, {}, TContext>;
     tables?: LoaderResolver<Array<Table>, Schema, {}, TContext>;
     views?: LoaderResolver<Array<View>, Schema, {}, TContext>;
+    procedures?: LoaderResolver<Array<Procedure>, Schema, {}, TContext>;
     types?: LoaderResolver<Array<Type>, Schema, {}, TContext>;
   };
 
@@ -655,6 +704,32 @@ export interface Loaders<
     schemaName?: LoaderResolver<Scalars['String'], View, {}, TContext>;
     name?: LoaderResolver<Scalars['String'], View, {}, TContext>;
     columns?: LoaderResolver<Array<Column>, View, {}, TContext>;
+  };
+
+  Procedure?: {
+    schemaName?: LoaderResolver<Scalars['String'], Procedure, {}, TContext>;
+    name?: LoaderResolver<Scalars['String'], Procedure, {}, TContext>;
+    returnSet?: LoaderResolver<Scalars['Boolean'], Procedure, {}, TContext>;
+    returnType?: LoaderResolver<Scalars['Int'], Procedure, {}, TContext>;
+    kind?: LoaderResolver<Scalars['String'], Procedure, {}, TContext>;
+    argTypes?: LoaderResolver<
+      Maybe<Array<Scalars['Int']>>,
+      Procedure,
+      {},
+      TContext
+    >;
+    argModes?: LoaderResolver<
+      Maybe<Array<Scalars['String']>>,
+      Procedure,
+      {},
+      TContext
+    >;
+    argNames?: LoaderResolver<
+      Maybe<Array<Scalars['String']>>,
+      Procedure,
+      {},
+      TContext
+    >;
   };
 
   Column?: {

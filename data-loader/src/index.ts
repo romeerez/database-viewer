@@ -69,10 +69,7 @@ export const getTables = async (
   const urls = schemas.map((obj) => obj.url);
   const uniqueUrls = Array.from(new Set(urls));
 
-  const groupedTables: Record<
-    string,
-    Await<ReturnType<typeof repo.getTables>>
-  > = {};
+  const grouped: Record<string, Await<ReturnType<typeof repo.getTables>>> = {};
 
   await Promise.all(
     uniqueUrls.map(async (url) => {
@@ -81,12 +78,12 @@ export const getTables = async (
         .map((obj) => obj.name);
 
       const db = await getDB(url);
-      groupedTables[url] = await repo.getTables(db, schemaNames, url);
+      grouped[url] = await repo.getTables(db, schemaNames, url);
     }),
   );
 
-  return schemas.map((obj) =>
-    groupedTables[obj.url].filter((table) => table.schemaName === obj.name),
+  return schemas.map((schema) =>
+    grouped[schema.url].filter((table) => table.schemaName === schema.name),
   );
 };
 
@@ -99,9 +96,36 @@ export const getViews = async (
   const urls = schemas.map((obj) => obj.url);
   const uniqueUrls = Array.from(new Set(urls));
 
-  const groupedViews: Record<
+  const grouped: Record<string, Await<ReturnType<typeof repo.getViews>>> = {};
+
+  await Promise.all(
+    uniqueUrls.map(async (url) => {
+      const schemaNames = schemas
+        .filter((obj) => obj.url === url)
+        .map((obj) => obj.name);
+
+      const db = await getDB(url);
+      grouped[url] = await repo.getViews(db, schemaNames, url);
+    }),
+  );
+
+  return schemas.map((schema) =>
+    grouped[schema.url].filter((item) => item.schemaName === schema.name),
+  );
+};
+
+export const getProcedures = async (
+  getDB: GetDB,
+  schemas: { url: string; name: string }[],
+) => {
+  if (schemas.length === 0) return [];
+
+  const urls = schemas.map((obj) => obj.url);
+  const uniqueUrls = Array.from(new Set(urls));
+
+  const grouped: Record<
     string,
-    Await<ReturnType<typeof repo.getViews>>
+    Await<ReturnType<typeof repo.getProcedures>>
   > = {};
 
   await Promise.all(
@@ -111,12 +135,12 @@ export const getViews = async (
         .map((obj) => obj.name);
 
       const db = await getDB(url);
-      groupedViews[url] = await repo.getViews(db, schemaNames, url);
+      grouped[url] = await repo.getProcedures(db, schemaNames);
     }),
   );
 
-  return schemas.map((obj) =>
-    groupedViews[obj.url].filter((table) => table.schemaName === obj.name),
+  return schemas.map((schema) =>
+    grouped[schema.url].filter((item) => item.schemaName === schema.name),
   );
 };
 

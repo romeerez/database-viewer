@@ -10,7 +10,7 @@ import Column from '../TreeItems/Column';
 import Constraint from '../TreeItems/Constraint';
 import ForeignKey from '../TreeItems/ForeignKey';
 import Index from '../TreeItems/Index';
-import Trigger from '../TreeItems/Trigger';
+import TableTrigger from './TableTrigger';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
 
@@ -102,7 +102,7 @@ export default function Table({
         <Index key={index.name} index={index} paddingLeft={innerPaddingLeft} />
       ))}
       {table.triggers.map((trigger) => (
-        <Trigger
+        <TableTrigger
           key={trigger.name}
           trigger={trigger}
           paddingLeft={innerPaddingLeft}

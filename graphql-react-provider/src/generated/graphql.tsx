@@ -96,6 +96,19 @@ export type MutationCheckConnectionArgs = {
   url: Scalars['String'];
 };
 
+export type Procedure = {
+  __typename?: 'Procedure';
+  schemaName: Scalars['String'];
+  name: Scalars['String'];
+  returnSet: Scalars['Boolean'];
+  returnType: Scalars['Int'];
+  kind: Scalars['String'];
+  isTrigger: Scalars['Boolean'];
+  argTypes?: Maybe<Array<Scalars['Int']>>;
+  argModes?: Maybe<Array<Scalars['String']>>;
+  argNames?: Maybe<Array<Scalars['String']>>;
+};
+
 export type Query = {
   __typename?: 'Query';
   dataSources: Array<DataSource>;
@@ -125,6 +138,7 @@ export type Schema = {
   name: Scalars['String'];
   tables: Array<Table>;
   views: Array<View>;
+  procedures: Array<Procedure>;
   types: Array<Type>;
 };
 
@@ -225,6 +239,9 @@ export type GetDataTreeQuery = (
             { __typename?: 'Column' }
             & Pick<Column, 'name' | 'type' | 'isNullable'>
           )> }
+        )>, procedures: Array<(
+          { __typename?: 'Procedure' }
+          & Pick<Procedure, 'schemaName' | 'name' | 'returnSet' | 'returnType' | 'kind' | 'isTrigger' | 'argTypes' | 'argModes' | 'argNames'>
         )> }
       )> }
     )> }
@@ -357,6 +374,17 @@ export const GetDataTreeDocument = gql`
             type
             isNullable
           }
+        }
+        procedures {
+          schemaName
+          name
+          returnSet
+          returnType
+          kind
+          isTrigger
+          argTypes
+          argModes
+          argNames
         }
       }
     }

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { DataSourceInLocalStoreWithDriver } from '../../components/DataSource/types';
+import { DataSourceInLocalStoreWithDriver } from '../DataSource/types';
 import { useObserver } from 'mobx-react-lite';
 import {
   DataTreeState,
   noSearchOpenState,
   searchOpenState,
-} from '../../components/DataTree/dataTree.state';
-import { dataSourcesStore } from '../../components/DataSource/dataSource.store';
+} from './dataTree.state';
+import { dataSourcesStore } from '../DataSource/dataSource.store';
 import { GetDataTreeQuery } from 'types';
 import { useAPIContext } from '../../lib/apiContext';
 
@@ -31,7 +31,9 @@ export type Constraint = TableTree['constraints'][number];
 
 export type ForeignKey = TableTree['foreignKeys'][number];
 
-export type Trigger = TableTree['triggers'][number];
+export type TableTrigger = TableTree['triggers'][number];
+
+export type Procedure = SchemaTree['procedures'][number];
 
 const lowerCache: Record<string, string> = {};
 

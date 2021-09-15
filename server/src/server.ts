@@ -14,7 +14,7 @@ const app = fastify({
   logger: {
     prettyPrint: true,
   },
-});
+} as any);
 
 app.register(cors, {
   origin: true,

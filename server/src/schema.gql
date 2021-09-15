@@ -24,6 +24,7 @@ type Schema {
   name: String!
   tables: [Table!]!
   views: [View!]!
+  procedures: [Procedure!]!
   types: [Type!]!
 }
 
@@ -43,6 +44,18 @@ type View {
   schemaName: String!
   name: String!
   columns: [Column!]!
+}
+
+type Procedure {
+  schemaName: String!
+  name: String!
+  returnSet: Boolean!
+  returnType: Int!
+  kind: String!
+  isTrigger: Boolean!
+  argTypes: [Int!]
+  argModes: [String!]
+  argNames: [String!]
 }
 
 type Column {

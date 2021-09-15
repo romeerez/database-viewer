@@ -27,3 +27,4 @@ export { Spinner3 as Spinner } from '@styled-icons/evil';
 export { Text as Trigger } from '@styled-icons/boxicons-regular/Text';
 export { Folder } from '@styled-icons/boxicons-regular/Folder';
 export { Pageview } from '@styled-icons/material/Pageview';
+export { Functions } from '@styled-icons/remix-editor/Functions';

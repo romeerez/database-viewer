@@ -60,6 +60,17 @@ query GetDataTree($urls: [String!]!) {
             isNullable
           }
         }
+        procedures {
+          schemaName
+          name
+          returnSet
+          returnType
+          kind
+          isTrigger
+          argTypes
+          argModes
+          argNames
+        }
       }
     }
   }

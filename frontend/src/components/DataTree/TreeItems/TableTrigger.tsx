@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trigger as TriggerType } from '../dataTree.service';
+import { TableTrigger as TriggerType } from '../dataTree.service';
 import TreeItem from '../TreeItems/TreeItem';
 import { Trigger as TriggerIcon } from '../../../icons';
 
@@ -9,7 +9,7 @@ const sortWeights: Record<string, number> = {
   delete: 2,
 };
 
-export default function Trigger({
+export default function TableTrigger({
   paddingLeft,
   trigger,
 }: {

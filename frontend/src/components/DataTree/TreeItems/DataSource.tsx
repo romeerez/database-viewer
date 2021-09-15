@@ -67,6 +67,7 @@ export default function DataSource({
       {source.databases.map((database) => (
         <Database
           key={database.name}
+          source={source}
           sourceName={name}
           database={database}
           openState={openState}

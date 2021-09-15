@@ -26,14 +26,14 @@ export const getConnection = async (
     if (globalPool[url]) {
       globalPool[url].counter++;
     } else {
-      const db = Adapter.fromURL(url);
+      const db = Adapter.fromURL(url, { log: false });
       Object.assign(db.decodeTypes, {
         26: toInt,
         114: jsonParser, // for json
         3802: jsonParser, // for jsonb
       });
 
-      const connection: Connection = { db };
+      const connection: Connection = { db } as Connection;
 
       const cb = () => {
         connection.connect = undefined;
