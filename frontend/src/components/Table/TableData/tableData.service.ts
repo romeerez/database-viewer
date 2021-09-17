@@ -16,6 +16,7 @@ export const useDataService = ({
   const service = useMemo(
     () => ({
       setRows: store.setRows,
+      getTable: () => store.table,
       getParams: () => store.params,
       getRows: () => store.rows,
       getFields: () => store.fields,

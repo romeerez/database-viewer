@@ -1,6 +1,11 @@
 import { useLocalObservable } from 'mobx-react-lite';
 import { Field, GetDataTreeQuery, QueryResult } from 'types';
-import { useDataTree } from '../../DataTree/dataTree.service';
+import {
+  DataSourceTree,
+  SchemaTree,
+  TableTree,
+  useDataTree,
+} from '../../DataTree/dataTree.service';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useRouteMatch } from 'react-router-dom';
@@ -57,6 +62,33 @@ export const useDataStore = () => {
           return (
             !store.tree || store.count === undefined || store.rows === undefined
           );
+        },
+        get source(): GetDataTreeQuery['dataSources'][number] | undefined {
+          const { tree, sourceUrl, params } = store;
+          if (!tree || !sourceUrl || !params) return;
+
+          return tree.dataSources.find((source) => source.url === sourceUrl);
+        },
+        get schema(): SchemaTree | undefined {
+          const { source, params } = store;
+          if (!source || !params) return;
+
+          const { databaseName, schemaName } = params;
+
+          const database = source.databases.find(
+            (database) => database.name === databaseName,
+          );
+          if (!database) return;
+
+          return database.schemas.find((schema) => schema.name === schemaName);
+        },
+        get table(): TableTree | undefined {
+          const { schema, params } = store;
+          if (!schema || !params) return;
+
+          const { tableName } = params;
+
+          return schema.tables.find((table) => table.name === tableName);
         },
         get fields(): FieldInfo[] | undefined {
           try {
@@ -119,31 +151,19 @@ export const useDataStore = () => {
 };
 
 const getFieldsInfo = ({
-  tree,
-  params: { databaseName, schemaName, tableName },
-  sourceUrl,
+  source,
+  schema,
+  table,
   rawFields,
 }: {
-  tree?: GetDataTreeQuery;
+  source?: GetDataTreeQuery['dataSources'][number];
+  schema?: SchemaTree;
+  table?: TableTree;
   params: Params;
   sourceUrl?: string;
   rawFields?: Field[];
 }) => {
-  if (!tree || !sourceUrl || !rawFields) return;
-
-  const source = tree.dataSources.find((source) => source.url === sourceUrl);
-  if (!source) return;
-
-  const database = source.databases.find(
-    (database) => database.name === databaseName,
-  );
-  if (!database) return;
-
-  const schema = database.schemas.find((schema) => schema.name === schemaName);
-  if (!schema) return;
-
-  const table = schema.tables.find((table) => table.name === tableName);
-  if (!table) return;
+  if (!source || !schema || !table || !rawFields) return;
 
   const sourceTypes = source.types;
   const schemaTypes = schema.types;

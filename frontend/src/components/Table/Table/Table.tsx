@@ -1,16 +1,16 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import Row from './Row';
-import cn from 'classnames';
 import { useTablePageContext } from '../TablePage.context';
+import ColumnTitle from './ColumnTitle';
 
 export default observer(function Table() {
-  const { tableRef, tableService, selectionService, tableDataService } =
-    useTablePageContext();
+  const { tableRef, tableDataService } = useTablePageContext();
+  const table = tableDataService.getTable();
   const fields = tableDataService.getFields();
   const rows = tableDataService.getRows();
 
-  if (!fields || !rows) return null;
+  if (!table || !fields || !rows) return null;
 
   return (
     <table
@@ -20,27 +20,9 @@ export default observer(function Table() {
       <thead>
         <tr>
           <th className="h-10 border-b border-l border-dark-4 max-w-sm truncate px-3 bg-dark-3 sticky z-10 top-0 w-px" />
-          {fields.map((field, i) => {
-            const isSelected = selectionService.isColumnSelected(i);
-
-            return (
-              <th
-                key={field.name}
-                tabIndex={-1}
-                {...tableService.getColumnProps(i)}
-                className="h-10 border-b border-l border-dark-4 bg-dark-3 sticky z-10 top-0"
-              >
-                <div
-                  className={cn(
-                    'min-w-full min-h-full flex items-center max-w-sm truncate px-4 pointer-events-none',
-                    isSelected && 'bg-lighter-4',
-                  )}
-                >
-                  {field.name}
-                </div>
-              </th>
-            );
-          })}
+          {fields.map((field, i) => (
+            <ColumnTitle key={i} table={table} field={field} index={i} />
+          ))}
         </tr>
       </thead>
       <tbody className="bg-darker">
