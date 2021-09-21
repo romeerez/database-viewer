@@ -20,20 +20,9 @@ export const useDataChangesService = ({
 
   const service = useMemo(
     () => ({
-      getValue: store.getValue,
-      getIsRaw: store.getIsRaw,
-      setValue: store.setValue,
-      removeRows: store.removeRows,
-      getRemovedRows: store.getRemovedRows,
-      getRowChanges: store.getRowChanges,
-      getNewRows: store.getNewRows,
-      unmarkRemovedRows: store.unmarkRemovedRows,
-      undoChanges: store.undoChanges,
-      hasChanges: () => store.hasChanges,
-      getIsLoading: () => store.isLoading,
+      ...store,
       addRow() {
-        const fields = tableDataService.getFields();
-        const rows = tableDataService.getRows();
+        const { fields, rows } = tableDataService.state;
         if (!fields || !rows) return;
 
         store.setNewRow(rows.length);
@@ -41,45 +30,64 @@ export const useDataChangesService = ({
         const row = new Array(fields.length).fill(null);
         store.addRow(row);
       },
-      isRowRemoved(rowIndex: number | string) {
-        return Boolean(store.removedRows[rowIndex]);
+      useIsRowRemoved(rowIndex: number | string) {
+        return store.use(
+          (state) => Boolean(state.removedRowsMap[rowIndex]),
+          [rowIndex],
+        );
       },
-      isRowChanged(rowIndex: number) {
-        return Boolean(store.changes[rowIndex]);
+      useIsRowChanged(rowIndex: number) {
+        return store.use(
+          (state) => Boolean(state.changesMap[rowIndex]),
+          [rowIndex],
+        );
       },
-      isValueChanged(rowIndex: number | string, columnIndex: number | string) {
-        return store.changes[rowIndex]?.[columnIndex] !== undefined;
+      useIsValueChanged(
+        rowIndex: number | string,
+        columnIndex: number | string,
+      ) {
+        return store.use(
+          (state) => state.changesMap[rowIndex]?.[columnIndex] !== undefined,
+          [rowIndex, columnIndex],
+        );
       },
-      isNewRow(rowIndex: number | string) {
-        return store.newRows[rowIndex] || false;
+      useIsNewRow(rowIndex: number | string) {
+        return store.use((state) => state.newRowsMap[rowIndex] || false);
       },
       revertCell(row: string, column: string) {
-        if (store.removedRows[row]) {
-          delete store.removedRows[row];
-        } else if (store.changes[row]?.[column]) {
-          delete store.changes[row][column];
-          if (!Object.keys(store.changes[row]).length) {
-            delete store.changes[row];
+        let { removedRowsMap, changesMap, newRowsMap } = store.state;
+        if (removedRowsMap[row]) {
+          removedRowsMap = { ...removedRowsMap };
+          delete removedRowsMap[row];
+          store.set({ removedRowsMap });
+        } else if (changesMap[row]?.[column]) {
+          changesMap = { ...changesMap, [row]: { ...changesMap[row] } };
+          delete changesMap[row][column];
+          if (!Object.keys(changesMap[row]).length) {
+            delete changesMap[row];
           }
-        } else if (store.newRows[row]) {
+          store.set({ changesMap });
+        } else if (newRowsMap[row]) {
           const rowIndex = parseInt(row);
-          const rows = tableDataService
-            .getRows()
-            ?.filter((_, i) => i !== rowIndex);
+          const rows = tableDataService.state.rows?.filter(
+            (_, i) => i !== rowIndex,
+          );
           if (!rows) return;
 
           tableDataService.setRows(rows);
-          delete store.newRows[rows.length];
+          newRowsMap = { ...newRowsMap };
+          delete newRowsMap[rows.length];
+          store.set({ newRowsMap });
         }
       },
       getChangesQuery() {
-        const removedRows = service.getRemovedRows();
-        const rowChanges = service.getRowChanges();
-        const newRows = service.getNewRows();
-        const primaryColumns = tableDataService.getPrimaryColumns();
-        const { schemaName, tableName } = tableDataService.getParams();
-        const fields = tableDataService.getFields();
-        const defaults = tableDataService.getDefaults();
+        const { removedRows, rowChanges, newRows } = store.state;
+        const {
+          fields,
+          defaults,
+          params: { schemaName, tableName },
+          primaryColumns,
+        } = tableDataService.state;
 
         if (!fields || !defaults) return '';
 
@@ -95,7 +103,7 @@ export const useDataChangesService = ({
         });
       },
       submitUpdate(query: string) {
-        const databaseUrl = tableDataService.getDatabaseUrl();
+        const { databaseUrl } = tableDataService.state;
         if (query.length === 0 || !databaseUrl) {
           return;
         }
@@ -126,7 +134,7 @@ export const useDataChangesService = ({
     },
   });
 
-  const rows = tableDataService.getRows();
+  const rows = tableDataService.use((state) => state.rows);
   useEffect(() => store.reset(), [rows, store]);
 
   return service;

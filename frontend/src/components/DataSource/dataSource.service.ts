@@ -1,7 +1,6 @@
-import { dataSourcesStore } from '../../components/DataSource/dataSource.store';
+import { dataSourcesStore } from './dataSource.store';
 import { useState } from 'react';
-import { useObserver } from 'mobx-react-lite';
-import { DataSourceInLocalStore } from '../../components/DataSource/types';
+import { DataSourceInLocalStore } from './types';
 import { toast } from 'react-toastify';
 import { useAPIContext } from '../../lib/apiContext';
 
@@ -22,7 +21,7 @@ export const useSaveDataSource = ({
 
   const [loading, setLoading] = useState(false);
 
-  const dataSourcesLocal = useObserver(() => dataSourcesStore.dataSources);
+  const { data: dataSourcesLocal } = dataSourcesStore.useDataSources();
 
   const save = async ({
     name,
@@ -99,7 +98,7 @@ export const useRemoveDataSource = () => {
       toast('Data source was deleted', { type: 'info' });
       return true;
     } catch (error) {
-      toast(error.message, { type: 'info' });
+      toast((error as Error).message, { type: 'info' });
       return false;
     } finally {
       setLoading(false);

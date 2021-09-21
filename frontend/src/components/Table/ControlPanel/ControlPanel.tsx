@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Sync, Plus } from '../../../icons';
-import { observer } from 'mobx-react-lite';
 import { useKey } from 'react-use';
 import RemoveButton from '../ControlPanel/RemoveButton';
 import { useTablePageContext } from '../TablePage.context';
@@ -12,13 +11,13 @@ import UndoButton from './UndoButton';
 
 export type ConfirmLoosingChanges = (fn: () => void) => () => void;
 
-export default observer(function ControlPanel() {
+export default function ControlPanel() {
   const { tableDataService, dataChangesService, selectionService } =
     useTablePageContext();
 
   const [confirmCallback, setConfirmCallback] = useState<() => void>();
 
-  const hasChanges = dataChangesService.hasChanges();
+  const hasChanges = dataChangesService.use((state) => state.hasChanges);
 
   const confirmLoosingChanges: ConfirmLoosingChanges = (fn) => () => {
     if (!hasChanges) return fn();
@@ -82,4 +81,4 @@ export default observer(function ControlPanel() {
       </div>
     </>
   );
-});
+}

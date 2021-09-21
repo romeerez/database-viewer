@@ -5,13 +5,12 @@ import cn from 'classnames';
 import { ListCheck, Upload, Spinner } from '../../../icons';
 import { useToggle } from 'react-use';
 import { useTablePageContext } from '../TablePage.context';
-import { observer } from 'mobx-react-lite';
 
-export default observer(function PreviewAndSubmitButtons() {
+export default function PreviewAndSubmitButtons() {
   const { dataChangesService } = useTablePageContext();
   const [openPreviewChanges, togglePreviewChanges] = useToggle(false);
-  const hasChanges = dataChangesService.hasChanges();
-  const isLoading = dataChangesService.getIsLoading();
+  const hasChanges = dataChangesService.use((state) => state.hasChanges);
+  const isLoading = dataChangesService.use((state) => state.isLoading);
 
   const submit = () => {
     dataChangesService.submitUpdate(dataChangesService.getChangesQuery());
@@ -50,4 +49,4 @@ export default observer(function PreviewAndSubmitButtons() {
       </Tooltip>
     </>
   );
-});
+}

@@ -3,11 +3,10 @@ import Menu from '../../components/Common/Menu/Menu';
 import { Menu as MenuIcon } from '../../icons';
 import MenuItem from '../../components/Common/Menu/MenuItem';
 import Toggle from '../../components/Common/Form/Toggle/Toggle';
-import { themeSwitcher } from '../../components/Theme/themeSwitcher';
-import { useObserver } from 'mobx-react-lite';
+import { themeSwitcher } from '../Theme/themeSwitcher';
 
 export default function SidebarMenu() {
-  const darkMode = useObserver(() => themeSwitcher.dark);
+  const darkMode = themeSwitcher.use('dark');
 
   return (
     <>

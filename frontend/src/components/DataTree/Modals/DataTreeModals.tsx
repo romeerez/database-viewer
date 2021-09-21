@@ -1,12 +1,14 @@
 import React from 'react';
-import { observer } from 'mobx-react-lite';
-import { modalsState } from '../../../components/DataTree/dataTree.state';
+import { modalsState } from '../dataTree.state';
 import Modal from '../../../components/Common/Modal/Modal';
 import DataSourceForm from '../../../components/DataSource/Form/DataSourceForm';
 import DeleteModal from '../../../components/DataSource/DeleteModal';
 
-export default observer(function DataTreeModals() {
-  const { dataSourceForEdit, dataSourceForDelete } = modalsState;
+export default function DataTreeModals() {
+  const { dataSourceForEdit, dataSourceForDelete } = modalsState.use(
+    'dataSourceForEdit',
+    'dataSourceForDelete',
+  );
 
   if (dataSourceForEdit) {
     return (
@@ -28,4 +30,4 @@ export default observer(function DataTreeModals() {
   }
 
   return null;
-});
+}

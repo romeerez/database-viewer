@@ -59,7 +59,7 @@ export default function Selection({ children }: { children: ReactNode }) {
     };
 
     const onFocus = (e: FocusEvent) => {
-      if (selectionService.getIsSelecting()) {
+      if (selectionService.state.selecting) {
         return;
       }
       const cell = tableService.getCellData(e.target as HTMLElement);

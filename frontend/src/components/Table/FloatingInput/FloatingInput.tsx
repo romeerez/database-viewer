@@ -1,14 +1,9 @@
 import React, { ReactNode, useEffect } from 'react';
 import { useTablePageContext } from '../TablePage.context';
-import { observer } from 'mobx-react-lite';
 import ToggleEmpty from './ToggleRaw';
 import TextArea from './TextArea';
 
-export default observer(function FloatingInput({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function FloatingInput({ children }: { children: ReactNode }) {
   const { floatingInputService, tableService } = useTablePageContext();
 
   const onWrapMouseDown = (e: React.MouseEvent) => {
@@ -16,7 +11,7 @@ export default observer(function FloatingInput({
     e.stopPropagation();
   };
 
-  const cell = floatingInputService.getCell();
+  const cell = floatingInputService.use((state) => state.cell);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!cell) {
@@ -67,4 +62,4 @@ export default observer(function FloatingInput({
       </div>
     </>
   );
-});
+}

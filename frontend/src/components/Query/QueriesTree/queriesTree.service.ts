@@ -1,16 +1,15 @@
-import { useObserver } from 'mobx-react-lite';
 import { SearchState } from './queriesTree.state';
-import { queriesStore } from '../../../components/Query/queries.store';
+import { queriesStore } from '../queries.store';
 
 export const useSearch = () => {
-  const search = useObserver(() => SearchState.search);
+  const search = SearchState.use('search');
 
   return [search, (value: string) => SearchState.setSearch(value)] as const;
 };
 
 export const useFilteredQueries = () => {
-  const queries = useObserver(() => queriesStore.queries);
-  const search = useObserver(() => SearchState.search);
+  const { data: queries } = queriesStore.useQueries();
+  const search = SearchState.use('search');
 
   if (!search) return queries;
 

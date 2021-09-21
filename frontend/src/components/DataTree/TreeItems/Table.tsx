@@ -4,7 +4,6 @@ import { createOpenState } from '../open.state';
 import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import { Table as TableIcon } from '../../../icons';
-import { useObserver } from 'mobx-react-lite';
 import { PathState } from '../path.state';
 import Column from '../TreeItems/Column';
 import Constraint from '../TreeItems/Constraint';
@@ -32,8 +31,12 @@ export default function Table({
   openState: ReturnType<typeof createOpenState>;
 }) {
   const { name } = table;
-  const open = useObserver(() =>
-    openState.getItem(sourceName, databaseName, schemaName, 'tables', name),
+  const open = openState.useItem(
+    sourceName,
+    databaseName,
+    schemaName,
+    'tables',
+    name,
   );
   const innerPaddingLeft = paddingLeft + 36;
 

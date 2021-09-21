@@ -1,17 +1,18 @@
-import { makeAutoObservable } from 'mobx';
 import {
   createOpenState,
   loadStateFromLocalStorage,
   saveStateToLocalStorage,
-} from '../../components/DataTree/open.state';
-import { DataSourceInLocalStore } from '../../components/DataSource/types';
+} from './open.state';
+import { DataSourceInLocalStore } from '../DataSource/types';
+import { createStore } from 'jastaman';
 
-export const DataTreeState = makeAutoObservable({
-  search: '',
-  openChangedOnSearch: false,
+export const DataTreeState = createStore({
+  state: {
+    search: '',
+    openChangedOnSearch: false,
+  },
   setSearch(search: string) {
-    this.openChangedOnSearch = true;
-    this.search = search;
+    DataTreeState.set({ openChangedOnSearch: true, search });
   },
 });
 
@@ -19,7 +20,7 @@ export const noSearchOpenState = createOpenState({
   defaultOpen: false,
   items: loadStateFromLocalStorage(),
   onChange(items) {
-    DataTreeState.openChangedOnSearch = false;
+    DataTreeState.set({ openChangedOnSearch: false });
     saveStateToLocalStorage(items);
   },
 });
@@ -27,17 +28,19 @@ export const noSearchOpenState = createOpenState({
 export const searchOpenState = createOpenState({
   defaultOpen: true,
   onChange() {
-    DataTreeState.openChangedOnSearch = false;
+    DataTreeState.set({ openChangedOnSearch: false });
   },
 });
 
-export const modalsState = makeAutoObservable({
-  dataSourceForEdit: undefined as DataSourceInLocalStore | undefined,
-  setDataSourceForEdit(value?: DataSourceInLocalStore) {
-    this.dataSourceForEdit = value;
+export const modalsState = createStore({
+  state: {
+    dataSourceForEdit: undefined as DataSourceInLocalStore | undefined,
+    dataSourceForDelete: undefined as DataSourceInLocalStore | undefined,
   },
-  dataSourceForDelete: undefined as DataSourceInLocalStore | undefined,
+  setDataSourceForEdit(value?: DataSourceInLocalStore) {
+    modalsState.set({ dataSourceForEdit: value });
+  },
   setDataSourceForDelete(value?: DataSourceInLocalStore) {
-    this.dataSourceForDelete = value;
+    modalsState.set({ dataSourceForDelete: value });
   },
 });

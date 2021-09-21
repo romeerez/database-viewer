@@ -1,11 +1,10 @@
 import React from 'react';
 import style from './style.module.css';
 import cn from 'classnames';
-import { PathState } from '../../../components/DataTree/path.state';
-import { useObserver } from 'mobx-react-lite';
+import { PathState } from '../path.state';
 
 export default function Breadcrumbs() {
-  const path = ['all', ...useObserver(() => PathState.path)];
+  const path = ['all', ...PathState.use('path')];
   const last = path.length - 1;
 
   return (

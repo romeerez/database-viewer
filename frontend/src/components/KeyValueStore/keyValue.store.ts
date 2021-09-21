@@ -1,5 +1,5 @@
-import { makeAutoObservable } from 'mobx';
 import { KeyValue } from './types';
+import { createStore } from 'jastaman';
 
 // eslint-disable-next-line
 type Item<T = any> = {
@@ -8,15 +8,23 @@ type Item<T = any> = {
   error?: Error;
 };
 
-export default makeAutoObservable({
-  data: {} as Record<KeyValue['key'], Item>,
+const store = createStore({
+  state: {
+    data: {} as Record<KeyValue['key'], Item>,
+  },
   getItem<T>(key: KeyValue['key']) {
-    return this.data[key] as Item<T>;
+    return store.state.data[key] as Item<T>;
   },
   setItem(key: KeyValue['key'], value: KeyValue['value']) {
-    this.data[key] = value;
+    store.set((state) => ({
+      data: { ...state.data, [key]: value },
+    }));
   },
   removeItem(key: KeyValue['key']) {
-    delete this.data[key];
+    const data = { ...store.state.data };
+    delete data[key];
+    store.set({ data });
   },
 });
+
+export default store;

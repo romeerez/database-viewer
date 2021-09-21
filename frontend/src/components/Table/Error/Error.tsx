@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
-import { observer } from 'mobx-react-lite';
 import { useTablePageContext } from '../TablePage.context';
 import cn from 'classnames';
 import ErrorAlert from '../../Common/ErrorAlert';
 
-export default observer(function Error({ isMain }: { isMain?: boolean }) {
+export default function Error({ isMain }: { isMain?: boolean }) {
   const { errorService } = useTablePageContext();
-  const error = errorService.getError();
-  const show = errorService.getShowMainError() || !isMain;
+  const error = errorService.use('error');
+  const show = errorService.use('showMainError') || !isMain;
 
   useEffect(() => {
     if (!isMain) {
@@ -26,4 +25,4 @@ export default observer(function Error({ isMain }: { isMain?: boolean }) {
       onClose={() => errorService.setError()}
     />
   );
-});
+}

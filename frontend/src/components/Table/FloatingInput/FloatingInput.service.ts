@@ -18,26 +18,24 @@ export const useFloatingInputService = ({
   dataChangesService: DataChangesService;
   selectionService: SelectionService;
 }) => {
-  const store = useFloatingInputStore();
+  const store = useFloatingInputStore({ tableDataService });
 
   const service = useMemo(
     () => ({
-      getIsRaw: () => store.isRaw,
-      getValue: () => store.value,
-      getCell: () => store.cell,
+      ...store,
       hide: () => service.setCell(),
       isSingleCell: () => {
-        const columnsCount = tableDataService.getFields()?.length;
-        const rowsCount = tableDataService.getRows()?.length;
+        const columnsCount = tableDataService.state.fields?.length;
+        const rowsCount = tableDataService.state.rows?.length;
         return (
           !columnsCount || !rowsCount || (columnsCount === 1 && rowsCount === 1)
         );
       },
       focus() {
-        const focusedCell = selectionService.getFocusedDataCell();
-        if (!focusedCell) return;
+        const { focusedDataCell } = selectionService.state;
+        if (!focusedDataCell) return;
 
-        const { row, column } = focusedCell;
+        const { row, column } = focusedDataCell;
 
         service.setCell({ row, column });
       },
@@ -65,27 +63,25 @@ export const useFloatingInputService = ({
 
         store.setValue(dataChangesService.getValue(cell.row, cell.column));
       },
-      getPlaceholder() {
-        const { cell } = store;
-        if (!cell) return;
+      usePlaceholder() {
+        return store.use(({ cell, defaults, fields, value, isRaw }) => {
+          if (!cell) return;
 
-        const defaults = tableDataService.getDefaults();
-        const defaultValue = defaults && defaults[cell.column];
+          const defaultValue = defaults && defaults[cell.column];
+          const field = fields && fields[cell.column];
 
-        const fields = tableDataService.getFields();
-        const field = fields && fields[cell.column];
-
-        return store.value === null || store.isRaw
-          ? defaultValue || (!field?.isNullable ? 'required' : 'null')
-          : 'empty';
+          return value === null || isRaw
+            ? defaultValue || (!field?.isNullable ? 'required' : 'null')
+            : 'empty';
+        });
       },
       setValue(value: string) {
         store.setValue(value);
-        selectionService.setValue(value, store.isRaw);
+        selectionService.setValue(value, store.state.isRaw);
       },
       setIsRaw(isRaw: boolean) {
         store.setIsRaw(isRaw);
-        selectionService.setValue(store.value, isRaw);
+        selectionService.setValue(store.state.value, isRaw);
       },
       focusPrev() {
         service.focusOther('prev');
@@ -94,9 +90,9 @@ export const useFloatingInputService = ({
         service.focusOther('next');
       },
       focusOther(type: 'prev' | 'next') {
-        const { cell } = store;
-        const columnsCount = tableDataService.getFields()?.length;
-        const rowsCount = tableDataService.getRows()?.length;
+        const { cell } = store.state;
+        const columnsCount = tableDataService.state.fields?.length;
+        const rowsCount = tableDataService.state.rows?.length;
 
         if (!cell || !columnsCount || !rowsCount) return;
         let { row, column } = cell;
@@ -123,7 +119,7 @@ export const useFloatingInputService = ({
     ],
   );
 
-  const rows = tableDataService.getRows();
+  const { rows } = tableDataService.state;
   useEffect(() => service.hide(), [service, rows]);
 
   return service;

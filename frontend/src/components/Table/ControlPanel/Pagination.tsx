@@ -11,20 +11,19 @@ import MenuItem from '../../../components/Common/Menu/MenuItem';
 import { useTablePageContext } from '../TablePage.context';
 import cn from 'classnames';
 import Tooltip from '../../../components/Common/Tooltip/Tooltip';
-import { observer } from 'mobx-react-lite';
 import { useKey } from 'react-use';
 import { ConfirmLoosingChanges } from './ControlPanel';
 
 const limits = [10, 25, 50, 100, 500, 1000, undefined];
 
-export default observer(function Pagination({
+export default function Pagination({
   confirmLoosingChanges,
 }: {
   confirmLoosingChanges: ConfirmLoosingChanges;
 }) {
   const { tableDataService } = useTablePageContext();
-  const count = tableDataService.getCount();
-  const { offset, limit } = tableDataService.getQueryParams();
+  const count = tableDataService.use((state) => state.count);
+  const { offset, limit } = tableDataService.use((state) => state.queryParams);
 
   const lastPageOffset =
     count === undefined || limit === undefined
@@ -164,4 +163,4 @@ export default observer(function Pagination({
       </Tooltip>
     </>
   );
-});
+}

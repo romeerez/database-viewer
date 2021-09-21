@@ -1,7 +1,7 @@
-import { useLocalObservable } from 'mobx-react-lite';
 import { TableDataService } from '../TableData/tableData.service';
 import { DataChangesService } from '../DataChanges/dataChanges.service';
 import { Cell, CellType } from '../Table/Table.service';
+import { computed, useCreateStore } from 'jastaman';
 
 export type Selection = Record<number, Record<number, true>>;
 
@@ -12,52 +12,76 @@ export const useSelectionStore = ({
   tableDataService: TableDataService;
   dataChangesService: DataChangesService;
 }) => {
-  const store = useLocalObservable(() => ({
-    selecting: false,
-    selection: {} as Selection,
-    previousSelection: {} as Selection,
-    selectedColumns: {} as Record<number, true>,
-    selectFrom: undefined as undefined | Cell,
-    selectTo: undefined as undefined | Cell,
-    prevFocusedCell: undefined as undefined | Cell,
-    focusedCell: undefined as undefined | Cell,
-    get hasChangesInSelection() {
-      for (const row in store.selection) {
-        if (
-          dataChangesService.isNewRow(row) ||
-          dataChangesService.isRowRemoved(row)
-        ) {
-          return true;
-        }
+  const store = useCreateStore(() => ({
+    state: {
+      selecting: false,
+      selection: {} as Selection,
+      previousSelection: {} as Selection,
+      selectedColumns: {} as Record<number, true>,
+      selectFrom: undefined as undefined | Cell,
+      selectTo: undefined as undefined | Cell,
+      prevFocusedCell: undefined as undefined | Cell,
+      focusedCell: undefined as undefined | Cell,
+      dataChanges: {
+        newRowsMap: dataChangesService.state.newRowsMap,
+        removedRowsMap: dataChangesService.state.removedRowsMap,
+        changesMap: dataChangesService.state.changesMap,
+      },
+      tableData: {
+        fields: tableDataService.state.fields,
+        rows: tableDataService.state.rows,
+      },
+      hasChangesInSelection: computed<boolean>(),
+      focusedDataCell: computed<{ row: number; column: number } | undefined>(),
+      hasSelection: computed<boolean>(),
+    },
+    computed: {
+      hasChangesInSelection: [
+        (state) => [state.selection, state.dataChanges],
+        ({ selection, dataChanges }) => {
+          for (const row in selection) {
+            if (
+              dataChanges.newRowsMap[row] ||
+              dataChanges.removedRowsMap[row]
+            ) {
+              return true;
+            }
 
-        for (const column in store.selection[row]) {
-          if (dataChangesService.isValueChanged(row, column)) {
-            return true;
+            for (const column in selection[row]) {
+              if (dataChanges.changesMap[row]?.[column]) {
+                return true;
+              }
+            }
           }
-        }
-      }
 
-      return false;
-    },
-    get focusedDataCell() {
-      const cell = store.focusedCell;
-      if (!cell) return undefined;
+          return false;
+        },
+      ],
+      focusedDataCell: [
+        (state) => [state.focusedCell, state.tableData],
+        ({ focusedCell: cell, tableData }) => {
+          if (!cell) return undefined;
 
-      if (cell.type === CellType.cell) {
-        return {
-          row: cell.row,
-          column: cell.column,
-        };
-      } else if (
-        tableDataService.getFields()?.length &&
-        tableDataService.getRows()?.length
-      ) {
-        return cell.type === CellType.column
-          ? { row: 0, column: cell.column }
-          : { row: cell.row, column: 0 };
-      }
+          if (cell.type === CellType.cell) {
+            return {
+              row: cell.row,
+              column: cell.column,
+            };
+          } else if (tableData.fields?.length && tableData.rows?.length) {
+            return cell.type === CellType.column
+              ? { row: 0, column: cell.column }
+              : { row: cell.row, column: 0 };
+          }
+        },
+      ],
+      hasSelection: [
+        (state) => state.selection,
+        (state) => Object.keys(state.selection).length > 0,
+      ],
     },
-    getChangeInfo() {
+    getChangesInfo() {
+      const { selection, dataChanges } = store.state;
+
       const result: {
         add: string[];
         remove: string[];
@@ -65,17 +89,17 @@ export const useSelectionStore = ({
       } = { add: [], remove: [], change: {} };
       const { add, remove, change } = result;
 
-      for (const row in store.selection) {
-        if (dataChangesService.isNewRow(row)) {
+      for (const row in selection) {
+        if (dataChanges.newRowsMap[row]) {
           add.push(row);
           continue;
-        } else if (dataChangesService.isRowRemoved(row)) {
+        } else if (dataChanges.removedRowsMap[row]) {
           remove.push(row);
           continue;
         }
 
-        for (const column in store.selection[row]) {
-          if (dataChangesService.isValueChanged(row, column)) {
+        for (const column in selection[row]) {
+          if (dataChanges.changesMap[row]?.[column]) {
             if (!change[row]) change[row] = [];
             change[row].push(column);
           }
@@ -85,7 +109,7 @@ export const useSelectionStore = ({
       return result;
     },
     reset() {
-      Object.assign(store, {
+      store.set({
         selecting: false,
         selection: {},
         previousSelection: {},
@@ -97,8 +121,8 @@ export const useSelectionStore = ({
       });
     },
     setValue(value: string | null, raw: boolean) {
-      for (const row in store.selection) {
-        for (const column in store.selection[row]) {
+      for (const row in store.state.selection) {
+        for (const column in store.state.selection[row]) {
           dataChangesService.setValue(
             row as unknown as number,
             column as unknown as number,
@@ -108,59 +132,77 @@ export const useSelectionStore = ({
         }
       }
     },
-    hasSelection() {
-      return Object.keys(store.selection).length > 0;
+    useIsRowSelected(row: number) {
+      return store.use((state) => Boolean(state.selection[row]), [row]);
     },
-    isRowSelected(row: number) {
-      return Boolean(store.selection[row]);
+    useIsColumnSelected(column: number) {
+      return store.use(
+        (state) => Boolean(state.selectedColumns[column]),
+        [column],
+      );
     },
-    isColumnSelected(column: number) {
-      return Boolean(store.selectedColumns[column]);
+    useIsCellSelected(row: number, cell: number) {
+      return store.use(
+        (state) => Boolean(state.selection[row]?.[cell]),
+        [row, cell],
+      );
     },
-    isCellSelected(row: number, cell: number) {
-      return Boolean(store.selection[row]?.[cell]);
-    },
-    isFocusedDataCell(row: number, column: number) {
-      const cell = store.focusedDataCell;
-      return cell ? cell.row === row && cell.column === column : false;
+    useIsFocusedDataCell(row: number, column: number) {
+      return store.use(
+        (state) => {
+          const cell = state.focusedDataCell;
+          return cell ? cell.row === row && cell.column === column : false;
+        },
+        [row, column],
+      );
     },
     getRowNumbers() {
-      return Object.keys(store.selection);
+      return Object.keys(store.state.selection);
     },
     setSelecting(selecting: boolean) {
-      store.selecting = selecting;
+      store.set({ selecting });
     },
     clearSelection() {
-      store.selection = {};
-      store.selectedColumns = {};
+      store.set({ selection: {}, selectedColumns: {} });
     },
     savePreviousSelection() {
-      store.previousSelection = {};
-      for (const row in store.selection) {
-        store.previousSelection[row] = { ...store.selection[row] };
+      const { selection } = store.state;
+      const previousSelection: Selection = {};
+      for (const row in selection) {
+        previousSelection[row] = { ...selection[row] };
       }
+      store.set({ previousSelection });
     },
-    setSelectFrom(cell?: Cell) {
-      store.selectFrom = cell;
+    setSelectFrom(selectFrom?: Cell) {
+      store.set({ selectFrom });
     },
-    setSelectTo(cell?: Cell) {
-      store.selectTo = cell;
+    setSelectTo(selectTo?: Cell) {
+      store.set({ selectTo });
     },
-    setFocusedCell(cell: Cell) {
-      store.prevFocusedCell = store.focusedCell;
-      store.focusedCell = cell;
+    setFocusedCell(focusedCell: Cell) {
+      store.set((state) => ({
+        prevFocusedCell: state.focusedCell,
+        focusedCell,
+      }));
     },
     forEachSelectedCell(cb: (row: string, column: string) => void) {
-      for (const row in store.selection) {
-        for (const column in store.selection[row]) {
+      const { selection } = store.state;
+      for (const row in selection) {
+        for (const column in selection[row]) {
           cb(row, column);
         }
       }
     },
     applySelection() {
-      const from = store.selectFrom;
-      const to = store.selectTo;
-      if (!from || !to) {
+      const {
+        selectFrom: from,
+        selectTo: to,
+        tableData,
+        previousSelection,
+      } = store.state;
+      const rowsLength = tableData.rows?.length;
+      const columnsLength = tableData.fields?.length;
+      if (!from || !to || !rowsLength || !columnsLength) {
         return;
       }
 
@@ -168,11 +210,6 @@ export const useSelectionStore = ({
         maxRow: number | undefined,
         minColumn: number | undefined,
         maxColumn: number | undefined;
-
-      const rowsLength = tableDataService.getRows()?.length;
-      const columnsLength = tableDataService.getFields()?.length;
-
-      if (!rowsLength || !columnsLength) return;
 
       if (from.type === CellType.row || to.type === CellType.row) {
         minColumn = 0;
@@ -204,8 +241,8 @@ export const useSelectionStore = ({
       }
 
       const selection: Selection = {};
-      for (const row in store.previousSelection) {
-        selection[row] = { ...store.previousSelection[row] };
+      for (const row in previousSelection) {
+        selection[row] = { ...previousSelection[row] };
       }
 
       for (let row = minRow; row <= maxRow; row++) {
@@ -216,25 +253,43 @@ export const useSelectionStore = ({
         }
       }
 
-      store.selection = selection;
-      store.selectedColumns = {};
+      const selectedColumns: Record<string, true> = {};
 
-      if (Object.keys(selection).length < rowsLength) return;
-
-      for (let column = 0; column < columnsLength; column++) {
-        let selectedInAllRows = true;
-        for (let row = 0; row < rowsLength; row++) {
-          if (!selection[row][column]) {
-            selectedInAllRows = false;
-            break;
+      if (Object.keys(selection).length >= rowsLength) {
+        for (let column = 0; column < columnsLength; column++) {
+          let selectedInAllRows = true;
+          for (let row = 0; row < rowsLength; row++) {
+            if (!selection[row][column]) {
+              selectedInAllRows = false;
+              break;
+            }
+          }
+          if (selectedInAllRows) {
+            selectedColumns[column] = true;
           }
         }
-        if (selectedInAllRows) {
-          store.selectedColumns[column] = true;
-        }
       }
+
+      store.set({ selection, selectedColumns });
     },
   }));
+
+  dataChangesService.useEffect(
+    (state) => ({
+      newRowsMap: state.newRowsMap,
+      removedRowsMap: state.removedRowsMap,
+      changesMap: state.changesMap,
+    }),
+    (slice) => store.set({ dataChanges: slice }),
+  );
+
+  tableDataService.useEffect(
+    (state) => ({
+      fields: state.fields,
+      rows: state.rows,
+    }),
+    (slice) => store.set({ tableData: slice }),
+  );
 
   return store;
 };

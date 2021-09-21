@@ -1,16 +1,17 @@
 import React from 'react';
-import { observer } from 'mobx-react-lite';
 import Tooltip from '../../Common/Tooltip/Tooltip';
 import { Undo } from '../../../icons';
 import { useTablePageContext } from '../TablePage.context';
 import cn from 'classnames';
 
-export default observer(function UndoButton() {
+export default function UndoButton() {
   const { selectionService, dataChangesService } = useTablePageContext();
-  const hasChange = selectionService.getHasChangesInSelection();
+  const hasChange = selectionService.use(
+    (state) => state.hasChangesInSelection,
+  );
 
   const undo = () => {
-    const { add, remove, change } = selectionService.getChangeInfo();
+    const { add, remove, change } = selectionService.getChangesInfo();
     dataChangesService.removeRows(add);
     dataChangesService.unmarkRemovedRows(remove);
     dataChangesService.undoChanges(change);
@@ -30,4 +31,4 @@ export default observer(function UndoButton() {
       </button>
     </Tooltip>
   );
-});
+}

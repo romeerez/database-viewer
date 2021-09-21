@@ -1,4 +1,4 @@
-import { makeAutoObservable, toJS } from 'mobx';
+import { createStore } from 'jastaman';
 
 let path: string[] = [];
 const localStorageKey = 'dataTree.path';
@@ -12,13 +12,12 @@ if (json) {
   }
 }
 
-export const PathState = makeAutoObservable({
-  path,
+export const PathState = createStore({
+  state: {
+    path,
+  },
   setPath(path: string[]) {
-    this.path = path;
-    window.localStorage.setItem(
-      localStorageKey,
-      JSON.stringify(toJS(this.path)),
-    );
+    PathState.set({ path });
+    window.localStorage.setItem(localStorageKey, JSON.stringify(path));
   },
 });

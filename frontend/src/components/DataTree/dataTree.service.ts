@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { DataSourceInLocalStoreWithDriver } from '../DataSource/types';
-import { useObserver } from 'mobx-react-lite';
 import {
   DataTreeState,
   noSearchOpenState,
@@ -163,7 +162,7 @@ const mapDataTree = (
 };
 
 export const useDataTree = () => {
-  const dataSourcesLocal = useObserver(() => dataSourcesStore.dataSources);
+  const { data: dataSourcesLocal } = dataSourcesStore.useDataSources();
 
   const [tree, setTree] = useState<GetDataTreeQuery>();
 
@@ -235,7 +234,7 @@ export const useDataTreeForSidebar = () => {
   const { dataSourcesLocal, tree: loadedTree } = useDataTree();
 
   const [prevSearch, setPrevSearch] = useState('');
-  const search = useObserver(() => DataTreeState.search);
+  const search = DataTreeState.use('search');
 
   useEffect(() => {
     if (search && search !== prevSearch) {

@@ -1,4 +1,5 @@
-import { useLocalObservable } from 'mobx-react-lite';
+import { useCreateStore } from 'jastaman';
+import { TableDataService } from '../TableData/tableData.service';
 
 type BlurTimeout = ReturnType<typeof setTimeout> | undefined;
 
@@ -12,33 +13,39 @@ export type Cell = {
   className: string;
 };
 
-export const useFloatingInputStore = () => {
-  const store = useLocalObservable(() => ({
-    cell: undefined as Cell | undefined,
-    value: null as string | null,
-    isRaw: false,
-    preventBlur: false,
-    blurTimeout: undefined as BlurTimeout,
-    showInputs: false,
-    setCell(cell?: Cell) {
-      store.cell = cell;
+export const useFloatingInputStore = ({
+  tableDataService,
+}: {
+  tableDataService: TableDataService;
+}) => {
+  const store = useCreateStore(() => ({
+    state: {
+      cell: undefined as Cell | undefined,
+      value: null as string | null,
+      isRaw: false,
+      preventBlur: false,
+      blurTimeout: undefined as BlurTimeout,
+      showInputs: false,
+      defaults: tableDataService.state.defaults,
+      fields: tableDataService.state.fields,
     },
-    setIsRaw(value: boolean) {
-      store.isRaw = value;
+    setCell(cell?: Cell) {
+      store.set({ cell });
+    },
+    setIsRaw(isRaw: boolean) {
+      store.set({ isRaw });
     },
     setValue(value: string | null) {
-      store.value = value;
-    },
-    setPreventBlur(value: boolean) {
-      store.preventBlur = value;
-    },
-    setBlurTimeout(timeout: BlurTimeout) {
-      store.blurTimeout = timeout;
-    },
-    setShowInputs(value: boolean) {
-      store.showInputs = value;
+      store.set({ value });
     },
   }));
+
+  tableDataService.useEffect(
+    (state) => ({ defaults: state.defaults, fields: state.fields }),
+    (slice) => {
+      store.set(slice);
+    },
+  );
 
   return store;
 };

@@ -1,11 +1,10 @@
 import React from 'react';
 import { FieldInfo } from '../TableData/tableData.store';
-import { observer } from 'mobx-react-lite';
 import cn from 'classnames';
 import Cell from './Cell';
 import { useTablePageContext } from '../TablePage.context';
 
-export default observer(function Row({
+export default function Row({
   fields,
   rowIndex,
 }: {
@@ -18,14 +17,13 @@ export default observer(function Row({
     dataChangesService,
     selectionService,
   } = useTablePageContext();
-  const defaults = tableDataService.getDefaults();
+  const defaults = tableDataService.use('defaults');
+  const isRemoved = dataChangesService.useIsRowRemoved(rowIndex);
+  const isChanged = dataChangesService.useIsRowChanged(rowIndex);
+  const isNew = dataChangesService.useIsNewRow(rowIndex);
+  const isSelected = selectionService.useIsRowSelected(rowIndex);
 
   if (!defaults) return null;
-
-  const isRemoved = dataChangesService.isRowRemoved(rowIndex);
-  const isChanged = dataChangesService.isRowChanged(rowIndex);
-  const isNew = dataChangesService.isNewRow(rowIndex);
-  const isSelected = selectionService.isRowSelected(rowIndex);
 
   const rowNumber = rowIndex + 1;
 
@@ -61,10 +59,9 @@ export default observer(function Row({
           columnIndex={i}
           defaultValue={defaults[i]}
           isRemoved={isRemoved}
-          isRowChanged={isChanged}
           isNew={isNew}
         />
       ))}
     </tr>
   );
-});
+}

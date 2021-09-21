@@ -1,6 +1,5 @@
 import React from 'react';
-import { QueryInLocalStore } from '../../../components/Query/types';
-import { useObserver } from 'mobx-react-lite';
+import { QueryInLocalStore } from '../types';
 import { NavLink } from 'react-router-dom';
 import routes from '../../../lib/routes';
 import { X } from '../../../icons';
@@ -12,7 +11,7 @@ export default function QueryTreeItem({
   query: QueryInLocalStore;
   setQueryToDelete(query: QueryInLocalStore): void;
 }) {
-  const name = useObserver(() => query.name);
+  const { name } = query;
 
   return (
     <NavLink

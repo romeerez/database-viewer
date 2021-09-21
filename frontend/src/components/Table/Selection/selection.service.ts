@@ -21,18 +21,7 @@ export const useSelectionService = ({
 
   const service = useMemo(
     () => ({
-      hasSelection: store.hasSelection,
-      isRowSelected: store.isRowSelected,
-      isColumnSelected: store.isColumnSelected,
-      isFocusedDataCell: store.isFocusedDataCell,
-      isCellSelected: store.isCellSelected,
-      setValue: store.setValue,
-      clearSelection: store.clearSelection,
-      getChangeInfo: store.getChangeInfo,
-      getHasChangesInSelection: () => store.hasChangesInSelection,
-      getFocusedCell: () => store.focusedCell,
-      getFocusedDataCell: () => store.focusedDataCell,
-      getIsSelecting: () => store.selecting,
+      ...store,
       getRowProps(row: number) {
         return {
           'data-selection-type': CellType.row,
@@ -69,10 +58,10 @@ export const useSelectionService = ({
         if (!cell) return;
 
         store.savePreviousSelection();
-        const cellFrom = (continueSelection && store.focusedCell) || cell;
+        const cellFrom = (continueSelection && store.state.focusedCell) || cell;
         store.setSelectFrom(cellFrom);
 
-        if (!continueSelection || !store.focusedCell) {
+        if (!continueSelection || !store.state.focusedCell) {
           store.setFocusedCell(cell);
         }
 
@@ -86,14 +75,15 @@ export const useSelectionService = ({
         cell?: Cell;
         continueSelection: boolean;
       }) {
-        if (!cell || !store.selecting) return;
+        if (!cell || !store.state.selecting) return;
 
-        if (!store.selectFrom) {
+        if (!store.state.selectFrom) {
           store.savePreviousSelection();
-          const cellFrom = (continueSelection && store.focusedCell) || cell;
+          const cellFrom =
+            (continueSelection && store.state.focusedCell) || cell;
           store.setSelectFrom(cellFrom);
 
-          if (!continueSelection || !store.focusedCell) {
+          if (!continueSelection || !store.state.focusedCell) {
             store.setFocusedCell(cell);
           }
         }
@@ -105,8 +95,8 @@ export const useSelectionService = ({
         dir: 'up' | 'right' | 'down' | 'left',
         continueSelection: boolean,
       ) {
-        const { focusedCell } = store;
-        const cell = store.selectTo || focusedCell;
+        const { focusedCell, selectTo } = store.state;
+        const cell = selectTo || focusedCell;
         if (!focusedCell || !cell) return;
 
         let row = 'row' in cell ? cell.row : -1;
@@ -117,8 +107,7 @@ export const useSelectionService = ({
         else if (dir === 'down') row++;
         else column--;
 
-        const rows = tableDataService.getRows();
-        const fields = tableDataService.getFields();
+        const { rows, fields } = tableDataService.state;
         if (
           rows &&
           fields &&
@@ -161,7 +150,7 @@ export const useSelectionService = ({
         store.applySelection();
         store.setSelectFrom(undefined);
 
-        const prev = store.prevFocusedCell;
+        const prev = store.state.prevFocusedCell;
         if (
           prev &&
           cell &&
@@ -201,7 +190,7 @@ export const useSelectionService = ({
     [store, dataChangesService, floatingInputService, tableDataService],
   );
 
-  const rows = tableDataService.getRows();
+  const rows = tableDataService.use((state) => state.rows);
   useEffect(() => store.reset(), [store, rows]);
 
   return service;

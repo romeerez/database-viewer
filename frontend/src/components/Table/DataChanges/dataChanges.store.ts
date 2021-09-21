@@ -1,82 +1,116 @@
-import { useLocalObservable } from 'mobx-react-lite';
 import { TableDataService } from '../TableData/tableData.service';
+import { computed, useCreateStore } from 'jastaman';
+import { QueryResult } from 'types';
+import { useEffect } from 'react';
+
+type RowChange = {
+  row: QueryResult['rows'][number];
+  changes: {
+    columnName: string;
+    columnIndex: number;
+    isRaw: boolean;
+    value: string | null;
+  }[];
+};
+
+type NewRow = {
+  value: string | null;
+  isRaw: boolean;
+}[];
 
 export const useDataChangesStore = ({
   tableDataService,
 }: {
   tableDataService: TableDataService;
 }) => {
-  const store = useLocalObservable(() => ({
-    removedRows: {} as Record<string, true>,
-    changes: {} as Record<string, Record<string, string | null>>,
-    newRows: {} as Record<string, true>,
-    raw: {} as Record<string, Record<string, true>>,
-    isLoading: false,
-    get hasChanges() {
-      return (
-        Object.keys(store.removedRows).length > 0 ||
-        Object.keys(store.changes).length > 0 ||
-        Object.keys(store.newRows).length > 0
-      );
+  const store = useCreateStore(() => ({
+    state: {
+      removedRowsMap: {} as Record<string, true>,
+      changesMap: {} as Record<string, Record<string, string | null>>,
+      newRowsMap: {} as Record<string, true>,
+      rawMap: {} as Record<string, Record<string, true>>,
+      isLoading: false,
+      rows: tableDataService.state.rows,
+      fields: tableDataService.state.fields,
+      hasChanges: computed<boolean>(),
+      removedRows: computed<QueryResult['rows']>(),
+      rowChanges: computed<RowChange[]>(),
+      newRows: computed<NewRow[]>(),
     },
-    setIsLoading(value: boolean) {
-      store.isLoading = value;
+    computed: {
+      hasChanges: [
+        (state) => [state.removedRowsMap, state.changesMap, state.newRowsMap],
+        (state) =>
+          Object.keys(state.removedRowsMap).length > 0 ||
+          Object.keys(state.changesMap).length > 0 ||
+          Object.keys(state.newRowsMap).length > 0,
+      ],
+      removedRows: [
+        (state) => [state.rows, state.removedRowsMap],
+        (state) => state.rows?.filter((_, i) => state.removedRowsMap[i]) || [],
+      ],
+      rowChanges: [
+        (state) => [state.rows, state.fields, state.rawMap, state.changesMap],
+        ({ rows, fields, rawMap, changesMap }) => {
+          if (!rows || !fields) return [];
+
+          return Object.keys(changesMap).map((rowIndex) => ({
+            row: rows[parseInt(rowIndex)],
+            changes: Object.keys(changesMap[rowIndex]).map((columnIndex) => {
+              const index = parseInt(columnIndex);
+              return {
+                columnName: fields[index].name,
+                columnIndex: index,
+                isRaw: rawMap[rowIndex]?.[columnIndex] || false,
+                value: changesMap[rowIndex][columnIndex],
+              };
+            }),
+          }));
+        },
+      ],
+      newRows: [
+        (state) => [state.rows, state.newRowsMap, state.rawMap],
+        ({ rows, newRowsMap, rawMap }) => {
+          if (!rows) return [];
+
+          return Object.keys(newRowsMap).map((rowIndex) =>
+            rows[parseInt(rowIndex)].map((value, columnIndex) => ({
+              value,
+              isRaw: rawMap[rowIndex]?.[columnIndex] || false,
+            })),
+          );
+        },
+      ],
+    },
+    setIsLoading(isLoading: boolean) {
+      store.set({ isLoading });
     },
     reset() {
-      Object.assign(store, {
-        removedRows: {},
-        changes: {},
-        newRows: {},
-        raw: {},
+      store.set({
+        removedRowsMap: {},
+        changesMap: {},
+        newRowsMap: {},
+        rawMap: {},
         isLoading: false,
       });
     },
-    getRemovedRows() {
-      return (
-        tableDataService.getRows()?.filter((_, i) => store.removedRows[i]) || []
-      );
-    },
-    getRowChanges() {
-      const rows = tableDataService.getRows();
-      const fields = tableDataService.getFields();
-      if (!rows || !fields) return [];
-
-      return Object.keys(store.changes).map((rowIndex) => ({
-        row: rows[parseInt(rowIndex)],
-        changes: Object.keys(store.changes[rowIndex]).map((columnIndex) => {
-          const index = parseInt(columnIndex);
-          return {
-            columnName: fields[index].name,
-            columnIndex: index,
-            isRaw: store.raw[rowIndex]?.[columnIndex] || false,
-            value: store.changes[rowIndex][columnIndex],
-          };
-        }),
+    setNewRow(index: number) {
+      store.set((state) => ({
+        newRowsMap: { ...state.newRowsMap, [index]: true },
       }));
     },
-    getNewRows() {
-      const rows = tableDataService.getRows();
-      if (!rows) return [];
-
-      return Object.keys(store.newRows).map((rowIndex) =>
-        rows[parseInt(rowIndex)].map((value, columnIndex) => ({
-          value,
-          isRaw: store.raw[rowIndex]?.[columnIndex] || false,
-        })),
-      );
-    },
-    setNewRow(index: number) {
-      store.newRows[index] = true;
-    },
     addRow(row: string[]) {
-      tableDataService.getRows()?.push(row);
+      tableDataService.addRow(row);
     },
     removeRows(stringIndices: string[]) {
-      if (stringIndices.some((row) => store.newRows[row])) {
-        const rows = tableDataService.getRows();
+      let { newRowsMap } = store.state;
+      if (stringIndices.some((row) => newRowsMap[row])) {
+        const { rows } = tableDataService.state;
         if (!rows) return;
 
-        stringIndices.forEach((row) => delete store.newRows[row]);
+        newRowsMap = { ...newRowsMap };
+        stringIndices.forEach((row) => delete newRowsMap[row]);
+        store.set({ newRowsMap });
 
         const numberIndices = stringIndices.map((row) => parseInt(row));
         tableDataService.setRows(
@@ -84,22 +118,25 @@ export const useDataChangesStore = ({
         );
       }
 
+      const removedRowsMap = { ...store.state.removedRowsMap };
       stringIndices.forEach((row) => {
-        store.removedRows[row] = true;
+        removedRowsMap[row] = true;
       });
+      store.set({ removedRowsMap });
     },
     unmarkRemovedRows(rows: string[]) {
-      rows.forEach((row) => {
-        delete store.removedRows[row];
-      });
+      const map = { ...store.state.removedRowsMap };
+      rows.forEach((row) => delete map[row]);
+      store.set({ removedRowsMap: map });
     },
     undoChanges(change: Record<string, string[]>) {
+      const changesMap = { ...store.state.changesMap };
       for (const row in change) {
-        const rowChanges = store.changes[row];
-        if (!rowChanges) {
+        if (!changesMap[row]) {
           continue;
         }
 
+        const rowChanges = { ...changesMap[row] };
         change[row].forEach((column) => {
           if (rowChanges?.[column]) {
             delete rowChanges[column];
@@ -107,19 +144,30 @@ export const useDataChangesStore = ({
         });
 
         if (Object.keys(rowChanges).length === 0) {
-          delete store.changes[row];
+          delete changesMap[row];
+        } else {
+          changesMap[row] = rowChanges;
         }
       }
+      store.set({ changesMap });
     },
     getValue(rowIndex: number, columnIndex: number): string | null {
-      const change = store.changes[rowIndex];
+      const change = store.state.changesMap[rowIndex];
       if (change && columnIndex in change) {
         return change[columnIndex];
       }
-      return tableDataService.getRows()?.[rowIndex]?.[columnIndex] ?? null;
+      return store.state.rows?.[rowIndex]?.[columnIndex] ?? null;
     },
-    getIsRaw(rowIndex: number, columnIndex: number) {
-      return store.raw[rowIndex]?.[columnIndex] || false;
+    useValue(rowIndex: number, columnIndex: number): string | null {
+      return store.use(
+        () => store.getValue(rowIndex, columnIndex),
+        [rowIndex, columnIndex],
+      );
+    },
+    useIsRaw(rowIndex: number, columnIndex: number) {
+      return store.use(
+        (state) => state.rawMap[rowIndex]?.[columnIndex] || false,
+      );
     },
     setValue(
       rowIndex: number,
@@ -127,42 +175,64 @@ export const useDataChangesStore = ({
       value: string | null,
       raw: boolean,
     ) {
-      const row = tableDataService.getRows()?.[rowIndex];
-      if (!row) return;
+      const { rows } = store.state;
+      const row = rows?.[rowIndex];
+      if (!rows || !row) return;
 
-      if (store.newRows[rowIndex]) {
-        row[columnIndex] = value;
+      if (store.state.newRowsMap[rowIndex]) {
+        store.set({
+          rows: rows.map((row, i) =>
+            i === rowIndex
+              ? row.map((column, i) => (i === columnIndex ? value : column))
+              : row,
+          ),
+        });
       } else if (value === row[columnIndex]) {
-        const change = store.changes[rowIndex];
-        if (change) {
-          delete change[columnIndex];
-          if (Object.keys(change).length === 0) {
-            delete store.changes[rowIndex];
+        if (store.state.changesMap[rowIndex]) {
+          const changesMap = { ...store.state.changesMap };
+          const rowChanges = { ...changesMap[rowIndex] };
+          changesMap[rowIndex] = rowChanges;
+          delete rowChanges[columnIndex];
+          if (Object.keys(rowChanges).length === 0) {
+            delete changesMap[rowIndex];
           }
+          store.set({ changesMap });
         }
       } else {
-        const change = store.changes[rowIndex];
-        if (change) {
-          change[columnIndex] = value;
-        } else {
-          store.changes[rowIndex] = { [columnIndex]: value };
-        }
+        const changesMap = { ...store.state.changesMap };
+        changesMap[rowIndex] = { ...(changesMap[rowIndex] || {}) };
+        changesMap[rowIndex][columnIndex] = value;
+        store.set({ changesMap });
       }
 
       store.setRaw(rowIndex, columnIndex, raw);
     },
     setRaw(rowIndex: number, columnIndex: number, raw: boolean) {
+      let { rawMap } = store.state;
       if (raw) {
-        if (!store.raw[rowIndex]) store.raw[rowIndex] = {};
-        store.raw[rowIndex][columnIndex] = true;
-      } else if (store.raw[rowIndex]?.[columnIndex]) {
-        delete store.raw[rowIndex]?.[columnIndex];
-        if (Object.keys(store.raw[rowIndex]).length === 0) {
-          delete store.raw[rowIndex];
+        rawMap = { ...rawMap };
+        rawMap[rowIndex] = { ...(rawMap[rowIndex] || {}) };
+        rawMap[rowIndex][columnIndex] = true;
+        store.set({ rawMap });
+      } else if (rawMap[rowIndex]?.[columnIndex]) {
+        rawMap = { ...rawMap, [rowIndex]: { ...rawMap[rowIndex] } };
+        delete rawMap[rowIndex][columnIndex];
+        if (Object.keys(rawMap[rowIndex]).length === 0) {
+          delete rawMap[rowIndex];
         }
+        store.set({ rawMap });
       }
     },
   }));
+
+  useEffect(
+    () =>
+      tableDataService.subscribe(
+        (state) => ({ rows: state.rows, fields: state.fields }),
+        (slice) => store.set(slice),
+      ),
+    [],
+  );
 
   return store;
 };

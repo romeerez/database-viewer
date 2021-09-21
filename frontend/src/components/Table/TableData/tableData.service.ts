@@ -1,5 +1,5 @@
-import { useDataStore } from './tableData.store';
-import { useEffect, useMemo } from 'react';
+import { useTableDataStore } from './tableData.store';
+import { useMemo } from 'react';
 import { buildQuery } from '../../../lib/queryBuilder';
 import { useAPIContext } from '../../../lib/apiContext';
 import { ErrorService } from '../Error/error.service';
@@ -11,23 +11,13 @@ export const useDataService = ({
 }: {
   errorService: ErrorService;
 }) => {
-  const store = useDataStore();
+  const store = useTableDataStore();
 
   const service = useMemo(
     () => ({
-      setRows: store.setRows,
-      getTable: () => store.table,
-      getParams: () => store.params,
-      getRows: () => store.rows,
-      getFields: () => store.fields,
-      getCount: () => store.count,
-      getQueryParams: () => store.queryParams,
-      getSourceUrl: () => store.sourceUrl,
-      getDefaults: () => store.defaults,
-      getPrimaryColumns: () => store.primaryColumns,
-      getDatabaseUrl: () => store.databaseUrl,
+      ...store,
       loadFieldsAndRows() {
-        const { databaseUrl, params } = store;
+        const { databaseUrl, params, queryParams } = store.state;
         if (!databaseUrl) return;
 
         loadFieldsAndRows({
@@ -37,13 +27,13 @@ export const useDataService = ({
               schemaName: params.schemaName,
               tableName: params.tableName,
               count: false,
-              ...store.queryParams,
+              ...queryParams,
             }),
           },
         });
       },
       loadCount() {
-        const { databaseUrl, params } = store;
+        const { databaseUrl, params, queryParams } = store.state;
         if (!databaseUrl) return;
 
         loadCount({
@@ -53,13 +43,13 @@ export const useDataService = ({
               schemaName: params.schemaName,
               tableName: params.tableName,
               count: true,
-              ...store.queryParams,
+              ...queryParams,
             }),
           },
         });
       },
       loadRows() {
-        const { databaseUrl, params } = store;
+        const { databaseUrl, params, queryParams } = store.state;
         if (!databaseUrl) return;
 
         loadRows({
@@ -69,7 +59,7 @@ export const useDataService = ({
               schemaName: params.schemaName,
               tableName: params.tableName,
               count: false,
-              ...store.queryParams,
+              ...queryParams,
             }),
           },
         });
@@ -95,6 +85,9 @@ export const useDataService = ({
         service.loadRows();
         service.loadCount();
       },
+      addRow(row: string[]) {
+        store.set((state) => ({ rows: [...(state.rows || []), row] }));
+      },
     }),
     [store],
   );
@@ -106,7 +99,7 @@ export const useDataService = ({
     fetchPolicy: 'no-cache',
     onCompleted(data) {
       const result = data.executeQuery;
-      store.update({ rawFields: result.fields, rows: result.rows });
+      store.set({ rawFields: result.fields, rows: result.rows });
       errorService.setError();
     },
     onError(error) {
@@ -118,7 +111,7 @@ export const useDataService = ({
     fetchPolicy: 'no-cache',
     onCompleted(data) {
       const count = data.executeQuery.rows[0][0];
-      store.update({ count: count ? parseInt(count) : 0 });
+      store.set({ count: count ? parseInt(count) : 0 });
     },
     onError(error) {
       errorService.setError(error.message);
@@ -128,7 +121,7 @@ export const useDataService = ({
   const [loadRows] = useQueryRowsLazyQuery({
     fetchPolicy: 'no-cache',
     onCompleted(data) {
-      store.update({ rows: data.executeQuery.rows });
+      store.set({ rows: data.executeQuery.rows });
       errorService.setError();
     },
     onError(error) {
@@ -136,10 +129,13 @@ export const useDataService = ({
     },
   });
 
-  useEffect(() => {
-    service.loadFieldsAndRows();
-    service.loadCount();
-  }, [service, store.sourceUrl]);
+  store.useEffect(
+    (state) => state.sourceUrl,
+    () => {
+      service.loadFieldsAndRows();
+      service.loadCount();
+    },
+  );
 
   return service;
 };

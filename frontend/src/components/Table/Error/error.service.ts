@@ -1,27 +1,20 @@
-import { useMemo } from 'react';
-import { useLocalObservable } from 'mobx-react-lite';
+import { useCreateStore } from 'jastaman';
 
 export type ErrorService = ReturnType<typeof useErrorService>;
 
 export const useErrorService = () => {
-  const store = useLocalObservable(() => ({
-    showMainError: true,
-    error: undefined as string | undefined,
+  const store = useCreateStore(() => ({
+    state: {
+      showMainError: true,
+      error: undefined as string | undefined,
+    },
     setShowMainError(show: boolean) {
-      store.showMainError = show;
+      store.set({ showMainError: show });
     },
     setError(error?: string) {
-      store.error = error;
+      store.set({ error });
     },
   }));
 
-  return useMemo(
-    () => ({
-      getShowMainError: () => store.showMainError,
-      setShowMainError: store.setShowMainError,
-      getError: () => store.error,
-      setError: store.setError,
-    }),
-    [store],
-  );
+  return store;
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import Condition from './Condition';
-import { useTablePageContext } from '../../../components/Table/TablePage.context';
+import { useTablePageContext } from '../TablePage.context';
 
 export default function Conditions() {
   const { tableDataService } = useTablePageContext();

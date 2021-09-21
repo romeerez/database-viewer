@@ -5,7 +5,6 @@ import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
 import { DataSourceTree } from '../dataTree.service';
 import { createOpenState } from '../open.state';
 import Database from '../../../components/DataTree/TreeItems/Database';
-import { useObserver } from 'mobx-react-lite';
 import { PathState } from '../path.state';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
@@ -25,7 +24,7 @@ export default function DataSource({
   openState: ReturnType<typeof createOpenState>;
 }) {
   const { name } = source;
-  const open = useObserver(() => openState.getItem(name));
+  const open = openState.useItem(name);
   const innerTop = top + 32;
   const innerPaddingLeft = paddingLeft + 16;
 

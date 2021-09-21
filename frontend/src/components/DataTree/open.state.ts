@@ -1,4 +1,4 @@
-import { makeAutoObservable, toJS } from 'mobx';
+import { createStore } from 'jastaman';
 
 type OpenState = Record<
   string,
@@ -33,7 +33,7 @@ const ensureParsedType = (items: OpenState) => {
 };
 
 export const saveStateToLocalStorage = (items: OpenState) => {
-  window.localStorage.setItem(localStorageKey, JSON.stringify(toJS(items)));
+  window.localStorage.setItem(localStorageKey, JSON.stringify(items));
 };
 
 export const createOpenState = ({
@@ -44,25 +44,28 @@ export const createOpenState = ({
   defaultOpen: boolean;
   items?: OpenState;
   onChange?: (items: OpenState) => void;
-}) =>
-  makeAutoObservable({
-    items,
-    reset() {
-      this.items = {};
+}) => {
+  const store = createStore({
+    state: {
+      items,
     },
-    getItem(...names: string[]) {
-      let { items } = this;
-      let item: OpenState[string] | undefined;
-      for (const name of names) {
-        item = items[name];
-        if (!item) break;
-        items = item.items;
-      }
+    reset() {
+      store.set({ items: {} });
+    },
+    useItem(...names: string[]) {
+      return store.use(({ items }) => {
+        let item: OpenState[string] | undefined;
+        for (const name of names) {
+          item = items[name];
+          if (!item) break;
+          items = item.items;
+        }
 
-      return item?.open ?? defaultOpen;
+        return item?.open ?? defaultOpen;
+      }, names);
     },
     setItem(open: boolean, ...names: string[]) {
-      let { items } = this;
+      let { items } = store.state;
       let item: OpenState[string] | undefined;
       for (const name of names) {
         if (!items[name]) items[name] = { open: true, items: {} };
@@ -70,6 +73,9 @@ export const createOpenState = ({
         items = item.items;
       }
       if (item) item.open = open;
-      if (onChange) onChange(this.items);
+      if (onChange) onChange(store.state.items);
     },
   });
+
+  return store;
+};

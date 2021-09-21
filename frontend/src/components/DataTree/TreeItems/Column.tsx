@@ -19,14 +19,14 @@ export default function Column({
   column,
 }: {
   paddingLeft: number;
-  table: TableTree;
+  table?: TableTree;
   column: ColumnType;
 }) {
   const { name } = column;
 
-  const isIndexed = isColumnIndexed(table, name);
-  const isPrimary = isColumnPrimary(table, name, isIndexed);
-  const hasForeignKey = columnHasForeignKey(table, name);
+  const isIndexed = table ? isColumnIndexed(table, name) : false;
+  const isPrimary = table ? isColumnPrimary(table, name, isIndexed) : false;
+  const hasForeignKey = table ? columnHasForeignKey(table, name) : false;
 
   return (
     <TreeItem

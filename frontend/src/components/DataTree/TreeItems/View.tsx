@@ -4,12 +4,10 @@ import { createOpenState } from '../open.state';
 import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import { Pageview } from '../../../icons';
-import { useObserver } from 'mobx-react-lite';
 import { PathState } from '../path.state';
 import Column from '../TreeItems/Column';
-import cn from 'classnames';
 
-export default function Table({
+export default function View({
   sourceName,
   databaseName,
   schemaName,
@@ -27,8 +25,12 @@ export default function Table({
   openState: ReturnType<typeof createOpenState>;
 }) {
   const { name } = view;
-  const open = useObserver(() =>
-    openState.getItem(sourceName, databaseName, schemaName, 'views', name),
+  const open = openState.useItem(
+    sourceName,
+    databaseName,
+    schemaName,
+    'views',
+    name,
   );
   const innerPaddingLeft = paddingLeft + 36;
 

@@ -4,7 +4,7 @@ import { useTablePageContext } from './TablePage.context';
 
 export default function TableHeader() {
   const { tableDataService } = useTablePageContext();
-  const params = tableDataService.getParams();
+  const params = tableDataService.use((state) => state.params);
 
   return (
     <Header

@@ -1,34 +1,33 @@
 import React from 'react';
 import cn from 'classnames';
-import { observer } from 'mobx-react-lite';
 import { useTablePageContext } from '../TablePage.context';
 
-export default observer(function Row({
+export default function Row({
   rowIndex,
   columnIndex,
   isRemoved,
-  isRowChanged,
   isNew,
   defaultValue,
 }: {
   rowIndex: number;
   columnIndex: number;
   isRemoved: boolean;
-  isRowChanged: boolean;
   isNew: boolean;
   defaultValue?: string;
 }) {
   const { tableService, dataChangesService, selectionService } =
     useTablePageContext();
 
-  const value = dataChangesService.getValue(rowIndex, columnIndex);
-  const isRaw = dataChangesService.getIsRaw(rowIndex, columnIndex);
+  const value = dataChangesService.useValue(rowIndex, columnIndex);
+  const isRaw = dataChangesService.useIsRaw(rowIndex, columnIndex);
 
-  const isChanged =
-    isRowChanged && dataChangesService.isValueChanged(rowIndex, columnIndex);
+  const isChanged = dataChangesService.useIsValueChanged(rowIndex, columnIndex);
 
-  const isFocused = selectionService.isFocusedDataCell(rowIndex, columnIndex);
-  const isSelected = selectionService.isCellSelected(rowIndex, columnIndex);
+  const isFocused = selectionService.useIsFocusedDataCell(
+    rowIndex,
+    columnIndex,
+  );
+  const isSelected = selectionService.useIsCellSelected(rowIndex, columnIndex);
 
   return (
     <td
@@ -63,4 +62,4 @@ export default observer(function Row({
       </div>
     </td>
   );
-});
+}

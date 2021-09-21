@@ -1,5 +1,4 @@
 import { KeyValue } from './types';
-import { useObserver } from 'mobx-react-lite';
 import store from './keyValue.store';
 import { useEffect } from 'react';
 import { keyValueDb } from '../../lib/db';
@@ -37,7 +36,7 @@ export const useValue = <T>(
     };
   }, [key]);
 
-  return useObserver(() => store.getItem<T>(key) || { loading: true });
+  return store.use(() => store.getItem(key)) || { loading: true };
 };
 
 export const updateValue = async <T extends KeyValue['value']>(

@@ -9,7 +9,6 @@ import { updateQuery, useQueries } from '../query.service';
 import { useParams } from 'react-router-dom';
 import { QueryInLocalStore } from '../types';
 import { IDisposable } from 'monaco-editor';
-import { useObserver } from 'mobx-react-lite';
 import { getSourceUrlAndDatabaseNameFromUrl } from '../../../lib/sourceUrl';
 import { QueryFieldsAndRowsQuery } from 'types';
 import { useAPIContext } from '../../../lib/apiContext';
@@ -92,7 +91,7 @@ const QueryPageInner = React.memo(
       });
     };
 
-    const databaseUrl = useObserver(() => query.databaseUrl) || '';
+    const databaseUrl = query.databaseUrl || '';
     const setDatabaseUrl = (databaseUrl: string) =>
       updateQuery(query, { databaseUrl });
 

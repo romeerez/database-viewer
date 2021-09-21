@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 import { createOpenState } from '../open.state';
 import TreeItem from '../TreeItems/TreeItem';
 import { Folder as FolderIcon } from '../../../icons';
-import { useObserver } from 'mobx-react-lite';
 import { PathState } from '../path.state';
 import cn from 'classnames';
 import { Folder as FolderType } from '../dataTree.types';
@@ -28,9 +27,7 @@ export default function Folder({
   openState: ReturnType<typeof createOpenState>;
   children: ReactNode;
 }) {
-  const open = useObserver(() =>
-    openState.getItem(sourceName, databaseName, schemaName, type),
-  );
+  const open = openState.useItem(sourceName, databaseName, schemaName, type);
 
   return (
     <TreeItem

@@ -1,27 +1,36 @@
-import { makeAutoObservable } from 'mobx';
 import { QueryInLocalStore } from './types';
 import { queriesDb } from '../../lib/db';
 import { Status } from '../../lib/indexedDB';
+import { createStore } from 'jastaman';
+import { useEffect } from 'react';
 
-export const queriesStore = makeAutoObservable({
-  status: 'init' as Status,
-  error: undefined as Error | undefined,
-  data: undefined as QueryInLocalStore[] | undefined,
-  get queries(): QueryInLocalStore[] | undefined {
-    if (this.status === 'init') this.load();
-    return this.data;
+const store = createStore({
+  state: {
+    status: 'init' as Status,
+    error: undefined as Error | undefined,
+    data: undefined as QueryInLocalStore[] | undefined,
+  },
+  useQueries() {
+    useEffect(() => {
+      store.load();
+    }, []);
+    return store.use('data', 'status', 'error');
   },
   async load() {
-    if (this.status !== 'init') return;
+    if (store.state.status !== 'init') return;
 
-    this.status = 'loading';
+    store.set({ status: 'loading' });
 
     try {
-      this.data = await queriesDb.all();
-      this.status = 'ready';
+      store.set({
+        data: await queriesDb.all(),
+        status: 'ready',
+      });
     } catch (error) {
-      this.error = error;
-      this.status = 'error';
+      store.set({
+        error: error as Error,
+        status: 'error',
+      });
     }
   },
   async create(
@@ -35,20 +44,31 @@ export const queriesStore = makeAutoObservable({
     };
 
     const record = await queriesDb.create(query);
-    this.data = [...(this.data || []), record];
+    store.set((state) => ({ data: [...(state.data || []), record] }));
     return record;
   },
   async update(
-    query: QueryInLocalStore,
+    { id }: QueryInLocalStore,
     { ...data }: Partial<QueryInLocalStore>,
   ) {
+    const query = store.state.data?.find((query) => query.id === id);
+    if (!query) {
+      throw new Error(`Query is not found`);
+    }
+
     data.updatedAt = new Date();
-    Object.assign(query, data);
-    await queriesDb.update(query, data);
-    return query;
+    const updated = await queriesDb.update(query, data);
+    store.set((state) => ({
+      data: state.data?.map((item) => (item.id === id ? updated : item)),
+    }));
+    return updated;
   },
   async delete(query: QueryInLocalStore) {
     await queriesDb.delete(query.id);
-    this.data = this.data?.filter((item) => item.id !== query.id);
+    store.set((state) => ({
+      data: state.data?.filter((item) => item.id !== query.id),
+    }));
   },
 });
+
+export const queriesStore = store;

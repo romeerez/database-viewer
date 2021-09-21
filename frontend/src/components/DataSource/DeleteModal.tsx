@@ -1,7 +1,7 @@
 import React from 'react';
-import { modalsState } from '../../components/DataTree/dataTree.state';
-import { DataSourceInLocalStore } from '../../components/DataSource/types';
-import { useRemoveDataSource } from '../../components/DataSource/dataSource.service';
+import { modalsState } from '../DataTree/dataTree.state';
+import { DataSourceInLocalStore } from './types';
+import { useRemoveDataSource } from './dataSource.service';
 import ConfirmModal from '../../components/Common/Modals/ConfirmModal';
 
 export default function DeleteModal({

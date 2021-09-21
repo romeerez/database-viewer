@@ -1,14 +1,13 @@
 import React from 'react';
-import { useTablePageContext } from '../../../components/Table/TablePage.context';
+import { useTablePageContext } from '../TablePage.context';
 import { Minus } from '../../../icons';
 import cn from 'classnames';
-import { observer } from 'mobx-react-lite';
 import Tooltip from '../../../components/Common/Tooltip/Tooltip';
 import { useKey } from 'react-use';
 
-export default observer(function RemoveRowsButton() {
+export default function RemoveRowsButton() {
   const { selectionService } = useTablePageContext();
-  const disabled = !selectionService.hasSelection();
+  const disabled = !selectionService.use((state) => state.hasSelection);
   const removeRows = () => selectionService.removeRows();
 
   useKey(
@@ -36,4 +35,4 @@ export default observer(function RemoveRowsButton() {
       </button>
     </Tooltip>
   );
-});
+}

@@ -4,7 +4,6 @@ import { createOpenState } from '../open.state';
 import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import Schema from '../../../components/DataTree/TreeItems/Schema';
-import { useObserver } from 'mobx-react-lite';
 import { PathState } from '../path.state';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
@@ -26,7 +25,7 @@ export default function Database({
   openState: ReturnType<typeof createOpenState>;
 }) {
   const { name } = database;
-  const open = useObserver(() => openState.getItem(sourceName, name));
+  const open = openState.useItem(sourceName, name);
   const innerTop = top + 32;
   const innerPaddingLeft = paddingLeft + 16;
 

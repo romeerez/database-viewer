@@ -5,11 +5,10 @@ import Editor, { ExtendedEditor, useEditorRef } from '../../Editor/Editor';
 import { KeyCode } from 'monaco-editor';
 import { updateValue, useValue } from '../../KeyValueStore/keyValue.service';
 import MenuItem from '../../Common/Menu/MenuItem';
-import { observer } from 'mobx-react-lite';
 import { useTablePageContext } from '../TablePage.context';
 import cn from 'classnames';
 
-export default observer(function Condition({
+export default function Condition({
   conditionType,
   onSubmit,
 }: {
@@ -17,7 +16,7 @@ export default observer(function Condition({
   onSubmit(value: string): void;
 }) {
   const { tableDataService } = useTablePageContext();
-  const sourceUrl = tableDataService.getSourceUrl();
+  const sourceUrl = tableDataService.use((state) => state.sourceUrl);
   if (!sourceUrl) return null;
 
   return (
@@ -27,7 +26,7 @@ export default observer(function Condition({
       sourceUrl={sourceUrl}
     />
   );
-});
+}
 
 function ConditionInner({
   conditionType,
@@ -39,7 +38,9 @@ function ConditionInner({
   sourceUrl: string;
 }) {
   const { tableDataService } = useTablePageContext();
-  const { databaseName, schemaName, tableName } = tableDataService.getParams();
+  const { databaseName, schemaName, tableName } = tableDataService.use(
+    (state) => state.params,
+  );
 
   const editorRef = useEditorRef();
   const onSubmitRef = useRef(onSubmit);
@@ -142,7 +143,7 @@ function ConditionInner({
               >
                 <button className="pl-3 pr-11 h-full w-full">{query}</button>
                 <div
-                  tabIndex="0"
+                  tabIndex={0}
                   className="absolute right-2 h-7 w-7 ml-2 flex-center rounded duration-200 transition hover:bg-dark-4"
                   onClick={(e) => {
                     e.stopPropagation();

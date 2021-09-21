@@ -22,9 +22,9 @@ export const buildQuery = ({
   sql += schemaName === 'public' ? tableName : `${schemaName}.${tableName}`;
 
   if (where) sql += ` WHERE ${where}`;
-  if (orderBy) sql += ` ORDER BY ${orderBy}`;
 
   if (!count) {
+    if (orderBy) sql += ` ORDER BY ${orderBy}`;
     if (limit) sql += ` LIMIT ${limit}`;
     if (offset) sql += ` OFFSET ${offset}`;
   }

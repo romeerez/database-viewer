@@ -1,16 +1,14 @@
-import { useLocalObservable } from 'mobx-react-lite';
-import { Field, GetDataTreeQuery, QueryResult } from 'types';
+import { computed, useCreateStore } from 'jastaman';
 import {
-  DataSourceTree,
   SchemaTree,
   TableTree,
   useDataTree,
 } from '../../DataTree/dataTree.service';
-import { useEffect } from 'react';
-import { toast } from 'react-toastify';
 import { useRouteMatch } from 'react-router-dom';
+import { Field, GetDataTreeQuery, QueryResult } from 'types';
 import { dataSourcesStore } from '../../DataSource/dataSource.store';
-import { observable } from 'mobx';
+import { DataSourceInLocalStoreWithDriver } from '../../DataSource/types';
+import { toast } from 'react-toastify';
 import { getTypeName } from '../../../lib/utils';
 
 const defaultLimit = 10;
@@ -23,8 +21,6 @@ export type FieldInfo = {
   default?: string;
 };
 
-export type TableDataStore = ReturnType<typeof useDataStore>;
-
 export type Params = {
   sourceName: string;
   databaseName: string;
@@ -32,120 +28,134 @@ export type Params = {
   tableName: string;
 };
 
-export type Selection = Record<number, Record<number, true>>;
+export type TableDataStore = ReturnType<typeof useTableDataStore>;
 
-export const useDataStore = () => {
+const queryParams = {
+  where: '',
+  orderBy: '',
+  limit: defaultLimit as number | undefined,
+  offset: 0,
+};
+
+export const useTableDataStore = () => {
   const { tree } = useDataTree();
   const { params } = useRouteMatch<Params>();
+  const { data: localDataSources } = dataSourcesStore.useDataSources();
 
-  const store = useLocalObservable(
-    () => {
-      const queryParams = {
-        where: '',
-        orderBy: '',
-        limit: defaultLimit as number | undefined,
-        offset: 0,
-      };
-
-      return {
+  const store = useCreateStore(
+    () => ({
+      state: {
         tree,
         params,
         rawFields: undefined as QueryResult['fields'] | undefined,
         rows: undefined as QueryResult['rows'] | undefined,
         count: undefined as number | undefined,
         queryParams,
-        get databaseUrl() {
-          const { sourceUrl } = store;
-          return sourceUrl ? `${sourceUrl}/${params.databaseName}` : undefined;
-        },
-        get loading(): boolean {
-          return (
-            !store.tree || store.count === undefined || store.rows === undefined
-          );
-        },
-        get source(): GetDataTreeQuery['dataSources'][number] | undefined {
-          const { tree, sourceUrl, params } = store;
-          if (!tree || !sourceUrl || !params) return;
+        localDataSources: undefined as
+          | DataSourceInLocalStoreWithDriver[]
+          | undefined,
+        sourceUrl: computed<string | undefined>(),
+        databaseUrl: computed<string | undefined>(),
+        loading: computed<boolean>(),
+        source: computed<GetDataTreeQuery['dataSources'][number] | undefined>(),
+        schema: computed<SchemaTree | undefined>(),
+        table: computed<TableTree | undefined>(),
+        fields: computed<FieldInfo[] | undefined>(),
+        primaryColumns: computed<{ name: string; index: number }[]>(),
+        defaults: computed<(string | undefined)[]>(),
+      },
+      computed: {
+        sourceUrl: [
+          (state) => [state.params.sourceName, state.localDataSources],
+          ({ params: { sourceName }, localDataSources }) =>
+            localDataSources?.find((source) => source.name === sourceName)?.url,
+        ],
+        databaseUrl: [
+          (state) => [state.sourceUrl, state.params.databaseName],
+          ({ sourceUrl, params }) =>
+            sourceUrl && `${sourceUrl}/${params.databaseName}`,
+        ],
+        loading: [
+          (state) => [state.tree, state.count, state.rows],
+          (state) =>
+            !state.tree ||
+            state.count === undefined ||
+            state.rows === undefined,
+        ],
+        source: [
+          (state) => [state.tree, state.sourceUrl, state.params],
+          ({ tree, sourceUrl, params }) => {
+            if (!tree || !sourceUrl || !params) return;
 
-          return tree.dataSources.find((source) => source.url === sourceUrl);
-        },
-        get schema(): SchemaTree | undefined {
-          const { source, params } = store;
-          if (!source || !params) return;
+            return tree.dataSources.find((source) => source.url === sourceUrl);
+          },
+        ],
+        schema: [
+          (state) => [state.source, state.params],
+          ({ source, params }) => {
+            if (!source || !params) return;
 
-          const { databaseName, schemaName } = params;
+            const { databaseName, schemaName } = params;
 
-          const database = source.databases.find(
-            (database) => database.name === databaseName,
-          );
-          if (!database) return;
+            const database = source.databases.find(
+              (database) => database.name === databaseName,
+            );
+            if (!database) return;
 
-          return database.schemas.find((schema) => schema.name === schemaName);
-        },
-        get table(): TableTree | undefined {
-          const { schema, params } = store;
-          if (!schema || !params) return;
+            return database.schemas.find(
+              (schema) => schema.name === schemaName,
+            );
+          },
+        ],
+        table: [
+          (state) => [state.schema, state.params],
+          ({ schema, params }) => {
+            if (!schema || !params) return;
 
-          const { tableName } = params;
+            const { tableName } = params;
 
-          return schema.tables.find((table) => table.name === tableName);
-        },
-        get fields(): FieldInfo[] | undefined {
-          try {
-            return getFieldsInfo(store);
-          } catch (error) {
-            toast((error as Error).message, { type: 'error' });
-          }
-        },
-        get primaryColumns(): { name: string; index: number }[] {
-          return (
-            store.fields
+            return schema.tables.find((table) => table.name === tableName);
+          },
+        ],
+        fields: [
+          (state) => [state.source, state.schema, state.table, state.rawFields],
+          (state) => {
+            try {
+              return getFieldsInfo(state);
+            } catch (error) {
+              toast((error as Error).message, { type: 'error' });
+            }
+          },
+        ],
+        primaryColumns: [
+          ({ fields }) => [fields],
+          ({ fields }) =>
+            fields
               ?.filter((field) => field.isPrimary)
-              .map((field, index) => ({ name: field.name, index: index })) || []
-          );
-        },
-        get sourceUrl() {
-          const { sourceName } = store.params;
-          const localDataSources = dataSourcesStore.dataSources;
-          const source = localDataSources?.find(
-            (source) => source.name === sourceName,
-          );
-
-          return source?.url;
-        },
-        get defaults() {
-          return store.fields?.map(
-            (field) => field.default && `default: ${field.default}`,
-          );
-        },
-        setRows(rows: QueryResult['rows'] | undefined) {
-          store.rows = rows;
-        },
-        update(
-          values: Partial<{
-            tree: typeof tree;
-            params: typeof params;
-            rawFields: QueryResult['fields'] | undefined;
-            rows: QueryResult['rows'] | undefined;
-            count: number | undefined;
-          }>,
-        ) {
-          Object.assign(store, values);
-        },
-        updateQueryParams(values: Partial<typeof queryParams>) {
-          Object.assign(store.queryParams, values);
-        },
-      };
-    },
+              .map((field, index) => ({ name: field.name, index: index })) ||
+            [],
+        ],
+        defaults: [
+          ({ fields }) => [fields],
+          ({ fields }) =>
+            fields?.map(
+              (field) => field.default && `default: ${field.default}`,
+            ) || [],
+        ],
+      },
+      setRows(rows: QueryResult['rows'] | undefined) {
+        store.set({ rows });
+      },
+      updateQueryParams(values: Partial<typeof queryParams>) {
+        store.set((state) => ({
+          queryParams: { ...state.queryParams, ...values },
+        }));
+      },
+    }),
     {
-      tree: observable.shallow,
-      rawFields: observable.shallow,
+      setOnChange: { params, tree, localDataSources },
     },
   );
-
-  useEffect(() => {
-    store.update({ tree, params });
-  }, [tree, params]);
 
   return store;
 };

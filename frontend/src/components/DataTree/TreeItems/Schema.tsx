@@ -5,7 +5,6 @@ import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../Common/Menu/MenuItem';
 import { FlowChart } from '../../../icons';
 import Folder from '../TreeItems/Folder';
-import { useObserver } from 'mobx-react-lite';
 import { PathState } from '../path.state';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
@@ -32,9 +31,7 @@ export default function Schema({
   openState: ReturnType<typeof createOpenState>;
 }) {
   const { name } = schema;
-  const open = useObserver(() =>
-    openState.getItem(sourceName, databaseName, name),
-  );
+  const open = openState.useItem(sourceName, databaseName, name);
 
   const folderTop = top + 32;
   const folderPaddingLeft = paddingLeft + 16;

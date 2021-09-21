@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTablePageContext } from '../TablePage.context';
-import { observer } from 'mobx-react-lite';
 import { FieldInfo } from '../TableData/tableData.store';
 import cn from 'classnames';
 import { TableTree } from '../../DataTree/dataTree.service';
@@ -13,7 +12,7 @@ import ColumnIcon from '../../Column/ColumnIcon';
 import ColumnInfo from '../../Column/ColumnTitle';
 import Tooltip from '../../Common/Tooltip/Tooltip';
 
-export default observer(function ColumnTitle({
+export default function ColumnTitle({
   table,
   field,
   index,
@@ -23,7 +22,7 @@ export default observer(function ColumnTitle({
   index: number;
 }) {
   const { selectionService, tableService } = useTablePageContext();
-  const isSelected = selectionService.isColumnSelected(index);
+  const isSelected = selectionService.useIsColumnSelected(index);
 
   const name = field.name;
   const isIndexed = isColumnIndexed(table, name);
@@ -55,4 +54,4 @@ export default observer(function ColumnTitle({
       </Tooltip>
     </th>
   );
-});
+}

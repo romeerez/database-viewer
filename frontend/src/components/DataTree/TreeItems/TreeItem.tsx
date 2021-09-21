@@ -8,7 +8,7 @@ import {
 import cn from 'classnames';
 import Menu from '../../../components/Common/Menu/Menu';
 import { Link, useRouteMatch } from 'react-router-dom';
-import { DataTreeState } from '../../../components/DataTree/dataTree.state';
+import { DataTreeState } from '../dataTree.state';
 
 export default function TreeItem({
   open,
@@ -125,7 +125,7 @@ export default function TreeItem({
         <Appear
           open={open}
           onClose={close}
-          animateClose={!DataTreeState.openChangedOnSearch}
+          animateClose={!DataTreeState.state.openChangedOnSearch}
         >
           {children}
         </Appear>

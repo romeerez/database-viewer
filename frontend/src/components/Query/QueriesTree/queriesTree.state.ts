@@ -1,8 +1,10 @@
-import { makeAutoObservable } from 'mobx';
+import { createStore } from 'jastaman';
 
-export const SearchState = makeAutoObservable({
-  search: '',
-  setSearch(value: string) {
-    this.search = value;
+export const SearchState = createStore({
+  state: {
+    search: '',
+  },
+  setSearch(search: string) {
+    SearchState.set({ search });
   },
 });

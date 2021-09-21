@@ -2,14 +2,13 @@ import { QueryInLocalStore } from './types';
 import { useState } from 'react';
 import { queriesStore } from './queries.store';
 import { toast } from 'react-toastify';
-import { useObserver } from 'mobx-react-lite';
 import history from '../../lib/history';
 import routes from '../../lib/routes';
 
-export const useQueries = () => useObserver(() => queriesStore.queries);
+export const useQueries = () => queriesStore.useQueries();
 
 export const useCreateQuery = () => {
-  const queries = useObserver(() => queriesStore.queries);
+  const { data: queries } = useQueries();
   const [loading, setLoading] = useState(false);
 
   const createQuery = async () => {
@@ -28,7 +27,7 @@ export const useCreateQuery = () => {
       await queriesStore.create({ name, content: '' });
       history.push(routes.query(name));
     } catch (err) {
-      toast(err.message, { type: 'error' });
+      toast((err as Error).message, { type: 'error' });
     }
 
     setLoading(false);

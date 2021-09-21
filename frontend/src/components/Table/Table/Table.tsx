@@ -1,14 +1,13 @@
 import React from 'react';
-import { observer } from 'mobx-react-lite';
 import Row from './Row';
 import { useTablePageContext } from '../TablePage.context';
 import ColumnTitle from './ColumnTitle';
 
-export default observer(function Table() {
+export default function Table() {
   const { tableRef, tableDataService } = useTablePageContext();
-  const table = tableDataService.getTable();
-  const fields = tableDataService.getFields();
-  const rows = tableDataService.getRows();
+  const table = tableDataService.use((state) => state.table);
+  const fields = tableDataService.use((state) => state.fields);
+  const rows = tableDataService.use((state) => state.rows);
 
   if (!table || !fields || !rows) return null;
 
@@ -32,4 +31,4 @@ export default observer(function Table() {
       </tbody>
     </table>
   );
-});
+}

@@ -1,11 +1,12 @@
-import { makeAutoObservable } from 'mobx';
 import {
   DataSourceInLocalStore,
   DataSourceInLocalStoreWithDriver,
   Driver,
-} from '../../components/DataSource/types';
+} from './types';
 import { dataSourcesDb } from '../../lib/db';
 import { Status } from '../../lib/indexedDB';
+import { createStore } from 'jastaman';
+import { useEffect } from 'react';
 
 const withDriver = (
   record: DataSourceInLocalStore,
@@ -15,50 +16,58 @@ const withDriver = (
   return { ...record, driver };
 };
 
-export const dataSourcesStore = makeAutoObservable({
-  status: 'init' as Status,
-  error: undefined as Error | undefined,
-  data: undefined as DataSourceInLocalStoreWithDriver[] | undefined,
-  get dataSources(): DataSourceInLocalStoreWithDriver[] | undefined {
-    if (this.status === 'init') this.load();
-    return this.data;
+const store = createStore({
+  state: {
+    status: 'init' as Status,
+    error: undefined as Error | undefined,
+    data: undefined as DataSourceInLocalStoreWithDriver[] | undefined,
+  },
+  useDataSources() {
+    useEffect(() => {
+      store.load();
+    }, []);
+    return store.use('data', 'status', 'error');
   },
   async load() {
-    if (this.status !== 'init') return;
+    if (store.state.status !== 'init') return;
 
-    this.status = 'loading';
+    store.set({ status: 'loading' });
 
     try {
       const records = await dataSourcesDb.all();
-      this.data = records.map(withDriver);
-      this.status = 'ready';
+      store.set({ data: records.map(withDriver), status: 'ready' });
     } catch (error) {
-      this.error = error;
-      this.status = 'error';
+      store.set({ error: error as Error, status: 'error' });
     }
   },
   async create(data: Omit<DataSourceInLocalStore, 'id'>) {
-    if (!this.data) {
+    if (!store.state.data) {
       throw new Error('Data not loaded yet');
     }
     const record = await dataSourcesDb.create(data);
-    this.data = [withDriver(record), ...this.data];
+    store.set({ data: [withDriver(record), ...store.state.data] });
   },
   async update(id: number, data: Partial<DataSourceInLocalStore>) {
-    const record = this.data?.find((record) => record.id === id);
-    if (!this.data || !record) {
+    const record = store.state.data?.find((record) => record.id === id);
+    if (!store.state.data || !record) {
       throw new Error("Can't find record to update");
     }
     const updated = await dataSourcesDb.update(record, data);
-    this.data = this.data.map((item) =>
-      item.id === id ? withDriver(updated) : item,
-    );
+    store.set((state) => ({
+      data: state.data?.map((item) =>
+        item.id === id ? withDriver(updated) : item,
+      ),
+    }));
   },
   async delete(id: number) {
-    if (!this.data?.some((item) => item.id === id)) {
+    if (!store.state.data?.some((item) => item.id === id)) {
       throw new Error("Can't find record to delete");
     }
     await dataSourcesDb.delete(id);
-    this.data = this.data.filter((item) => item.id !== id);
+    store.set((state) => ({
+      data: state.data?.filter((item) => item.id !== id),
+    }));
   },
 });
+
+export const dataSourcesStore = store;
