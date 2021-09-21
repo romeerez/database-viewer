@@ -39,29 +39,42 @@ export const useFloatingInputService = ({
 
         service.setCell({ row, column });
       },
-      setCell(cell?: { row: number; column: number }) {
-        if (!cell) {
+      setCell(object?: { row: number; column: number }) {
+        if (!object) {
           store.setCell();
           return;
         }
 
-        const td = tableService.getCell(cell.row, cell.column);
+        const td = tableService.getCell(object.row, object.column);
         if (!td) {
           store.setCell();
           return;
         }
 
-        store.setCell({
-          row: cell.row,
-          column: cell.column,
+        const cell = {
+          row: object.row,
+          column: object.column,
           offsetTop: td.offsetTop,
           offsetLeft: td.offsetLeft,
           minWidth: td.offsetWidth,
           minHeight: td.offsetHeight,
           className: (td.dataset as { bgClass: string }).bgClass,
-        });
+        };
 
+        store.setCell(cell);
         store.setValue(dataChangesService.getValue(cell.row, cell.column));
+
+        const el = store.textAreaRef.current;
+        if (!el || !cell) return;
+
+        el.style.minWidth = `${cell.minWidth}px`;
+        el.style.minHeight = `${cell.minHeight}px`;
+        el.classList.remove((el.dataset as { bgClass: string }).bgClass);
+
+        el.classList.add(cell.className);
+        (el.dataset as { bgClass: string }).bgClass = cell.className;
+
+        el.focus();
       },
       usePlaceholder() {
         return store.use(({ cell, defaults, fields, value, isRaw }) => {

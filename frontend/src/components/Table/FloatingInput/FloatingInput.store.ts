@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useCreateStore } from 'jastaman';
 import { TableDataService } from '../TableData/tableData.service';
 
@@ -18,6 +19,8 @@ export const useFloatingInputStore = ({
 }: {
   tableDataService: TableDataService;
 }) => {
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
   const store = useCreateStore(() => ({
     state: {
       cell: undefined as Cell | undefined,
@@ -29,6 +32,7 @@ export const useFloatingInputStore = ({
       defaults: tableDataService.state.defaults,
       fields: tableDataService.state.fields,
     },
+    textAreaRef,
     setCell(cell?: Cell) {
       store.set({ cell });
     },

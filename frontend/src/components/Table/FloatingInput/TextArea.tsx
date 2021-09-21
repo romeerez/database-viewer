@@ -1,29 +1,17 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { useTablePageContext } from '../TablePage.context';
 
 const tdPaddingXPx = '32px';
 
 export default function TextArea() {
   const { floatingInputService } = useTablePageContext();
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const { textAreaRef } = floatingInputService;
 
   const value = floatingInputService.use((state) => state.value);
   const cell = floatingInputService.use((state) => state.cell);
   const placeholder = floatingInputService.usePlaceholder();
 
-  useLayoutEffect(() => {
-    const el = textAreaRef.current;
-    if (!el || !cell) return;
-
-    el.style.minWidth = `${cell.minWidth}px`;
-    el.style.minHeight = `${cell.minHeight}px`;
-    el.classList.remove((el.dataset as { bgClass: string }).bgClass);
-
-    el.classList.add(cell.className);
-    (el.dataset as { bgClass: string }).bgClass = cell.className;
-
-    el.focus();
-  }, [cell]);
+  useEffect(() => {}, [cell]);
 
   useLayoutEffect(() => {
     const el = textAreaRef.current;
@@ -44,6 +32,7 @@ export default function TextArea() {
   return (
     <textarea
       ref={textAreaRef}
+      autoFocus
       className="ring rounded-sm px-4 py-2.5 text-sm whitespace-nowrap overflow-hidden w-0 h-0 placeholder-light-9 block resize-none"
       onChange={onChange}
       placeholder={placeholder}
