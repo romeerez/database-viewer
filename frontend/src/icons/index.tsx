@@ -28,3 +28,6 @@ export { Text as Trigger } from '@styled-icons/boxicons-regular/Text';
 export { Folder } from '@styled-icons/boxicons-regular/Folder';
 export { Pageview } from '@styled-icons/material/Pageview';
 export { Functions } from '@styled-icons/remix-editor/Functions';
+export { Sort } from '@styled-icons/fa-solid/Sort';
+export { SortUp } from '@styled-icons/fa-solid/SortUp';
+export { SortDown } from '@styled-icons/fa-solid/SortDown';

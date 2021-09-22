@@ -30,6 +30,8 @@ const queryParams = {
   offset: 0,
 };
 
+type OrderByMap = Record<string, { pos: number; dir: 'asc' | 'desc' }>;
+
 export const useTableDataStore = ({
   params,
   sourceUrl,
@@ -63,6 +65,7 @@ export const useTableDataStore = ({
           where: conditionsService.getValue('where'),
           orderBy: conditionsService.getValue('orderBy'),
         },
+        orderByMap: computed<OrderByMap>(),
       },
       computed: {
         databaseUrl: [
@@ -136,6 +139,20 @@ export const useTableDataStore = ({
             fields?.map(
               (field) => field.default && `default: ${field.default}`,
             ) || [],
+        ],
+        orderByMap: [
+          (state) => [state.queryParams.orderBy],
+          (state) => {
+            const map: OrderByMap = {};
+            state.queryParams.orderBy
+              .toLowerCase()
+              .split(',')
+              .forEach((part, pos) => {
+                const [column, dir] = part.trim().split(' ');
+                map[column] = { pos, dir: dir === 'desc' ? 'desc' : 'asc' };
+              });
+            return map;
+          },
         ],
       },
       setRows(rows: QueryResult['rows'] | undefined) {

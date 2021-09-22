@@ -46,11 +46,14 @@ function ConditionInner({
   onSubmitRef.current = onSubmit;
 
   const { data: history = [] } = conditionsService.useHistory(conditionType);
-  conditionsService.useValue(conditionType, {
-    onLoad(value) {
-      if (value) editorRef.current?.setValue(value);
-    },
-  });
+  const value = conditionsService.useValue(conditionType);
+
+  useEffect(() => {
+    const val = value.data || '';
+    if (val !== editorRef.current?.getValue()) {
+      editorRef.current?.setValue(val || '');
+    }
+  }, [value]);
 
   const selectQuery = (query: string) => {
     const editor = editorRef.current as ExtendedEditor;
