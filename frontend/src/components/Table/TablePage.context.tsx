@@ -6,6 +6,7 @@ import { FloatingInputService } from './FloatingInput/FloatingInput.service';
 import { TableService } from './Table/Table.service';
 import { ErrorService } from './Error/error.service';
 import { ConditionsService } from './Conditions/Conditions.service';
+import { ConfirmLoosingChangesService } from './ConfirmLoosingChanges/confirmLoosingChanges.service';
 
 export type TablePageContextValues = {
   tableRef: RefObject<HTMLTableElement>;
@@ -16,6 +17,7 @@ export type TablePageContextValues = {
   floatingInputService: FloatingInputService;
   errorService: ErrorService;
   conditionsService: ConditionsService;
+  confirmLoosingChangesService: ConfirmLoosingChangesService;
 };
 
 export const TablePageContext = createContext({} as TablePageContextValues);

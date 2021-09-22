@@ -27,6 +27,7 @@ export default function ColumnTitle({
     tableService,
     tableDataService,
     conditionsService,
+    confirmLoosingChangesService,
   } = useTablePageContext();
   const isSelected = selectionService.useIsColumnSelected(index);
 
@@ -37,7 +38,9 @@ export default function ColumnTitle({
   const orderByMap = tableDataService.use('orderByMap');
   const order = orderByMap[name];
 
-  const sort = () => {
+  const { confirmLoosingChanges } = confirmLoosingChangesService;
+
+  const sort = confirmLoosingChanges(() => {
     let value: string;
     if (Object.keys(orderByMap).length === 1 && order?.pos === 0) {
       if (order.dir === 'asc') {
@@ -50,7 +53,7 @@ export default function ColumnTitle({
     }
     tableDataService.setOrderBy(value);
     conditionsService.updateValue('orderBy', () => value);
-  };
+  });
 
   return (
     <th

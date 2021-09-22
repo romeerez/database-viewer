@@ -17,6 +17,8 @@ import { useErrorService } from './Error/error.service';
 import Error from './Error/Error';
 import { dataSourcesStore } from '../DataSource/dataSource.store';
 import { useConditionsService } from './Conditions/Conditions.service';
+import ConfirmLoosingChanges from './ConfirmLoosingChanges/ConfirmLoosingChanges';
+import { useConfirmLoosingChangesService } from './ConfirmLoosingChanges/confirmLoosingChanges.service';
 
 export type Params = {
   sourceName: string;
@@ -65,6 +67,9 @@ const TablePageReMountable = () => {
     dataChangesService,
     selectionService,
   });
+  const confirmLoosingChangesService = useConfirmLoosingChangesService({
+    dataChangesService,
+  });
 
   return (
     <TablePageContext.Provider
@@ -77,6 +82,7 @@ const TablePageReMountable = () => {
         floatingInputService,
         errorService,
         conditionsService,
+        confirmLoosingChangesService,
       }}
     >
       <div className="flex flex-col h-full overflow-hidden">
@@ -91,6 +97,7 @@ const TablePageReMountable = () => {
           </Selection>
         </Scrollbars>
         <Error isMain />
+        <ConfirmLoosingChanges />
       </div>
     </TablePageContext.Provider>
   );
