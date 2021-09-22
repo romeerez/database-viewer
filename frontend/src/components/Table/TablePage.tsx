@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useMemo, useRef } from 'react';
+import { useLocation, useRouteMatch } from 'react-router-dom';
 import Header from './Header';
 import ControlPanel from '../../components/Table/ControlPanel/ControlPanel';
 import Conditions from './Conditions/Conditions';
@@ -15,6 +15,15 @@ import { useFloatingInputService } from './FloatingInput/FloatingInput.service';
 import { useTableService } from './Table/Table.service';
 import { useErrorService } from './Error/error.service';
 import Error from './Error/Error';
+import { dataSourcesStore } from '../DataSource/dataSource.store';
+import { useConditionsService } from './Conditions/Conditions.service';
+
+export type Params = {
+  sourceName: string;
+  databaseName: string;
+  schemaName: string;
+  tableName: string;
+};
 
 export default function TablePage() {
   const { pathname } = useLocation();
@@ -23,10 +32,24 @@ export default function TablePage() {
 }
 
 const TablePageReMountable = () => {
+  const { params } = useRouteMatch<Params>();
+  const { data: localDataSources } = dataSourcesStore.useDataSources();
+  const { sourceName } = params;
+  const sourceUrl = useMemo(
+    () => localDataSources?.find((source) => source.name === sourceName)?.url,
+    [sourceName, localDataSources],
+  );
+
   const tableRef = useRef<HTMLTableElement>(null);
   const tableService = useTableService({ tableRef });
   const errorService = useErrorService();
-  const tableDataService = useDataService({ errorService });
+  const conditionsService = useConditionsService({ params, sourceUrl });
+  const tableDataService = useDataService({
+    params,
+    sourceUrl,
+    errorService,
+    conditionsService,
+  });
   const dataChangesService = useDataChangesService({
     tableDataService,
     errorService,
@@ -53,6 +76,7 @@ const TablePageReMountable = () => {
         selectionService,
         floatingInputService,
         errorService,
+        conditionsService,
       }}
     >
       <div className="flex flex-col h-full overflow-hidden">

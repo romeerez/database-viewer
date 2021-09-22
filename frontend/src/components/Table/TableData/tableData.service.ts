@@ -3,15 +3,24 @@ import { useMemo } from 'react';
 import { buildQuery } from '../../../lib/queryBuilder';
 import { useAPIContext } from '../../../lib/apiContext';
 import { ErrorService } from '../Error/error.service';
+import { Params } from '../TablePage';
+import { ConditionsService } from '../Conditions/Conditions.service';
+import { shallowEqual } from 'jastaman';
 
 export type TableDataService = ReturnType<typeof useDataService>;
 
 export const useDataService = ({
+  params,
+  sourceUrl,
   errorService,
+  conditionsService,
 }: {
+  params: Params;
+  sourceUrl?: string;
   errorService: ErrorService;
+  conditionsService: ConditionsService;
 }) => {
-  const store = useTableDataStore();
+  const store = useTableDataStore({ params, sourceUrl, conditionsService });
 
   const service = useMemo(
     () => ({
@@ -65,19 +74,27 @@ export const useDataService = ({
         });
       },
       setLimit(value?: number) {
-        store.updateQueryParams({ limit: value, offset: 0 });
+        store.set((state) => ({
+          queryParams: { ...state.queryParams, limit: value, offset: 0 },
+        }));
         service.loadRows();
       },
       setOffset(value: number) {
-        store.updateQueryParams({ offset: value });
+        store.set((state) => ({
+          queryParams: { ...state.queryParams, offset: value },
+        }));
         service.loadRows();
       },
       setOrderBy(value: string) {
-        store.updateQueryParams({ orderBy: value });
+        store.set((state) => ({
+          queryParams: { ...state.queryParams, orderBy: value },
+        }));
         service.loadRows();
       },
       setWhere(value: string) {
-        store.updateQueryParams({ where: value });
+        store.set((state) => ({
+          queryParams: { ...state.queryParams, where: value },
+        }));
         service.loadRows();
         service.loadCount();
       },
@@ -130,10 +147,26 @@ export const useDataService = ({
   });
 
   store.useEffect(
-    (state) => state.sourceUrl,
-    () => {
-      service.loadFieldsAndRows();
-      service.loadCount();
+    ({ sourceUrl, conditions }) =>
+      [
+        sourceUrl,
+        conditions.where.loading,
+        conditions.orderBy.loading,
+      ] as const,
+    shallowEqual,
+    ([sourceUrl, whereLoading, orderByLoading]) => {
+      if (sourceUrl && !whereLoading && !orderByLoading) {
+        const { where, orderBy } = store.state.conditions;
+        store.set((state) => ({
+          queryParams: {
+            ...state.queryParams,
+            where: where.data || '',
+            orderBy: orderBy.data || '',
+          },
+        }));
+        service.loadFieldsAndRows();
+        service.loadCount();
+      }
     },
   );
 

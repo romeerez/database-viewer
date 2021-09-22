@@ -23,7 +23,7 @@
     "@styled-icons/typicons": "^10.18.0",
     "classnames": "^2.3.1",
     "history": "^4.9.0",
-    "jastaman": "^0.0.18",
+    "jastaman": "^0.0.25",
     "monaco-editor": "^0.23.0",
     "monaco-vim": "^0.1.13",
     "react": "^17.0.2",

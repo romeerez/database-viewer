@@ -2082,10 +2082,10 @@ isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
-jastaman@^0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/jastaman/-/jastaman-0.0.18.tgz#6af335e38f7f0017ac86f9bb082159d61a853f86"
-  integrity sha512-Er66jWbZXjTQ8pNWWonk6M2G1NDZK0K5BGMjDto1zwfkMoWluLAcL4N17JDeIEp57HXkGh040vdeJ8g7DYuSlQ==
+jastaman@^0.0.25:
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/jastaman/-/jastaman-0.0.25.tgz#2f2876af8ba7577bee2619792bb62980ceae464c"
+  integrity sha512-ICJ30OB10SYLCjRLVhZ6UrhNuXzXNJ5vlnZtU12rk9GSnKyGjiKFzmmtrS1ZbBakfmKdyK/9lXF39omLeieD3g==
 
 jest-worker@^24.0.0:
   version "24.9.0"

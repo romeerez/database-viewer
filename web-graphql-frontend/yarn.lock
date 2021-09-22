@@ -1852,10 +1852,10 @@ isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
-jastaman@^0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/jastaman/-/jastaman-0.0.18.tgz#6af335e38f7f0017ac86f9bb082159d61a853f86"
-  integrity sha512-Er66jWbZXjTQ8pNWWonk6M2G1NDZK0K5BGMjDto1zwfkMoWluLAcL4N17JDeIEp57HXkGh040vdeJ8g7DYuSlQ==
+jastaman@^0.0.25:
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/jastaman/-/jastaman-0.0.25.tgz#2f2876af8ba7577bee2619792bb62980ceae464c"
+  integrity sha512-ICJ30OB10SYLCjRLVhZ6UrhNuXzXNJ5vlnZtU12rk9GSnKyGjiKFzmmtrS1ZbBakfmKdyK/9lXF39omLeieD3g==
 
 js-cookie@^2.2.1:
   version "2.2.1"
@@ -2058,16 +2058,6 @@ minimist@^1.1.1, minimist@^1.2.0, minimist@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
   integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
-
-mobx-react-lite@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-3.2.0.tgz#331d7365a6b053378dfe9c087315b4e41c5df69f"
-  integrity sha512-q5+UHIqYCOpBoFm/PElDuOhbcatvTllgRp3M1s+Hp5j0Z6XNgDbgqxawJ0ZAUEyKM8X1zs70PCuhAIzX1f4Q/g==
-
-mobx@^6.3.0:
-  version "6.3.2"
-  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.3.2.tgz#125590961f702a572c139ab69392bea416d2e51b"
-  integrity sha512-xGPM9dIE1qkK9Nrhevp0gzpsmELKU4MFUJRORW/jqxVFIHHWIoQrjDjL8vkwoJYY3C2CeVJqgvl38hgKTalTWg==
 
 modern-normalize@^1.1.0:
   version "1.1.0"

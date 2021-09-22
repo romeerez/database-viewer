@@ -1,15 +1,15 @@
-import { computed, useCreateStore } from 'jastaman';
+import { computed, shallowEqual, useCreateStore } from 'jastaman';
 import {
   SchemaTree,
   TableTree,
   useDataTree,
 } from '../../DataTree/dataTree.service';
-import { useRouteMatch } from 'react-router-dom';
 import { Field, GetDataTreeQuery, QueryResult } from 'types';
-import { dataSourcesStore } from '../../DataSource/dataSource.store';
-import { DataSourceInLocalStoreWithDriver } from '../../DataSource/types';
 import { toast } from 'react-toastify';
 import { getTypeName } from '../../../lib/utils';
+import { Params } from '../TablePage';
+import { keyValueStore } from '../../../lib/keyValue.store';
+import { ConditionsService } from '../Conditions/Conditions.service';
 
 const defaultLimit = 10;
 
@@ -21,13 +21,6 @@ export type FieldInfo = {
   default?: string;
 };
 
-export type Params = {
-  sourceName: string;
-  databaseName: string;
-  schemaName: string;
-  tableName: string;
-};
-
 export type TableDataStore = ReturnType<typeof useTableDataStore>;
 
 const queryParams = {
@@ -37,24 +30,27 @@ const queryParams = {
   offset: 0,
 };
 
-export const useTableDataStore = () => {
+export const useTableDataStore = ({
+  params,
+  sourceUrl,
+  conditionsService,
+}: {
+  params: Params;
+  sourceUrl?: string;
+  conditionsService: ConditionsService;
+}) => {
   const { tree } = useDataTree();
-  const { params } = useRouteMatch<Params>();
-  const { data: localDataSources } = dataSourcesStore.useDataSources();
 
   const store = useCreateStore(
     () => ({
       state: {
         tree,
         params,
+        sourceUrl,
         rawFields: undefined as QueryResult['fields'] | undefined,
         rows: undefined as QueryResult['rows'] | undefined,
         count: undefined as number | undefined,
         queryParams,
-        localDataSources: undefined as
-          | DataSourceInLocalStoreWithDriver[]
-          | undefined,
-        sourceUrl: computed<string | undefined>(),
         databaseUrl: computed<string | undefined>(),
         loading: computed<boolean>(),
         source: computed<GetDataTreeQuery['dataSources'][number] | undefined>(),
@@ -63,13 +59,12 @@ export const useTableDataStore = () => {
         fields: computed<FieldInfo[] | undefined>(),
         primaryColumns: computed<{ name: string; index: number }[]>(),
         defaults: computed<(string | undefined)[]>(),
+        conditions: {
+          where: conditionsService.getValue('where'),
+          orderBy: conditionsService.getValue('orderBy'),
+        },
       },
       computed: {
-        sourceUrl: [
-          (state) => [state.params.sourceName, state.localDataSources],
-          ({ params: { sourceName }, localDataSources }) =>
-            localDataSources?.find((source) => source.name === sourceName)?.url,
-        ],
         databaseUrl: [
           (state) => [state.sourceUrl, state.params.databaseName],
           ({ sourceUrl, params }) =>
@@ -146,15 +141,27 @@ export const useTableDataStore = () => {
       setRows(rows: QueryResult['rows'] | undefined) {
         store.set({ rows });
       },
-      updateQueryParams(values: Partial<typeof queryParams>) {
-        store.set((state) => ({
-          queryParams: { ...state.queryParams, ...values },
-        }));
-      },
     }),
     {
-      setOnChange: { params, tree, localDataSources },
+      setOnChange: { params, sourceUrl, tree },
     },
+  );
+
+  keyValueStore.useEffect(
+    () => [
+      conditionsService.getValue('where'),
+      conditionsService.getValue('orderBy'),
+    ],
+    shallowEqual,
+    ([where, orderBy]) => {
+      store.set({
+        conditions: {
+          where,
+          orderBy,
+        },
+      });
+    },
+    [conditionsService],
   );
 
   return store;

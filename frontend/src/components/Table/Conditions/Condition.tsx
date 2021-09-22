@@ -3,7 +3,6 @@ import Menu from '../../Common/Menu/Menu';
 import { ChevronDown, X } from '../../../icons';
 import Editor, { ExtendedEditor, useEditorRef } from '../../Editor/Editor';
 import { KeyCode } from 'monaco-editor';
-import { updateValue, useValue } from '../../KeyValueStore/keyValue.service';
 import MenuItem from '../../Common/Menu/MenuItem';
 import { useTablePageContext } from '../TablePage.context';
 import cn from 'classnames';
@@ -37,7 +36,7 @@ function ConditionInner({
   onSubmit(value: string): void;
   sourceUrl: string;
 }) {
-  const { tableDataService } = useTablePageContext();
+  const { tableDataService, conditionsService } = useTablePageContext();
   const { databaseName, schemaName, tableName } = tableDataService.use(
     (state) => state.params,
   );
@@ -46,12 +45,8 @@ function ConditionInner({
   const onSubmitRef = useRef(onSubmit);
   onSubmitRef.current = onSubmit;
 
-  const conditionKey = `${sourceUrl}/${databaseName}/${schemaName}/table/${tableName}.${conditionType}`;
-  const historyKey = `${conditionKey}.history`;
-  const valueKey = `${conditionKey}.value`;
-
-  const { data: history = [] } = useValue<string[]>(historyKey);
-  useValue<string>(valueKey, {
+  const { data: history = [] } = conditionsService.useHistory(conditionType);
+  conditionsService.useValue(conditionType, {
     onLoad(value) {
       if (value) editorRef.current?.setValue(value);
     },
@@ -64,7 +59,7 @@ function ConditionInner({
   };
 
   const removeFromHistory = (query: string) => {
-    updateValue<string[]>(historyKey, (history = []) =>
+    conditionsService.updateHistory(conditionType, (history = []) =>
       history.filter((item) => item !== query),
     );
   };
@@ -85,7 +80,7 @@ function ConditionInner({
           e.preventDefault();
           const value = editor.getValue().trim();
           if (value) {
-            updateValue<string[]>(historyKey, (history = []) => [
+            conditionsService.updateHistory(conditionType, (history = []) => [
               value,
               ...history.filter((query) => query !== value),
             ]);
@@ -98,7 +93,7 @@ function ConditionInner({
     const change = editorRef.current?.onDidChangeModelContent(() => {
       const value = editor.getValue();
       setHasValue(value.length > 0);
-      updateValue<string>(valueKey, () => value);
+      conditionsService.updateValue(conditionType, () => value);
     });
 
     return () => {
@@ -109,7 +104,10 @@ function ConditionInner({
 
   const sqlCondition = conditionType === 'where' ? 'WHERE' : 'ORDER BY';
 
-  const clear = () => editorRef.current?.setValue('');
+  const clear = () => {
+    editorRef.current?.setValue('');
+    onSubmitRef.current('');
+  };
 
   return (
     <div className="flex w-full relative">
