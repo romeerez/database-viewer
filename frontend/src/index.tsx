@@ -9,6 +9,10 @@ import { APIContext as APIContextType } from 'types';
 import { APIContext } from './lib/apiContext';
 import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 export const DatabaseViewer = ({
   apiContext,

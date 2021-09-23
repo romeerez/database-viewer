@@ -60,6 +60,7 @@ export default function Row({
           defaultValue={defaults[i]}
           isRemoved={isRemoved}
           isNew={isNew}
+          type={field.type}
         />
       ))}
     </tr>

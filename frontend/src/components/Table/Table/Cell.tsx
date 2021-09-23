@@ -1,19 +1,22 @@
 import React from 'react';
 import cn from 'classnames';
 import { useTablePageContext } from '../TablePage.context';
+import { formatValue } from './formatValue';
 
-export default function Row({
+export default function Cell({
   rowIndex,
   columnIndex,
   isRemoved,
   isNew,
   defaultValue,
+  type,
 }: {
   rowIndex: number;
   columnIndex: number;
   isRemoved: boolean;
   isNew: boolean;
   defaultValue?: string;
+  type: string;
 }) {
   const { tableService, dataChangesService, selectionService } =
     useTablePageContext();
@@ -27,6 +30,7 @@ export default function Row({
     rowIndex,
     columnIndex,
   );
+
   const isSelected = selectionService.useIsCellSelected(rowIndex, columnIndex);
 
   return (
@@ -47,19 +51,7 @@ export default function Row({
           : undefined,
       )}
     >
-      <div
-        className={cn(
-          'min-w-full min-h-full flex items-center max-w-sm truncate px-4 pointer-events-none relative rounded-sm',
-          isFocused && 'ring z-10',
-          isSelected && 'bg-lighter-4',
-        )}
-      >
-        {value === null || (value === '' && isRaw)
-          ? defaultValue || 'null'
-          : value?.length === 0
-          ? 'empty'
-          : value}
-      </div>
+      {formatValue(type, value, isFocused, isSelected, isRaw, defaultValue)}
     </td>
   );
 }
