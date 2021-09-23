@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect } from 'react';
 import { useTablePageContext } from '../TablePage.context';
 import ToggleEmpty from './ToggleRaw';
 import TextArea from './TextArea';
+import NumberInput from './NumberInput';
 
 export default function FloatingInput({ children }: { children: ReactNode }) {
   const { floatingInputService, tableService } = useTablePageContext();
@@ -33,6 +34,7 @@ export default function FloatingInput({ children }: { children: ReactNode }) {
   }, [cell]);
 
   const isSingleCell = floatingInputService.isSingleCell();
+  const isNumber = floatingInputService.use('isNumber');
 
   return (
     <>
@@ -51,7 +53,7 @@ export default function FloatingInput({ children }: { children: ReactNode }) {
             left: cell && `${cell.offsetLeft}px`,
           }}
         >
-          <TextArea />
+          {isNumber ? <NumberInput /> : <TextArea />}
           <ToggleEmpty />
         </div>
         <div

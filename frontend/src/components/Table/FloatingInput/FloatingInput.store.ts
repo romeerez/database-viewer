@@ -1,6 +1,7 @@
-import { useRef } from 'react';
-import { useCreateStore } from 'jastaman';
+import React, { useRef } from 'react';
+import { computed, useCreateStore } from 'jastaman';
 import { TableDataService } from '../TableData/tableData.service';
+import { isInteger, isNumberType } from '../columnType.utils';
 
 type BlurTimeout = ReturnType<typeof setTimeout> | undefined;
 
@@ -12,6 +13,7 @@ export type Cell = {
   minWidth: number;
   minHeight: number;
   className: string;
+  type: string;
 };
 
 export const useFloatingInputStore = ({
@@ -20,6 +22,7 @@ export const useFloatingInputStore = ({
   tableDataService: TableDataService;
 }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const numberInputRef = useRef<HTMLInputElement>(null);
 
   const store = useCreateStore(() => ({
     state: {
@@ -31,8 +34,32 @@ export const useFloatingInputStore = ({
       showInputs: false,
       defaults: tableDataService.state.defaults,
       fields: tableDataService.state.fields,
+      isNumber: computed<boolean>(),
+      isInteger: computed<boolean>(),
+      inputRef: computed<React.RefObject<HTMLElement>>(),
+    },
+    computed: {
+      isNumber: [
+        (state) => [state.cell?.type],
+        (state) => isNumberType(state.cell?.type || ''),
+      ],
+      isInteger: [
+        (state) => [state.isNumber],
+        (state) => state.isNumber && isInteger(state.cell?.type || ''),
+      ],
+      inputRef: [
+        (state) => [state.isNumber],
+        (state) => {
+          if (state.isNumber) {
+            return numberInputRef;
+          } else {
+            return textAreaRef;
+          }
+        },
+      ],
     },
     textAreaRef,
+    numberInputRef,
     setCell(cell?: Cell) {
       store.set({ cell });
     },

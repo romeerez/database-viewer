@@ -46,7 +46,8 @@ export const useFloatingInputService = ({
         }
 
         const td = tableService.getCell(object.row, object.column);
-        if (!td) {
+        const type = tableDataService.state.fields?.[object.column]?.type;
+        if (!td || !type) {
           store.setCell();
           return;
         }
@@ -59,12 +60,13 @@ export const useFloatingInputService = ({
           minWidth: td.offsetWidth,
           minHeight: td.offsetHeight,
           className: (td.dataset as { bgClass: string }).bgClass,
+          type,
         };
 
         store.setCell(cell);
         store.setValue(dataChangesService.getValue(cell.row, cell.column));
 
-        const el = store.textAreaRef.current;
+        const el = store.state.inputRef.current;
         if (!el || !cell) return;
 
         el.style.minWidth = `${cell.minWidth}px`;
