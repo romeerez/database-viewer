@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useTablePageContext } from '../TablePage.context';
 import TextArea from './Inputs/TextArea';
 import NumberInput from './Inputs/NumberInput';
-import DateTimeInput from './Inputs/DateTimeInput';
+import DateTimeInput from './Inputs/DateTime/DateTimeInput';
 
 export default function FloatingInput() {
   const { floatingInputService: service } = useTablePageContext();

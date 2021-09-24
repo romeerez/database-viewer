@@ -1,14 +1,16 @@
-import React from 'react';
-import { useTablePageContext } from '../../TablePage.context';
-import { useResizeInput } from '../FloatingInput.utils';
-import ToggleEmpty from '../ToggleRaw';
+import React, { useRef } from 'react';
+import { useTablePageContext } from '../../../TablePage.context';
+import { useResizeInput } from '../../FloatingInput.utils';
+import ToggleEmpty from '../../ToggleRaw';
 import cn from 'classnames';
-import InputWrap from '../InputWrap';
+import InputWrap from '../../InputWrap';
+import DateTimeControls from './DateTimeControls';
 
 export default function NumberInput() {
   const { floatingInputService: service } = useTablePageContext();
   const { dateTimeInputStore } = service;
   const { inputRef } = dateTimeInputStore;
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   const { value, isRaw, placeholder, isValid } = dateTimeInputStore.use(
     'value',
@@ -19,14 +21,14 @@ export default function NumberInput() {
 
   const hidden = !service.use('isDateTime');
 
-  useResizeInput(inputRef, hidden, value, placeholder);
+  useResizeInput({ inputRef, hidden, value, placeholder, wrapRef });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     service.setValue(e.target.value);
   };
 
   return (
-    <InputWrap hidden={hidden}>
+    <InputWrap ref={wrapRef} hidden={hidden} className="bg-dark-4 rounded">
       <input
         ref={inputRef}
         hidden={hidden}
@@ -38,6 +40,7 @@ export default function NumberInput() {
         placeholder={placeholder}
         value={value || ''}
       />
+      <DateTimeControls />
       <ToggleEmpty isRaw={isRaw} setIsRaw={service.setIsRaw} />
     </InputWrap>
   );

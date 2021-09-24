@@ -1,7 +1,6 @@
-import React, { ReactNode, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import Appear from '../../../components/Common/Appear/Appear';
-import { useClickAway } from 'react-use';
 import Tooltip from '../../../components/Common/Tooltip/Tooltip';
 
 type Toggle = (e?: React.SyntheticEvent | boolean) => void;
@@ -41,7 +40,30 @@ export default function Menu({
   const close = () => changeOpen(false);
 
   const ref = useRef<HTMLDivElement | null>(null);
-  useClickAway(ref, close);
+
+  useEffect(() => {
+    const el = ref.current as HTMLDivElement;
+    let elClicked = false;
+
+    const globalClick = () => {
+      if (elClicked) {
+        elClicked = false;
+      } else {
+        close();
+      }
+    };
+
+    const elClick = () => {
+      elClicked = true;
+    };
+
+    document.body.addEventListener('click', globalClick);
+    el.addEventListener('click', elClick);
+    return () => {
+      document.body.removeEventListener('click', globalClick);
+      el.removeEventListener('click', elClick);
+    };
+  }, []);
 
   const menu = (
     <div ref={ref} className={cn('relative', className)}>

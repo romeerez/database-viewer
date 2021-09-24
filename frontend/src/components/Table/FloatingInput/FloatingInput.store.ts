@@ -8,7 +8,7 @@ import {
 } from '../columnType.utils';
 import { useTextAreaStore } from './Inputs/TextArea.store';
 import { useNumberInputStore } from './Inputs/NumberInput.store';
-import { useDateTimeInputStore } from './Inputs/DateTimeInput.store';
+import { useDateTimeInputStore } from './Inputs/DateTime/DateTimeInput.store';
 
 type BlurTimeout = ReturnType<typeof setTimeout> | undefined;
 

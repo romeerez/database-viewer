@@ -5,7 +5,7 @@ import {
   isDate,
   isTime,
   isTimestamp,
-} from '../../columnType.utils';
+} from '../../../columnType.utils';
 import dayjs from 'dayjs';
 
 export const useDateTimeInputStore = () => {

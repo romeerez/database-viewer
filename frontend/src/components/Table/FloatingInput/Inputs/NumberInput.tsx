@@ -19,7 +19,7 @@ export default function NumberInput() {
 
   const hidden = !service.use('isNumber');
 
-  useResizeInput(inputRef, hidden, value, placeholder);
+  useResizeInput({ inputRef, hidden, value, placeholder });
 
   return (
     <InputWrap hidden={hidden}>
@@ -34,7 +34,7 @@ export default function NumberInput() {
         placeholder={placeholder}
         value={value || ''}
       />
-      <ToggleEmpty isRaw={isRaw} setIsRaw={service.setIsRaw} />
+      <ToggleEmpty isRaw={isRaw} setIsRaw={service.setIsRaw} className="mt-1" />
     </InputWrap>
   );
 }

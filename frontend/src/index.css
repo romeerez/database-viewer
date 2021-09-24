@@ -74,6 +74,18 @@
   --toastify-color-success: var(--color-green-3);
 }
 
+::-webkit-scrollbar {
+  @apply w-1.5;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-dark-5 rounded transition duration-200;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-dark-6;
+}
+
 html {
   @apply bg-dark-2 text-light-5;
 }

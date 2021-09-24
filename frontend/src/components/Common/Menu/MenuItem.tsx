@@ -11,7 +11,15 @@ export default function MenuItem({
   buttonRef?: React.LegacyRef<HTMLButtonElement>;
   children: React.ReactNode;
   className?: string;
-  component?: string | (() => ReactNode);
+  component?:
+    | string
+    | (({
+        children,
+        className,
+      }: {
+        children?: ReactNode;
+        className: string;
+      }) => ReactNode);
 } & React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement

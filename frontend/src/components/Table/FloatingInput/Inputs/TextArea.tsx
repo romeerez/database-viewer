@@ -15,7 +15,7 @@ export default function TextArea() {
   );
   const hidden = !service.use('isText');
 
-  useResizeInput(inputRef, hidden, value, placeholder, true);
+  useResizeInput({ inputRef, hidden, value, placeholder, vertical: true });
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     const el = e.target as HTMLTextAreaElement;
@@ -44,7 +44,7 @@ export default function TextArea() {
         placeholder={placeholder}
         value={value || ''}
       />
-      <ToggleEmpty isRaw={isRaw} setIsRaw={service.setIsRaw} />
+      <ToggleEmpty isRaw={isRaw} setIsRaw={service.setIsRaw} className="mt-1" />
     </InputWrap>
   );
 }

@@ -31,3 +31,4 @@ export { Functions } from '@styled-icons/remix-editor/Functions';
 export { Sort } from '@styled-icons/fa-solid/Sort';
 export { SortUp } from '@styled-icons/fa-solid/SortUp';
 export { SortDown } from '@styled-icons/fa-solid/SortDown';
+export { CaretDown } from '@styled-icons/boxicons-regular/CaretDown';

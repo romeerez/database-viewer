@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Menu from '../../../components/Common/Menu/Menu';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
+import cn from 'classnames';
 
 export type Option = {
   label?: React.ReactNode;
   text?: string;
   value: string;
 };
-
-const menuClassId = 'select-menu';
 
 const isLowerIncludes = (target: string, lower: string) =>
   target.toLocaleLowerCase().includes(lower);
@@ -23,12 +22,16 @@ export default function Select({
   setValue,
   options,
   filter,
+  sort,
+  maxHeightClass = 'max-h-80',
   input,
 }: {
   value: string;
   setValue(value: string): void;
   options?: Option[];
   filter?: boolean;
+  sort?: boolean;
+  maxHeightClass?: string;
   input(params: {
     ref: React.RefObject<HTMLInputElement>;
     onKeyDown(e: React.KeyboardEvent<HTMLInputElement>): void;
@@ -37,6 +40,7 @@ export default function Select({
     onBlur(e: React.SyntheticEvent): void;
   }): React.ReactNode;
 }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = React.useState(false);
 
   const onFocus = () => setOpen(true);
@@ -45,7 +49,7 @@ export default function Select({
     const el = (e.nativeEvent as unknown as { relatedTarget: HTMLElement })
       .relatedTarget;
 
-    if (el?.closest(`.${menuClassId}`)) return;
+    if (wrapRef.current?.contains(el)) return;
     setOpen(false);
   };
 
@@ -99,50 +103,55 @@ export default function Select({
 
   if (!value) {
     processedOptions = options;
-  }
-  if (filter) {
+  } else if (filter) {
     processedOptions = options?.filter((option) =>
       isOptionMatchingValue(option, lowerValue),
     );
-  } else {
+  } else if (sort) {
     processedOptions = options?.sort((option) =>
       isOptionMatchingValue(option, value) ? -1 : 0,
     );
+  } else {
+    processedOptions = options;
   }
 
   return (
-    <Menu
-      open={open}
-      setOpen={setOpen}
-      className={menuClassId}
-      menuClass="mt-1"
-      button={() =>
-        input({
-          ref: inputRef,
-          onKeyDown: onInputKeyDown,
-          onFocus,
-          onClick: onFocus,
-          onBlur,
-        })
-      }
-    >
-      {() => (
-        <div ref={listRef}>
-          {processedOptions?.map(({ label, value }) => (
-            <MenuItem
-              key={value}
-              onKeyDown={onOptionKeyDown}
-              onClick={onOptionSelect}
-              onFocus={onFocus}
-              onBlur={onBlur}
-              value={value}
-              tabIndex={-1}
-            >
-              {label || value}
-            </MenuItem>
-          ))}
-        </div>
-      )}
-    </Menu>
+    <div ref={wrapRef}>
+      <Menu
+        open={open}
+        setOpen={setOpen}
+        menuClass="mt-1"
+        button={() =>
+          input({
+            ref: inputRef,
+            onKeyDown: onInputKeyDown,
+            onFocus,
+            onClick: onFocus,
+            onBlur,
+          })
+        }
+      >
+        {() => (
+          <div
+            ref={listRef}
+            className={cn('overflow-auto bg-dark-3 space-y-px', maxHeightClass)}
+          >
+            {processedOptions?.map(({ label, value }) => (
+              <MenuItem
+                key={value}
+                onKeyDown={onOptionKeyDown}
+                onClick={onOptionSelect}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                value={value}
+                tabIndex={-1}
+              >
+                {label || value}
+              </MenuItem>
+            ))}
+          </div>
+        )}
+      </Menu>
+    </div>
   );
 }
