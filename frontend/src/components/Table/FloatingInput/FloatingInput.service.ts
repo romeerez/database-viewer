@@ -23,7 +23,39 @@ export const useFloatingInputService = ({
   const service = useMemo(
     () => ({
       ...store,
-      hide: () => service.setCell(),
+      submit() {
+        if (store.getIsValid()) {
+          service.hide();
+        }
+      },
+      cancel() {
+        const { cell, initialValue, initialIsRaw } = store.state;
+        if (!cell) return;
+
+        dataChangesService.setValue(
+          cell.row,
+          cell.column,
+          initialValue,
+          initialIsRaw,
+        );
+
+        service.hide();
+      },
+      submitOrCancel() {
+        if (store.getIsValid()) {
+          service.submit();
+        } else {
+          service.cancel();
+        }
+      },
+      hide() {
+        const { cell } = store.state;
+        if (!cell) return;
+
+        service.setCell();
+        const td = tableService.getCell(String(cell.row), String(cell.column));
+        td?.focus();
+      },
       isSingleCell: () => {
         const columnsCount = tableDataService.state.fields?.length;
         const rowsCount = tableDataService.state.rows?.length;
@@ -41,14 +73,17 @@ export const useFloatingInputService = ({
       },
       setCell(object?: { row: number; column: number }) {
         if (!object) {
-          store.setCell();
+          store.set({ cell: undefined, type: '' });
           return;
         }
 
-        const td = tableService.getCell(object.row, object.column);
+        const td = tableService.getCell(
+          String(object.row),
+          String(object.column),
+        );
         const type = tableDataService.state.fields?.[object.column]?.type;
         if (!td || !type) {
-          store.setCell();
+          store.set({ cell: undefined, type: '' });
           return;
         }
 
@@ -59,44 +94,29 @@ export const useFloatingInputService = ({
           offsetLeft: td.offsetLeft,
           minWidth: td.offsetWidth,
           minHeight: td.offsetHeight,
-          className: (td.dataset as { bgClass: string }).bgClass,
           type,
         };
 
-        store.setCell(cell);
-        store.setValue(dataChangesService.getValue(cell.row, cell.column));
+        const value = dataChangesService.getValue(cell.row, cell.column);
+        const isRaw = dataChangesService.getIsRaw(cell.row, cell.column);
 
-        const el = store.state.inputRef.current;
+        store.init(cell, type, value, isRaw);
+
+        const el = store.state.inputStore.inputRef.current;
         if (!el || !cell) return;
 
         el.style.minWidth = `${cell.minWidth}px`;
         el.style.minHeight = `${cell.minHeight}px`;
-        el.classList.remove((el.dataset as { bgClass: string }).bgClass);
-
-        el.classList.add(cell.className);
-        (el.dataset as { bgClass: string }).bgClass = cell.className;
 
         el.focus();
       },
-      usePlaceholder() {
-        return store.use(({ cell, defaults, fields, value, isRaw }) => {
-          if (!cell) return;
-
-          const defaultValue = defaults && defaults[cell.column];
-          const field = fields && fields[cell.column];
-
-          return value === null || isRaw
-            ? defaultValue || (!field?.isNullable ? 'required' : 'null')
-            : 'empty';
-        });
-      },
       setValue(value: string) {
         store.setValue(value);
-        selectionService.setValue(value, store.state.isRaw);
+        selectionService.setValue(store.getParsedValue(), store.getIsRaw());
       },
       setIsRaw(isRaw: boolean) {
         store.setIsRaw(isRaw);
-        selectionService.setValue(store.state.value, isRaw);
+        selectionService.setValue(store.getParsedValue(), isRaw);
       },
       focusPrev() {
         service.focusOther('prev');

@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { ReactNode } from 'react';
 
 const formatNumber = (value: string) => value;
 
@@ -25,9 +24,27 @@ export const isNumberType = (type: string) =>
 export const isInteger = (type: string) =>
   isNumberType(type) && type !== 'int2' && type !== 'int4' && type !== 'int8';
 
+export const isDateTime = (type: string) => {
+  const formatter = columnTypeFormatters[type];
+  return (
+    formatter === formatTimestamp ||
+    formatter === formatDate ||
+    formatter === formatTime
+  );
+};
+
+export const isTimestamp = (type: string) =>
+  columnTypeFormatters[type] === formatTimestamp;
+
+export const isDate = (type: string) =>
+  columnTypeFormatters[type] === formatDate;
+
+export const isTime = (type: string) =>
+  columnTypeFormatters[type] === formatTime;
+
 export const columnTypeFormatters: Record<
   string,
-  ((value: string) => ReactNode) | undefined
+  ((value: string) => string) | undefined
 > = {
   int2: formatNumber,
   int4: formatNumber,

@@ -1,7 +1,14 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { computed, useCreateStore } from 'jastaman';
 import { TableDataService } from '../TableData/tableData.service';
-import { isInteger, isNumberType } from '../columnType.utils';
+import {
+  columnTypeFormatters,
+  isDateTime,
+  isNumberType,
+} from '../columnType.utils';
+import { useTextAreaStore } from './Inputs/TextArea.store';
+import { useNumberInputStore } from './Inputs/NumberInput.store';
+import { useDateTimeInputStore } from './Inputs/DateTimeInput.store';
 
 type BlurTimeout = ReturnType<typeof setTimeout> | undefined;
 
@@ -12,8 +19,24 @@ export type Cell = {
   offsetLeft: number;
   minWidth: number;
   minHeight: number;
-  className: string;
-  type: string;
+};
+
+type InputStore = {
+  state: {
+    isRaw: boolean;
+  };
+  inputRef: React.RefObject<HTMLTextAreaElement | HTMLInputElement>;
+  init(data: {
+    value: string;
+    isRaw: boolean;
+    type: string;
+    default: string | undefined;
+    isNullable: boolean | undefined;
+  }): void;
+  setValue(value: string): void;
+  setIsRaw(isRaw: boolean): void;
+  getIsValid(): boolean;
+  getParsedValue(): string;
 };
 
 export const useFloatingInputStore = ({
@@ -21,60 +44,90 @@ export const useFloatingInputStore = ({
 }: {
   tableDataService: TableDataService;
 }) => {
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const numberInputRef = useRef<HTMLInputElement>(null);
+  const textAreaStore = useTextAreaStore();
+  const numberInputStore = useNumberInputStore();
+  const dateTimeInputStore = useDateTimeInputStore();
 
   const store = useCreateStore(() => ({
+    textAreaStore,
+    numberInputStore,
+    dateTimeInputStore,
     state: {
+      tableData: {
+        defaults: tableDataService.state.defaults,
+        rows: tableDataService.state.rows,
+        fields: tableDataService.state.fields,
+      },
+      initialValue: null as string | null,
+      initialIsRaw: false,
       cell: undefined as Cell | undefined,
-      value: null as string | null,
-      isRaw: false,
       preventBlur: false,
       blurTimeout: undefined as BlurTimeout,
       showInputs: false,
-      defaults: tableDataService.state.defaults,
-      fields: tableDataService.state.fields,
+      type: '',
       isNumber: computed<boolean>(),
-      isInteger: computed<boolean>(),
-      inputRef: computed<React.RefObject<HTMLElement>>(),
+      isDateTime: computed<boolean>(),
+      isText: computed<boolean>(),
+      inputStore: computed<InputStore>(),
     },
     computed: {
-      isNumber: [
-        (state) => [state.cell?.type],
-        (state) => isNumberType(state.cell?.type || ''),
+      isNumber: [(state) => [state.type], (state) => isNumberType(state.type)],
+      isDateTime: [(state) => [state.type], (state) => isDateTime(state.type)],
+      isText: [
+        (state) => [state.type, state.isNumber, state.isDateTime],
+        (state) => Boolean(state.type && !state.isNumber && !state.isDateTime),
       ],
-      isInteger: [
-        (state) => [state.isNumber],
-        (state) => state.isNumber && isInteger(state.cell?.type || ''),
-      ],
-      inputRef: [
-        (state) => [state.isNumber],
+      inputStore: [
+        (state) => [state.isNumber, state.isDateTime],
         (state) => {
           if (state.isNumber) {
-            return numberInputRef;
+            return numberInputStore;
+          } else if (state.isDateTime) {
+            return dateTimeInputStore;
           } else {
-            return textAreaRef;
+            return textAreaStore;
           }
         },
       ],
     },
-    textAreaRef,
-    numberInputRef,
-    setCell(cell?: Cell) {
-      store.set({ cell });
+    init(cell: Cell, type: string, value: string | null, isRaw: boolean) {
+      store.set({ cell, type, initialValue: value, initialIsRaw: isRaw });
+
+      const format = columnTypeFormatters[type];
+      const { tableData } = store.state;
+      store.state.inputStore.init({
+        value: format ? format(value || '') : value || '',
+        isRaw,
+        type,
+        default: tableData.defaults?.[cell.column],
+        isNullable: tableData.fields?.[cell.column]?.isNullable,
+      });
+    },
+    setValue(value: string) {
+      store.state.inputStore.setValue(value);
     },
     setIsRaw(isRaw: boolean) {
-      store.set({ isRaw });
+      store.state.inputStore.setIsRaw(isRaw);
     },
-    setValue(value: string | null) {
-      store.set({ value });
+    getIsRaw() {
+      return store.state.inputStore.state.isRaw;
+    },
+    getParsedValue() {
+      return store.state.inputStore.getParsedValue();
+    },
+    getIsValid() {
+      return store.state.inputStore.getIsValid();
     },
   }));
 
   tableDataService.useEffect(
-    (state) => ({ defaults: state.defaults, fields: state.fields }),
-    (slice) => {
-      store.set(slice);
+    (state) => ({
+      defaults: state.defaults,
+      rows: state.rows,
+      fields: state.fields,
+    }),
+    (tableData) => {
+      store.set({ tableData });
     },
   );
 

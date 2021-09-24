@@ -91,10 +91,9 @@ const TablePageReMountable = () => {
         <Conditions />
         <Scrollbars>
           <Selection>
-            <FloatingInput>
-              <Table />
-            </FloatingInput>
+            <Table />
           </Selection>
+          <FloatingInput />
         </Scrollbars>
         <Error isMain />
         <ConfirmLoosingChanges />

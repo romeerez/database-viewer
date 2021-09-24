@@ -158,6 +158,9 @@ export const useDataChangesStore = ({
       }
       return store.state.rows?.[rowIndex]?.[columnIndex] ?? null;
     },
+    getIsRaw(rowIndex: number, columnIndex: number): boolean {
+      return store.state.rawMap[rowIndex]?.[columnIndex] || false;
+    },
     useValue(rowIndex: number, columnIndex: number): string | null {
       return store.use(
         () => store.getValue(rowIndex, columnIndex),

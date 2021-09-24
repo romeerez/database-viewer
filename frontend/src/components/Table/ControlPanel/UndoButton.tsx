@@ -18,7 +18,7 @@ export default function UndoButton() {
   };
 
   return (
-    <Tooltip text="Add row" hotkey="ctrl+alt+z">
+    <Tooltip text="Revert selection" hotkey="ctrl+alt+z">
       <button
         className={cn(
           'w-8 h-8 flex-center rounded hover:bg-lighter',

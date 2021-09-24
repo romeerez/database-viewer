@@ -74,7 +74,7 @@ export const useTableService = ({
           };
         }
       },
-      getCell(row: number, column: number) {
+      getCell(row: string, column: string) {
         return tableRef.current?.querySelector(
           `[data-row='${row}'][data-column='${column}']`,
         ) as HTMLElement | undefined;

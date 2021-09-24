@@ -1,67 +1,46 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useTablePageContext } from '../TablePage.context';
-import ToggleEmpty from './ToggleRaw';
-import TextArea from './TextArea';
-import NumberInput from './NumberInput';
+import TextArea from './Inputs/TextArea';
+import NumberInput from './Inputs/NumberInput';
+import DateTimeInput from './Inputs/DateTimeInput';
 
-export default function FloatingInput({ children }: { children: ReactNode }) {
-  const { floatingInputService, tableService } = useTablePageContext();
+export default function FloatingInput() {
+  const { floatingInputService: service } = useTablePageContext();
 
-  const onWrapMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const cell = service.use((state) => state.cell);
+
+  const onMouseDown = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
-
-  const cell = floatingInputService.use((state) => state.cell);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!cell) {
       return;
     }
     if (e.key === 'Escape') {
-      floatingInputService.setCell();
-      const td = tableService.getCell(cell.row, cell.column);
-      td?.focus();
+      service.cancel();
+    } else if (e.key == 'Enter' && !e.ctrlKey && !e.shiftKey) {
+      service.submit();
     }
   };
 
   useEffect(() => {
     if (!cell) return;
 
-    const listener = () => floatingInputService.setCell();
+    const listener = () => service.submitOrCancel();
     document.addEventListener('mousedown', listener);
     return () => document.removeEventListener('mousedown', listener);
-  }, [cell]);
+  }, [cell, service]);
 
-  const isSingleCell = floatingInputService.isSingleCell();
-  const isNumber = floatingInputService.use('isNumber');
+  const isSingleCell = service.isSingleCell();
 
   return (
-    <>
-      {children}
-      <div onMouseDownCapture={onWrapMouseDown} onKeyDown={onKeyDown}>
-        <div
-          hidden={isSingleCell}
-          tabIndex={0}
-          onFocus={floatingInputService.focusPrev}
-        />
-        <div
-          className="absolute flex flex-col items-start z-10"
-          hidden={!cell}
-          style={{
-            top: cell && `${cell.offsetTop}px`,
-            left: cell && `${cell.offsetLeft}px`,
-          }}
-        >
-          {isNumber ? <NumberInput /> : <TextArea />}
-          <ToggleEmpty />
-        </div>
-        <div
-          hidden={isSingleCell}
-          tabIndex={0}
-          onFocus={floatingInputService.focusNext}
-        />
-      </div>
-    </>
+    <div onMouseDown={onMouseDown} onKeyDown={onKeyDown}>
+      <div hidden={isSingleCell} tabIndex={0} onFocus={service.focusPrev} />
+      <NumberInput />
+      <DateTimeInput />
+      <TextArea />
+      <div hidden={isSingleCell} tabIndex={0} onFocus={service.focusNext} />
+    </div>
   );
 }

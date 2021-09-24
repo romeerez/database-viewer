@@ -36,7 +36,6 @@ export default function Cell({
   return (
     <td
       {...tableService.getCellProps(rowIndex, columnIndex)}
-      data-bg-class="bg-dark-4"
       tabIndex={0}
       className={cn(
         'h-10 border-b border-l',
