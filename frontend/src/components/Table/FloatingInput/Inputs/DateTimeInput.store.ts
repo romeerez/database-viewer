@@ -1,6 +1,11 @@
 import { computed, useCreateStore } from 'jastaman';
 import { useRef } from 'react';
-import { isDate, isTime, isTimestamp } from '../../columnType.utils';
+import {
+  columnTypeFormatters,
+  isDate,
+  isTime,
+  isTimestamp,
+} from '../../columnType.utils';
 import dayjs from 'dayjs';
 
 export const useDateTimeInputStore = () => {
@@ -67,14 +72,22 @@ export const useDateTimeInputStore = () => {
       store.set({ value });
     },
     setIsRaw(isRaw: boolean) {
-      store.set({ isRaw });
+      store.set({
+        isRaw,
+        value: isRaw ? store.getParsedValue() : store.getFormattedValue(),
+      });
     },
     getIsValid() {
       return store.state.isValid;
     },
+    getFormattedValue() {
+      const { value, type } = store.state;
+      const format = columnTypeFormatters[type];
+      return format ? format(value) : value;
+    },
     getParsedValue() {
       const { value, isRaw } = store.state;
-      return isRaw ? value : String(dayjs(value).valueOf());
+      return isRaw ? value : String(dayjs.utc(value).valueOf());
     },
   }));
 
