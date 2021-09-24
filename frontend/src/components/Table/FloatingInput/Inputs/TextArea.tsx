@@ -8,7 +8,11 @@ export default function TextArea() {
   const { floatingInputService: service } = useTablePageContext();
   const { textAreaStore } = service;
   const { inputRef } = textAreaStore;
-  const { value, placeholder } = textAreaStore.use('value', 'placeholder');
+  const { value, isRaw, placeholder } = textAreaStore.use(
+    'value',
+    'isRaw',
+    'placeholder',
+  );
   const hidden = !service.use('isText');
 
   useResizeInput(inputRef, hidden, value, placeholder, true);
@@ -40,7 +44,7 @@ export default function TextArea() {
         placeholder={placeholder}
         value={value || ''}
       />
-      <ToggleEmpty />
+      <ToggleEmpty isRaw={isRaw} setIsRaw={service.setIsRaw} />
     </InputWrap>
   );
 }

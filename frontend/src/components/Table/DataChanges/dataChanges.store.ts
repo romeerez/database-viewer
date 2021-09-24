@@ -131,15 +131,21 @@ export const useDataChangesStore = ({
     },
     undoChanges(change: Record<string, string[]>) {
       const changesMap = { ...store.state.changesMap };
+      const rawMap = { ...store.state.rawMap };
+
       for (const row in change) {
         if (!changesMap[row]) {
           continue;
         }
 
         const rowChanges = { ...changesMap[row] };
+        const rowRaw = { ...rawMap[row] };
         change[row].forEach((column) => {
           if (rowChanges?.[column]) {
             delete rowChanges[column];
+          }
+          if (rowRaw[column]) {
+            delete rowRaw[column];
           }
         });
 
@@ -148,8 +154,15 @@ export const useDataChangesStore = ({
         } else {
           changesMap[row] = rowChanges;
         }
+
+        if (Object.keys(rowRaw).length === 0) {
+          delete rawMap[row];
+        } else {
+          rawMap[row] = rowRaw;
+        }
       }
-      store.set({ changesMap });
+
+      store.set({ changesMap, rawMap });
     },
     getValue(rowIndex: number, columnIndex: number): string | null {
       const change = store.state.changesMap[rowIndex];

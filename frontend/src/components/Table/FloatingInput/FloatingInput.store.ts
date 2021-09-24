@@ -96,7 +96,7 @@ export const useFloatingInputStore = ({
       const format = columnTypeFormatters[type];
       const { tableData } = store.state;
       store.state.inputStore.init({
-        value: format ? format(value || '') : value || '',
+        value: !isRaw && format ? format(value || '') : value || '',
         isRaw,
         type,
         default: tableData.defaults?.[cell.column],

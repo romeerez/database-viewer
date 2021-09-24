@@ -24,7 +24,7 @@ export const formatValue = (
         ? defaultValue || 'null'
         : value.length === 0
         ? 'empty'
-        : formatter
+        : !isRaw && formatter
         ? formatter(value)
         : value.replaceAll('\n', '↵')}
     </div>

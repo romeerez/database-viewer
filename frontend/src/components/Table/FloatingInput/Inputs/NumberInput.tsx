@@ -10,9 +10,9 @@ export default function NumberInput() {
   const { numberInputStore } = service;
   const { inputRef } = numberInputStore;
 
-  const { value, isInteger, placeholder, isValid } = numberInputStore.use(
+  const { value, isRaw, placeholder, isValid } = numberInputStore.use(
     'value',
-    'isInteger',
+    'isRaw',
     'placeholder',
     'isValid',
   );
@@ -20,12 +20,6 @@ export default function NumberInput() {
   const hidden = !service.use('isNumber');
 
   useResizeInput(inputRef, hidden, value, placeholder);
-
-  const onChange = (e: { target: { value: string } }) => {
-    const number = (isInteger ? parseInt : parseFloat)(e.target.value);
-    const value = isNaN(number) ? '' : String(number);
-    service.setValue(value);
-  };
 
   return (
     <InputWrap hidden={hidden}>
@@ -36,11 +30,11 @@ export default function NumberInput() {
           'bg-dark-4 ring rounded-sm px-4 py-2.5 text-sm whitespace-nowrap overflow-hidden w-0 h-0 placeholder-light-9 block resize-none text-right',
           !isValid && 'ring-error',
         )}
-        onChange={onChange}
+        onChange={(e) => service.setValue(e.target.value)}
         placeholder={placeholder}
         value={value || ''}
       />
-      <ToggleEmpty />
+      <ToggleEmpty isRaw={isRaw} setIsRaw={service.setIsRaw} />
     </InputWrap>
   );
 }

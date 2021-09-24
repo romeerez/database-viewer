@@ -10,8 +10,9 @@ export default function NumberInput() {
   const { dateTimeInputStore } = service;
   const { inputRef } = dateTimeInputStore;
 
-  const { value, placeholder, isValid } = dateTimeInputStore.use(
+  const { value, isRaw, placeholder, isValid } = dateTimeInputStore.use(
     'value',
+    'isRaw',
     'placeholder',
     'isValid',
   );
@@ -37,7 +38,7 @@ export default function NumberInput() {
         placeholder={placeholder}
         value={value || ''}
       />
-      <ToggleEmpty />
+      <ToggleEmpty isRaw={isRaw} setIsRaw={service.setIsRaw} />
     </InputWrap>
   );
 }
