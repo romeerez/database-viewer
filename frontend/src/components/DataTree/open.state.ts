@@ -65,15 +65,21 @@ export const createOpenState = ({
       }, names);
     },
     setItem(open: boolean, ...names: string[]) {
-      let { items } = store.state;
+      const tree = { ...store.state.items };
+      let items = tree;
       let item: OpenState[string] | undefined;
       for (const name of names) {
-        if (!items[name]) items[name] = { open: true, items: {} };
+        if (items[name]) {
+          items[name] = { ...items[name], items: { ...items[name].items } };
+        } else {
+          items[name] = { open: true, items: {} };
+        }
         item = items[name];
         items = item.items;
       }
       if (item) item.open = open;
-      if (onChange) onChange(store.state.items);
+      store.set({ items: tree });
+      if (onChange) onChange(tree);
     },
   });
 
