@@ -31,6 +31,7 @@ export const getConnection = async (
         26: toInt,
         114: jsonParser, // for json
         3802: jsonParser, // for jsonb
+        1114: undefined, // don't parse timestamp
       });
 
       const connection: Connection = { db } as Connection;

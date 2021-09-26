@@ -23,17 +23,17 @@ export const getDB = async (url: string) => {
   if (!connection) {
     const db = Adapter.fromURL(url, {
       log: false,
-      decodeTypes: {
-        20: toInt,
-        21: toInt,
-        23: toInt,
-        26: toInt,
-        16: toBoolean,
-        114: jsonParser, // for json
-        3802: jsonParser, // for jsonb
-        // parsing a data is skipped because causes bug in table view
-        // date is parsed as an object and can't be rendered by React
-      },
+    });
+
+    Object.assign(db.decodeTypes, {
+      20: toInt,
+      21: toInt,
+      23: toInt,
+      26: toInt,
+      16: toBoolean,
+      114: jsonParser, // for json
+      3802: jsonParser, // for jsonb
+      1114: undefined, // don't parse timestamp
     });
 
     const cb = () => {

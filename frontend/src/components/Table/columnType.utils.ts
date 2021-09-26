@@ -1,61 +1,35 @@
-import dayjs from 'dayjs';
-
-const formatNumber = (value: string) => value;
-
-const formatTimestamp = (value: string) => {
-  return dayjs.utc(parseInt(value)).format('YYYY-MM-DD HH:mm:ss.SSS');
-};
-
-const formatDate = (value: string) => {
-  return dayjs.utc(parseInt(value)).format('YYYY-MM-DD');
-};
-
-const formatTime = (value: string) => {
-  return dayjs.utc(parseInt(value)).format('HH:mm:ss.SSS');
-};
-
 const formatBoolean = (value: string) => {
   return value === 'true' ? `✔ true` : `✕ false`;
 };
 
 export const isNumberType = (type: string) =>
-  columnTypeFormatters[type] === formatNumber;
+  type === 'int2' ||
+  type === 'int4' ||
+  type === 'int8' ||
+  type === 'float4' ||
+  type === 'float8' ||
+  type === 'numeric';
 
 export const isInteger = (type: string) =>
   isNumberType(type) && type !== 'int2' && type !== 'int4' && type !== 'int8';
 
-export const isDateTime = (type: string) => {
-  const formatter = columnTypeFormatters[type];
-  return (
-    formatter === formatTimestamp ||
-    formatter === formatDate ||
-    formatter === formatTime
-  );
-};
+export const isDateTime = (type: string) =>
+  type === 'timestamp' ||
+  type === 'timestamptz' ||
+  type === 'date' ||
+  type === 'time' ||
+  type === 'timetz';
 
 export const isTimestamp = (type: string) =>
-  columnTypeFormatters[type] === formatTimestamp;
+  type === 'timestamp' || type === 'timestamptz';
 
-export const isDate = (type: string) =>
-  columnTypeFormatters[type] === formatDate;
+export const isDate = (type: string) => type === 'date';
 
-export const isTime = (type: string) =>
-  columnTypeFormatters[type] === formatTime;
+export const isTime = (type: string) => type === 'time' || type === 'timetz';
 
 export const columnTypeFormatters: Record<
   string,
   ((value: string) => string) | undefined
 > = {
-  int2: formatNumber,
-  int4: formatNumber,
-  int8: formatNumber,
-  float4: formatNumber,
-  float8: formatNumber,
-  numeric: formatNumber,
-  timestamp: formatTimestamp,
-  timestamptz: formatTimestamp,
-  date: formatDate,
-  time: formatTime,
-  timetz: formatTime,
   bool: formatBoolean,
 };
