@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Editor, { useEditorRef } from '../../../components/Editor/Editor';
 import Header from './Header';
 import SelectDatabase from './SelectDatabase';
@@ -16,17 +16,21 @@ import ErrorAlert from '../../Common/ErrorAlert';
 
 export default function QueryPage() {
   const { name } = useParams<{ name: string }>();
-  const queries = useQueries();
+  const { data: queries } = useQueries();
   const editorRef = useEditorRef();
   const [data, setData] = useState<QueryFieldsAndRowsQuery | undefined>();
 
-  const query = queries && queries.find((query) => query.name === name);
+  const query = queries?.find((query) => query.name === name);
+  const initialized = useRef(false);
 
   useEffect(() => {
     const editor = editorRef.current;
     if (!query || !editor) return;
 
-    editor.setValue(query.content);
+    if (!initialized.current) {
+      initialized.current = true;
+      editor.setValue(query.content);
+    }
     if (data) setData(undefined);
 
     const disposable: IDisposable | undefined = editor.onDidChangeModelContent(
