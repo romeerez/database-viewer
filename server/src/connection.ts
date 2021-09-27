@@ -33,6 +33,7 @@ export const getConnection = async (
         3802: jsonParser, // for jsonb
         1114: undefined, // don't parse timestamp
         1184: undefined, // don't parse timestamptz
+        1082: undefined, // don't parse date
       });
 
       const connection: Connection = { db } as Connection;
