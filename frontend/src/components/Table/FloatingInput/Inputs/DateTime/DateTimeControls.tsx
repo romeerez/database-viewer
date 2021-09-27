@@ -11,15 +11,19 @@ export default React.memo(function DateTimeControls() {
   const store = floatingInputService.dateTimeInputStore;
   const value = store.use('value');
 
-  const [day, ms] = useMemo(() => {
-    const pair = value.split('.');
-    return [dayjs(pair[0]), pair[1]];
+  const [day, ms, tz] = useMemo(() => {
+    const msMatch = value.match(/\.\d+/);
+    const ms = msMatch ? parseInt(msMatch[0].slice(1)) : 0;
+    const tzMatch = value.match(/\+.+$/);
+    const tz = tzMatch ? tzMatch[0] : '';
+    const day = dayjs(value).millisecond(0);
+    return [day, ms, tz];
   }, [value]);
 
   const updateValue = (day: Dayjs) => {
     const formatted = day.format('YYYY-MM-DD HH:mm:ss');
     if (dayjs(formatted).valueOf() === day.valueOf()) {
-      floatingInputService.setValue(`${formatted}${ms ? `.${ms}` : ''}`);
+      floatingInputService.setValue(`${formatted}${ms ? `.${ms}` : ''}${tz}`);
     }
   };
 

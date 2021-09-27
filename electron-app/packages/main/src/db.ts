@@ -34,6 +34,7 @@ export const getDB = async (url: string) => {
       114: jsonParser, // for json
       3802: jsonParser, // for jsonb
       1114: undefined, // don't parse timestamp
+      1184: undefined, // don't parse timestamptz
     });
 
     const cb = () => {
