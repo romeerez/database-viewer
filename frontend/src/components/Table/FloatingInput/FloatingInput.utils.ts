@@ -9,6 +9,7 @@ export const useResizeInput = ({
   placeholder,
   vertical = false,
   wrapRef,
+  minWidth = 0,
 }: {
   inputRef: React.RefObject<HTMLElement>;
   hidden: boolean;
@@ -16,6 +17,7 @@ export const useResizeInput = ({
   placeholder?: string;
   vertical?: boolean;
   wrapRef?: React.RefObject<HTMLDivElement>;
+  minWidth?: number;
 }) => {
   useLayoutEffect(() => {
     if (hidden) return;
@@ -31,6 +33,7 @@ export const useResizeInput = ({
     el.style.width = `${Math.max(
       el.scrollWidth,
       wrapRef?.current?.offsetWidth || 0,
+      minWidth,
     )}px`;
     if (vertical) {
       el.style.height = `${el.scrollHeight}px`;

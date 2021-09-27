@@ -27,6 +27,8 @@ export const isDate = (type: string) => type === 'date';
 
 export const isTime = (type: string) => type === 'time' || type === 'timetz';
 
+export const isBoolean = (type: string) => type === 'bool';
+
 export const columnTypeFormatters: Record<
   string,
   ((value: string) => string) | undefined

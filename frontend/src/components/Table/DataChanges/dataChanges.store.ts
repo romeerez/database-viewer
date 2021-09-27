@@ -3,18 +3,20 @@ import { computed, useCreateStore } from 'jastaman';
 import { QueryResult } from 'types';
 import { useEffect } from 'react';
 
-type RowChange = {
+export type RowChange = {
   row: QueryResult['rows'][number];
   changes: {
     columnName: string;
     columnIndex: number;
     isRaw: boolean;
     value: string | null;
+    type: string;
   }[];
 };
 
-type NewRow = {
+export type NewRow = {
   value: string | null;
+  type: string;
   isRaw: boolean;
 }[];
 
@@ -58,26 +60,34 @@ export const useDataChangesStore = ({
             row: rows[parseInt(rowIndex)],
             changes: Object.keys(changesMap[rowIndex]).map((columnIndex) => {
               const index = parseInt(columnIndex);
+              const field = fields[index];
+
               return {
-                columnName: fields[index].name,
+                columnName: field.name,
                 columnIndex: index,
                 isRaw: rawMap[rowIndex]?.[columnIndex] || false,
                 value: changesMap[rowIndex][columnIndex],
+                type: field.type,
               };
             }),
           }));
         },
       ],
       newRows: [
-        (state) => [state.rows, state.newRowsMap, state.rawMap],
-        ({ rows, newRowsMap, rawMap }) => {
-          if (!rows) return [];
+        (state) => [state.rows, state.newRowsMap, state.rawMap, state.fields],
+        ({ rows, newRowsMap, rawMap, fields }) => {
+          if (!rows || !fields) return [];
 
           return Object.keys(newRowsMap).map((rowIndex) =>
-            rows[parseInt(rowIndex)].map((value, columnIndex) => ({
-              value,
-              isRaw: rawMap[rowIndex]?.[columnIndex] || false,
-            })),
+            rows[parseInt(rowIndex)].map((value, columnIndex) => {
+              const field = fields[columnIndex];
+
+              return {
+                value,
+                type: field.type,
+                isRaw: rawMap[rowIndex]?.[columnIndex] || false,
+              };
+            }),
           );
         },
       ],

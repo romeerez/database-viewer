@@ -3,6 +3,7 @@ import { useTablePageContext } from '../TablePage.context';
 import TextArea from './Inputs/TextArea';
 import NumberInput from './Inputs/NumberInput';
 import DateTimeInput from './Inputs/DateTime/DateTimeInput';
+import BooleanInput from './Inputs/BooleanInput';
 
 export default function FloatingInput() {
   const { floatingInputService: service } = useTablePageContext();
@@ -39,6 +40,7 @@ export default function FloatingInput() {
       <div hidden={isSingleCell} tabIndex={0} onFocus={service.focusPrev} />
       <NumberInput />
       <DateTimeInput />
+      <BooleanInput />
       <TextArea />
       <div hidden={isSingleCell} tabIndex={0} onFocus={service.focusNext} />
     </div>

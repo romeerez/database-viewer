@@ -1,14 +1,11 @@
 import React from 'react';
 import { computed, useCreateStore } from 'jastaman';
 import { TableDataService } from '../TableData/tableData.service';
-import {
-  columnTypeFormatters,
-  isDateTime,
-  isNumberType,
-} from '../columnType.utils';
+import { isBoolean, isDateTime, isNumberType } from '../columnType.utils';
 import { useTextAreaStore } from './Inputs/TextArea.store';
 import { useNumberInputStore } from './Inputs/NumberInput.store';
 import { useDateTimeInputStore } from './Inputs/DateTime/DateTimeInput.store';
+import { useBooleanInputStore } from './Inputs/BooleanInput.store';
 
 type BlurTimeout = ReturnType<typeof setTimeout> | undefined;
 
@@ -25,7 +22,9 @@ type InputStore = {
   state: {
     isRaw: boolean;
   };
-  inputRef: React.RefObject<HTMLTextAreaElement | HTMLInputElement>;
+  inputRef: React.RefObject<
+    HTMLTextAreaElement | HTMLInputElement | HTMLLabelElement
+  >;
   init(data: {
     value: string;
     isRaw: boolean;
@@ -47,11 +46,13 @@ export const useFloatingInputStore = ({
   const textAreaStore = useTextAreaStore();
   const numberInputStore = useNumberInputStore();
   const dateTimeInputStore = useDateTimeInputStore();
+  const booleanInputStore = useBooleanInputStore();
 
   const store = useCreateStore(() => ({
     textAreaStore,
     numberInputStore,
     dateTimeInputStore,
+    booleanInputStore,
     state: {
       tableData: {
         defaults: tableDataService.state.defaults,
@@ -67,23 +68,38 @@ export const useFloatingInputStore = ({
       type: '',
       isNumber: computed<boolean>(),
       isDateTime: computed<boolean>(),
+      isBoolean: computed<boolean>(),
       isText: computed<boolean>(),
       inputStore: computed<InputStore>(),
     },
     computed: {
       isNumber: [(state) => [state.type], (state) => isNumberType(state.type)],
       isDateTime: [(state) => [state.type], (state) => isDateTime(state.type)],
+      isBoolean: [(state) => [state.type], (state) => isBoolean(state.type)],
       isText: [
-        (state) => [state.type, state.isNumber, state.isDateTime],
-        (state) => Boolean(state.type && !state.isNumber && !state.isDateTime),
+        (state) => [
+          state.type,
+          state.isNumber,
+          state.isDateTime,
+          state.isBoolean,
+        ],
+        (state) =>
+          Boolean(
+            state.type &&
+              !state.isNumber &&
+              !state.isDateTime &&
+              !state.isBoolean,
+          ),
       ],
       inputStore: [
-        (state) => [state.isNumber, state.isDateTime],
+        (state) => [state.isNumber, state.isDateTime, state.isBoolean],
         (state) => {
           if (state.isNumber) {
             return numberInputStore;
           } else if (state.isDateTime) {
             return dateTimeInputStore;
+          } else if (state.isBoolean) {
+            return booleanInputStore;
           } else {
             return textAreaStore;
           }
@@ -93,10 +109,9 @@ export const useFloatingInputStore = ({
     init(cell: Cell, type: string, value: string | null, isRaw: boolean) {
       store.set({ cell, type, initialValue: value, initialIsRaw: isRaw });
 
-      const format = columnTypeFormatters[type];
       const { tableData } = store.state;
       store.state.inputStore.init({
-        value: !isRaw && format ? format(value || '') : value || '',
+        value: value || '',
         isRaw,
         type,
         default: tableData.defaults?.[cell.column],

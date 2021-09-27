@@ -1,4 +1,9 @@
 import { quote } from './quote';
+import {
+  NewRow,
+  RowChange,
+} from '../components/Table/DataChanges/dataChanges.store';
+import { isBoolean } from '../components/Table/columnType.utils';
 
 export const buildQuery = ({
   schemaName,
@@ -48,16 +53,8 @@ export const buildTransaction = ({
   fields: { name: string }[];
   defaults: (string | undefined)[];
   removedRows: (string | null)[][];
-  rowChanges: {
-    row: (string | null)[];
-    changes: {
-      columnName: string;
-      columnIndex: number;
-      isRaw: boolean;
-      value: string | null;
-    }[];
-  }[];
-  newRows: { value: string | null; isRaw: boolean }[][];
+  rowChanges: RowChange[];
+  newRows: NewRow[];
 }) => {
   const result = ['BEGIN TRANSACTION;'];
 
@@ -73,12 +70,13 @@ export const buildTransaction = ({
     rowChanges.forEach(({ row, changes }) =>
       result.push(
         `UPDATE ${table}\nSET ${changes
-          .map(({ columnName, columnIndex, value, isRaw }) => {
+          .map(({ columnName, columnIndex, value, type, isRaw }) => {
             return `"${columnName}" = ${valueToSql(
               isRaw,
               defaults,
               columnIndex,
               value,
+              type,
             )}`;
           })
           .join(', ')}\nWHERE ${getWhere(primaryColumns, row)};`,
@@ -92,7 +90,9 @@ export const buildTransaction = ({
         `INSERT INTO ${table} (${fields
           .map((field) => field.name)
           .join(', ')})\nVALUES (${row
-          .map(({ value, isRaw }, i) => valueToSql(isRaw, defaults, i, value))
+          .map(({ value, type, isRaw }, i) =>
+            valueToSql(isRaw, defaults, i, value, type),
+          )
           .join(', ')});`,
       ),
     );
@@ -108,11 +108,16 @@ const valueToSql = (
   defaults: (string | undefined)[],
   columnIndex: number,
   value: null | string,
+  type: string,
 ) => {
   if (value === null) {
     return defaults[columnIndex] ? 'DEFAULT' : 'NULL';
   } else {
-    return isRaw ? (value.length === 0 ? 'NULL' : value) : quote(value);
+    return isRaw || isBoolean(type)
+      ? value.length === 0
+        ? 'NULL'
+        : value
+      : quote(value);
   }
 };
 
