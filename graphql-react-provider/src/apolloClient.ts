@@ -5,7 +5,7 @@ export const createClient = (uri: string) =>
     uri,
     cache: new InMemoryCache({
       typePolicies: {
-        DataSource: {
+        Server: {
           keyFields: ['url'],
         },
       },

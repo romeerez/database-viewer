@@ -3,7 +3,7 @@ import Select from '../../../components/Common/Form/Select';
 import Input from '../../../components/Common/Form/Input';
 import { useDataTree } from '../../../components/DataTree/dataTree.service';
 import { ChevronRight } from '../../../icons';
-import DataSourceFormButton from '../../../components/DataSource/Form/DataSourceFormButton';
+import ServerFormButton from '../../../components/Server/Form/ServerFormButton';
 import Spinner from '../../../components/Common/Spinner/Spinner';
 import { getSourceUrlAndDatabaseNameFromUrl } from '../../../lib/sourceUrl';
 
@@ -14,18 +14,17 @@ export default function SelectDatabase({
   databaseUrl: string;
   setDatabaseUrl(value: string): void;
 }) {
-  const { dataSourcesLocal, tree } = useDataTree();
+  const { serversLocal, tree } = useDataTree();
   const databaseOptions = useMemo(
     () =>
-      dataSourcesLocal &&
-      tree?.dataSources.flatMap((source) => {
+      serversLocal &&
+      tree?.servers.flatMap((source) => {
         const { sourceUrl: url } = getSourceUrlAndDatabaseNameFromUrl(
           source.url,
         );
 
         const sourceName =
-          dataSourcesLocal.find((local) => local.url === source.url)?.name ||
-          url;
+          serversLocal.find((local) => local.url === source.url)?.name || url;
 
         return source.databases.map((database) => ({
           label: (
@@ -39,7 +38,7 @@ export default function SelectDatabase({
           value: `${url}/${database.name}`,
         }));
       }),
-    [dataSourcesLocal, tree],
+    [serversLocal, tree],
   );
 
   if (!databaseOptions) {
@@ -54,13 +53,13 @@ export default function SelectDatabase({
     return (
       <div className="h-7">
         No databases to perform query, please{' '}
-        <DataSourceFormButton>
+        <ServerFormButton>
           {(toggle) => (
             <button className="text-accent hover:underline" onClick={toggle}>
               connect to datasource
             </button>
           )}
-        </DataSourceFormButton>{' '}
+        </ServerFormButton>{' '}
         first.
       </div>
     );

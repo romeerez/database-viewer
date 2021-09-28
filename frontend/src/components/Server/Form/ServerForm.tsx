@@ -4,12 +4,9 @@ import { useForm } from '../../../lib/useForm';
 import SelectGroup from '../../../components/Common/Form/SelectGroup';
 import InputGroup from '../../../components/Common/Form/InputGroup';
 import TextAreaGroup from '../../../components/Common/Form/TextAreaGroup';
-import {
-  useConnectURLAndOtherFields,
-  useSubmit,
-} from '../../../components/DataSource/Form/dataSourceForm.service';
+import { useConnectURLAndOtherFields, useSubmit } from './serverForm.service';
 import Button from '../../../components/Common/Button/Button';
-import { DataSourceInLocalStore } from '../../../components/DataSource/types';
+import { ServerInLocalStore } from '../types';
 
 const drivers = [
   { label: 'PostgreSQL', value: 'postgres' },
@@ -39,21 +36,21 @@ const schema = yup.object({
   url: yup.string().required(),
 });
 
-export default function DataSourceForm({
-  dataSource,
+export default function ServerForm({
+  server,
   onClose,
 }: {
-  dataSource?: DataSourceInLocalStore;
+  server?: ServerInLocalStore;
   onClose(): void;
 }) {
   const form = useForm({
     schema,
-    defaultValues: dataSource || defaultValues,
+    defaultValues: server || defaultValues,
   });
 
   const { onFormChange } = useConnectURLAndOtherFields(form);
 
-  const { submit, loading } = useSubmit({ form, dataSource, onClose });
+  const { submit, loading } = useSubmit({ form, server, onClose });
 
   return (
     <form

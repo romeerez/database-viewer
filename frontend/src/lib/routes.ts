@@ -1,6 +1,6 @@
 export default {
   root: '/',
-  dataSource: (sourceName = ':sourceName') => `/data/${sourceName}`,
+  server: (sourceName = ':sourceName') => `/data/${sourceName}`,
   database: (sourceName = ':sourceName', databaseName = ':databaseName') =>
     `/data/${sourceName}/${databaseName}`,
   schema: (

@@ -32,11 +32,11 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  dataSources: Array<DataSource>;
+  servers: Array<Server>;
   executeQuery: QueryResult;
 };
 
-export type QuerydataSourcesArgs = {
+export type QueryserversArgs = {
   urls: Array<Scalars['String']>;
 };
 
@@ -54,14 +54,14 @@ export type MutationcheckConnectionArgs = {
   url: Scalars['String'];
 };
 
-export type DataSource = {
-  __typename?: 'DataSource';
+export type Server = {
+  __typename?: 'Server';
   url: Scalars['String'];
   databases: Array<Database>;
   types: Array<Type>;
 };
 
-export type DataSourcedatabasesArgs = {
+export type ServerdatabasesArgs = {
   name?: Maybe<Scalars['String']>;
 };
 
@@ -310,7 +310,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  DataSource: ResolverTypeWrapper<DataSource>;
+  Server: ResolverTypeWrapper<Server>;
   Database: ResolverTypeWrapper<Database>;
   Schema: ResolverTypeWrapper<Schema>;
   Table: ResolverTypeWrapper<Table>;
@@ -334,7 +334,7 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   Mutation: {};
   Boolean: Scalars['Boolean'];
-  DataSource: DataSource;
+  Server: Server;
   Database: Database;
   Schema: Schema;
   Table: Table;
@@ -355,11 +355,11 @@ export type QueryResolvers<
   ContextType = MercuriusContext,
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
 > = {
-  dataSources?: Resolver<
-    Array<ResolversTypes['DataSource']>,
+  servers?: Resolver<
+    Array<ResolversTypes['Server']>,
     ParentType,
     ContextType,
-    RequireFields<QuerydataSourcesArgs, 'urls'>
+    RequireFields<QueryserversArgs, 'urls'>
   >;
   executeQuery?: Resolver<
     ResolversTypes['QueryResult'],
@@ -381,16 +381,16 @@ export type MutationResolvers<
   >;
 };
 
-export type DataSourceResolvers<
+export type ServerResolvers<
   ContextType = MercuriusContext,
-  ParentType extends ResolversParentTypes['DataSource'] = ResolversParentTypes['DataSource'],
+  ParentType extends ResolversParentTypes['Server'] = ResolversParentTypes['Server'],
 > = {
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   databases?: Resolver<
     Array<ResolversTypes['Database']>,
     ParentType,
     ContextType,
-    RequireFields<DataSourcedatabasesArgs, never>
+    RequireFields<ServerdatabasesArgs, never>
   >;
   types?: Resolver<Array<ResolversTypes['Type']>, ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -618,7 +618,7 @@ export type TriggerResolvers<
 export type Resolvers<ContextType = MercuriusContext> = {
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
-  DataSource?: DataSourceResolvers<ContextType>;
+  Server?: ServerResolvers<ContextType>;
   Database?: DatabaseResolvers<ContextType>;
   Schema?: SchemaResolvers<ContextType>;
   Table?: TableResolvers<ContextType>;
@@ -662,15 +662,15 @@ export interface Loaders<
     reply: import('fastify').FastifyReply;
   },
 > {
-  DataSource?: {
-    url?: LoaderResolver<Scalars['String'], DataSource, {}, TContext>;
+  Server?: {
+    url?: LoaderResolver<Scalars['String'], Server, {}, TContext>;
     databases?: LoaderResolver<
       Array<Database>,
-      DataSource,
-      DataSourcedatabasesArgs,
+      Server,
+      ServerdatabasesArgs,
       TContext
     >;
-    types?: LoaderResolver<Array<Type>, DataSource, {}, TContext>;
+    types?: LoaderResolver<Array<Type>, Server, {}, TContext>;
   };
 
   Database?: {
@@ -826,7 +826,6 @@ export interface Loaders<
   };
 }
 declare module 'mercurius' {
-  interface IResolvers
-    extends Resolvers<import('mercurius').MercuriusContext> {}
-  interface MercuriusLoaders extends Loaders {}
+  type IResolvers = Resolvers<import('mercurius').MercuriusContext>;
+  type MercuriusLoaders = Loaders;
 }

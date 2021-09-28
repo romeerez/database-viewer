@@ -62,11 +62,11 @@ export default function Editor({
   executeQueryRef.current = executeQuery;
 
   const { tree } = useDataTree();
-  const dataSource = sourceUrl
-    ? tree?.dataSources.find((source) => source.url === sourceUrl)
+  const server = sourceUrl
+    ? tree?.servers.find((source) => source.url === sourceUrl)
     : undefined;
   const database = databaseName
-    ? dataSource?.databases.find((database) => database.name === databaseName)
+    ? server?.databases.find((database) => database.name === databaseName)
     : undefined;
   const schema = schemaName
     ? database?.schemas.find((schema) => schema.name === schemaName)

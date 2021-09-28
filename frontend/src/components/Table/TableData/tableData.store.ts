@@ -55,7 +55,7 @@ export const useTableDataStore = ({
         queryParams,
         databaseUrl: computed<string | undefined>(),
         loading: computed<boolean>(),
-        source: computed<GetDataTreeQuery['dataSources'][number] | undefined>(),
+        server: computed<GetDataTreeQuery['servers'][number] | undefined>(),
         schema: computed<SchemaTree | undefined>(),
         table: computed<TableTree | undefined>(),
         fields: computed<FieldInfo[] | undefined>(),
@@ -80,22 +80,22 @@ export const useTableDataStore = ({
             state.count === undefined ||
             state.rows === undefined,
         ],
-        source: [
+        server: [
           (state) => [state.tree, state.sourceUrl, state.params],
           ({ tree, sourceUrl, params }) => {
             if (!tree || !sourceUrl || !params) return;
 
-            return tree.dataSources.find((source) => source.url === sourceUrl);
+            return tree.servers.find((server) => server.url === sourceUrl);
           },
         ],
         schema: [
-          (state) => [state.source, state.params],
-          ({ source, params }) => {
-            if (!source || !params) return;
+          (state) => [state.server, state.params],
+          ({ server, params }) => {
+            if (!server || !params) return;
 
             const { databaseName, schemaName } = params;
 
-            const database = source.databases.find(
+            const database = server.databases.find(
               (database) => database.name === databaseName,
             );
             if (!database) return;
@@ -116,7 +116,7 @@ export const useTableDataStore = ({
           },
         ],
         fields: [
-          (state) => [state.source, state.schema, state.table, state.rawFields],
+          (state) => [state.server, state.schema, state.table, state.rawFields],
           (state) => {
             try {
               return getFieldsInfo(state);
@@ -185,21 +185,21 @@ export const useTableDataStore = ({
 };
 
 const getFieldsInfo = ({
-  source,
+  server,
   schema,
   table,
   rawFields,
 }: {
-  source?: GetDataTreeQuery['dataSources'][number];
+  server?: GetDataTreeQuery['servers'][number];
   schema?: SchemaTree;
   table?: TableTree;
   params: Params;
   sourceUrl?: string;
   rawFields?: Field[];
 }) => {
-  if (!source || !schema || !table || !rawFields) return;
+  if (!server || !schema || !table || !rawFields) return;
 
-  const sourceTypes = source.types;
+  const sourceTypes = server.types;
   const schemaTypes = schema.types;
 
   return rawFields.map(({ name, type: typeId }) => {

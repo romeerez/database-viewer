@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
-import { DataSourceInLocalStoreWithDriver } from '../DataSource/types';
+import { ServerInLocalStoreWithDriver } from '../Server/types';
 import {
   DataTreeState,
   noSearchOpenState,
   searchOpenState,
 } from './dataTree.state';
-import { dataSourcesStore } from '../DataSource/dataSource.store';
+import { serversStore } from '../Server/server.store';
 import { GetDataTreeQuery } from 'types';
 import { useAPIContext } from '../../lib/apiContext';
 
-export type DataSourceTree = Exclude<
+export type ServerTree = Exclude<
   ReturnType<typeof mapDataTree>,
   undefined
 >[number];
 
-export type DatabaseTree = DataSourceTree['databases'][number];
+export type DatabaseTree = ServerTree['databases'][number];
 
 export type SchemaTree = DatabaseTree['schemas'][number];
 
@@ -40,23 +40,23 @@ const toLower = (string: string) =>
   lowerCache[string] || (lowerCache[string] = string.toLocaleLowerCase());
 
 const mapDataTree = (
-  dataSourcesLocal: DataSourceInLocalStoreWithDriver[],
+  serversLocal: ServerInLocalStoreWithDriver[],
   data: GetDataTreeQuery,
   search: string,
 ) => {
   if (!data) return undefined;
 
-  const tree = data.dataSources
-    .map((source) => {
-      const dataSourceInLocalDb = dataSourcesLocal?.find(
-        (local) => local.url === source.url,
+  const tree = data.servers
+    .map((server) => {
+      const serverInLocalDb = serversLocal?.find(
+        (local) => local.url === server.url,
       );
 
       return (
-        dataSourceInLocalDb && {
-          ...source,
-          name: dataSourceInLocalDb.name,
-          dataSourceInLocalDb,
+        serverInLocalDb && {
+          ...server,
+          name: serverInLocalDb.name,
+          serverInLocalDb,
         }
       );
     })
@@ -71,26 +71,26 @@ const mapDataTree = (
   const filterSchemas: Record<string, boolean> = {};
   const filterTables: Record<string, boolean> = {};
 
-  tree.forEach((source) => {
-    if (toLower(source.name).includes(lower))
-      filterSources[source.name] = false;
+  tree.forEach((server) => {
+    if (toLower(server.name).includes(lower))
+      filterSources[server.name] = false;
 
-    source.databases.forEach((database) => {
+    server.databases.forEach((database) => {
       if (toLower(database.name).includes(lower)) {
-        filterSources[source.name] = true;
+        filterSources[server.name] = true;
         filterDatabases[database.name] = false;
       }
 
       database.schemas.forEach((schema) => {
         if (toLower(schema.name).includes(lower)) {
-          filterSources[source.name] = true;
+          filterSources[server.name] = true;
           filterDatabases[database.name] = true;
           filterSchemas[schema.name] = false;
         }
 
         schema.tables.forEach((table) => {
           if (toLower(table.name).includes(lower)) {
-            filterSources[source.name] = true;
+            filterSources[server.name] = true;
             filterDatabases[database.name] = true;
             filterSchemas[schema.name] = true;
             filterTables[table.name] = false;
@@ -100,14 +100,14 @@ const mapDataTree = (
     });
   });
 
-  return tree.reduce((sources: typeof tree, source) => {
-    const open = filterSources[source.name];
+  return tree.reduce((sources: typeof tree, server) => {
+    const open = filterSources[server.name];
     if (open !== undefined) {
       sources.push({
-        ...source,
+        ...server,
         databases: !open
           ? []
-          : source.databases.reduce(
+          : server.databases.reduce(
               (databases: typeof tree[0]['databases'], database) => {
                 const open = filterDatabases[database.name];
                 if (open !== undefined) {
@@ -162,7 +162,7 @@ const mapDataTree = (
 };
 
 export const useDataTree = () => {
-  const { data: dataSourcesLocal } = dataSourcesStore.useDataSources();
+  const { data: serversLocal } = serversStore.useServers();
 
   const [tree, setTree] = useState<GetDataTreeQuery>();
 
@@ -172,18 +172,18 @@ export const useDataTree = () => {
     onCompleted(data) {
       setTree((tree) => {
         if (!tree) return data;
-        if (!dataSourcesLocal) return { ...data, dataSources: [] };
+        if (!serversLocal) return { ...data, servers: [] };
 
-        const map: Record<string, GetDataTreeQuery['dataSources'][number]> = {};
-        tree.dataSources.forEach((item) => {
+        const map: Record<string, GetDataTreeQuery['servers'][number]> = {};
+        tree.servers.forEach((item) => {
           map[item.url] = item;
         });
-        data.dataSources.forEach((item) => {
+        data.servers.forEach((item) => {
           map[item.url] = item;
         });
 
         return {
-          dataSources: dataSourcesLocal
+          servers: serversLocal
             .map((item) => map[item.url])
             .filter((item) => item),
         };
@@ -192,14 +192,14 @@ export const useDataTree = () => {
   });
 
   useEffect(() => {
-    if (!dataSourcesLocal) return;
+    if (!serversLocal) return;
 
-    const urls = dataSourcesLocal.map((item) => item.url);
+    const urls = serversLocal.map((item) => item.url);
     let filteredUrls = urls;
 
     if (tree) {
       filteredUrls = filteredUrls.filter(
-        (url) => !tree.dataSources.some((item) => item.url === url),
+        (url) => !tree.servers.some((item) => item.url === url),
       );
     }
 
@@ -208,9 +208,7 @@ export const useDataTree = () => {
         tree
           ? {
               ...tree,
-              dataSources: tree.dataSources.filter((item) =>
-                urls.includes(item.url),
-              ),
+              servers: tree.servers.filter((item) => urls.includes(item.url)),
             }
           : tree,
       );
@@ -222,16 +220,16 @@ export const useDataTree = () => {
         urls: filteredUrls,
       },
     });
-  }, [dataSourcesLocal]);
+  }, [serversLocal]);
 
   return {
-    dataSourcesLocal,
+    serversLocal,
     tree,
   };
 };
 
 export const useDataTreeForSidebar = () => {
-  const { dataSourcesLocal, tree: loadedTree } = useDataTree();
+  const { serversLocal, tree: loadedTree } = useDataTree();
 
   const [prevSearch, setPrevSearch] = useState('');
   const search = DataTreeState.use('search');
@@ -244,10 +242,10 @@ export const useDataTreeForSidebar = () => {
   }, [search, prevSearch]);
 
   const tree =
-    (dataSourcesLocal &&
+    (serversLocal &&
       loadedTree &&
       (!search || search === prevSearch) &&
-      mapDataTree(dataSourcesLocal, loadedTree, search)) ||
+      mapDataTree(serversLocal, loadedTree, search)) ||
     undefined;
 
   const openState = search ? searchOpenState : noSearchOpenState;

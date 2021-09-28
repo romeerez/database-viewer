@@ -1,6 +1,6 @@
-import { dataSourcesStore } from './dataSource.store';
+import { serversStore } from './server.store';
 import { useState } from 'react';
-import { DataSourceInLocalStore } from './types';
+import { ServerInLocalStore } from './types';
 import { toast } from 'react-toastify';
 import { useAPIContext } from '../../lib/apiContext';
 
@@ -9,11 +9,11 @@ type Error = {
   message: string;
 };
 
-export const useSaveDataSource = ({
-  dataSource,
+export const useSaveServer = ({
+  server,
   onClose,
 }: {
-  dataSource?: DataSourceInLocalStore;
+  server?: ServerInLocalStore;
   onClose(): void;
 }) => {
   const { useCheckConnectionMutation } = useAPIContext();
@@ -21,7 +21,7 @@ export const useSaveDataSource = ({
 
   const [loading, setLoading] = useState(false);
 
-  const { data: dataSourcesLocal } = dataSourcesStore.useDataSources();
+  const { data: serversLocal } = serversStore.useServers();
 
   const save = async ({
     name,
@@ -30,28 +30,26 @@ export const useSaveDataSource = ({
     name: string;
     url: string;
   }): Promise<Error[] | undefined> => {
-    if (!dataSourcesLocal) return;
+    if (!serversLocal) return;
 
     const errors: Error[] = [];
-    const nameTaken = dataSourcesLocal.some(
-      (source) =>
-        (!dataSource || dataSource.id !== source.id) && source.name === name,
+    const nameTaken = serversLocal.some(
+      (server) => (!server || server.id !== server.id) && server.name === name,
     );
     if (nameTaken) {
       errors.push({
         field: 'name',
-        message: 'Datasource with this name already exists',
+        message: 'server with this name already exists',
       });
     }
 
-    const existing = dataSourcesLocal.find(
-      (source) =>
-        (!dataSource || dataSource.id !== source.id) && source.url === url,
+    const existing = serversLocal.find(
+      (server) => (!server || server.id !== server.id) && server.url === url,
     );
     if (existing) {
       errors.push({
         field: 'url',
-        message: `There is already ${existing.name} data source with same url`,
+        message: `There is already ${existing.name} data server with same url`,
       });
     }
 
@@ -61,22 +59,22 @@ export const useSaveDataSource = ({
 
     const { data } = await checkConnection({ variables: { url } });
     if (data?.checkConnection) {
-      if (!dataSource) {
+      if (!server) {
         const now = new Date();
-        await dataSourcesStore.create({
+        await serversStore.create({
           name,
           url,
           updatedAt: now,
           createdAt: now,
         });
-        toast.info('Data source was added');
+        toast.info('Data server was added');
       } else {
-        await dataSourcesStore.update(dataSource.id, {
+        await serversStore.update(server.id, {
           name,
           url,
           updatedAt: new Date(),
         });
-        toast.info('Data source was updated');
+        toast.info('Data server was updated');
       }
       onClose();
     } else {
@@ -88,14 +86,14 @@ export const useSaveDataSource = ({
   return { save, loading };
 };
 
-export const useRemoveDataSource = () => {
+export const useRemoveServer = () => {
   const [loading, setLoading] = useState(false);
 
-  const remove = async (dataSource: DataSourceInLocalStore) => {
+  const remove = async (server: ServerInLocalStore) => {
     setLoading(true);
     try {
-      await dataSourcesStore.delete(dataSource.id);
-      toast('Data source was deleted', { type: 'info' });
+      await serversStore.delete(server.id);
+      toast('Data server was deleted', { type: 'info' });
       return true;
     } catch (error) {
       toast((error as Error).message, { type: 'info' });

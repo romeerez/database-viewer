@@ -42,7 +42,7 @@ handle(
     variables: GetDataTreeQueryVariables;
   }): Promise<GetDataTreeQuery> => {
     if (typeof urls === 'string') urls = [urls];
-    const dataSources = dataLoader.getDataSources({ urls });
+    const servers = dataLoader.getServers({ urls });
 
     const [types, databases] = await Promise.all([
       dataLoader.getSystemDataTypes(getDB, urls),
@@ -88,10 +88,10 @@ handle(
     let viewIndex = -1;
 
     return {
-      dataSources: dataSources.map((obj, dataSourceIndex) => ({
+      servers: servers.map((obj, serverIndex) => ({
         ...obj,
-        types: types[dataSourceIndex],
-        databases: databases[dataSourceIndex].map((database) => {
+        types: types[serverIndex],
+        databases: databases[serverIndex].map((database) => {
           databaseIndex++;
 
           return {

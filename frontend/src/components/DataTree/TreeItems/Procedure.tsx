@@ -2,7 +2,7 @@ import React from 'react';
 import {
   SchemaTree,
   Procedure as ProcedureType,
-  DataSourceTree,
+  ServerTree,
 } from '../dataTree.service';
 import TreeItem from './TreeItem';
 import { Functions } from '../../../icons';
@@ -14,7 +14,7 @@ export default function Procedure({
   procedure,
   paddingLeft,
 }: {
-  source: DataSourceTree;
+  source: ServerTree;
   schema: SchemaTree;
   procedure: ProcedureType;
   paddingLeft: number;

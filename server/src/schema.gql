@@ -1,5 +1,5 @@
 type Query {
-  dataSources(urls: [String!]!): [DataSource!]!
+  servers(urls: [String!]!): [Server!]!
   executeQuery(url: String!, query: String!): QueryResult!
 }
 
@@ -7,7 +7,7 @@ type Mutation {
   checkConnection(url: String!): Boolean!
 }
 
-type DataSource {
+type Server {
   url: String!
   databases(name: String): [Database!]!
   types: [Type!]!

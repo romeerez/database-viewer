@@ -1,23 +1,23 @@
 import { init, createStore } from './indexedDB';
-import { DataSourceInLocalStore } from '../components/DataSource/types';
+import { ServerInLocalStore } from '../components/Server/types';
 import { QueryInLocalStore } from '../components/Query/types';
 import { KeyValue } from './keyValue.store';
 
 enum tableNames {
-  dataSources = 'dataSources',
+  servers = 'servers',
   queries = 'queries',
   keyValue = 'keyValue',
 }
 
 const db = init('DataFigata', [
-  (db) => db.createObjectStore(tableNames.dataSources, { autoIncrement: true }),
+  (db) => db.createObjectStore(tableNames.servers, { autoIncrement: true }),
   (db) => db.createObjectStore(tableNames.queries, { autoIncrement: true }),
   (db) => db.createObjectStore(tableNames.keyValue, { keyPath: 'key' }),
 ]);
 
-export const dataSourcesDb = createStore<DataSourceInLocalStore, 'id'>(
+export const serversDb = createStore<ServerInLocalStore, 'id'>(
   db,
-  tableNames.dataSources,
+  tableNames.servers,
   'id',
 );
 

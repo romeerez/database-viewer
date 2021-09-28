@@ -1,32 +1,30 @@
 import React from 'react';
 import { modalsState } from '../dataTree.state';
 import Modal from '../../../components/Common/Modal/Modal';
-import DataSourceForm from '../../../components/DataSource/Form/DataSourceForm';
-import DeleteModal from '../../../components/DataSource/DeleteModal';
+import ServerForm from '../../../components/Server/Form/ServerForm';
+import DeleteModal from '../../../components/Server/DeleteModal';
 
 export default function DataTreeModals() {
-  const { dataSourceForEdit, dataSourceForDelete } = modalsState.use(
-    'dataSourceForEdit',
-    'dataSourceForDelete',
+  const { serverForEdit, serverForDelete } = modalsState.use(
+    'serverForEdit',
+    'serverForDelete',
   );
 
-  if (dataSourceForEdit) {
+  if (serverForEdit) {
     return (
       <Modal
         open
-        onClose={() => modalsState.setDataSourceForEdit()}
+        onClose={() => modalsState.setServerForEdit()}
         className="max-w-lg"
         closeButton
       >
-        {(close) => (
-          <DataSourceForm onClose={close} dataSource={dataSourceForEdit} />
-        )}
+        {(close) => <ServerForm onClose={close} server={serverForEdit} />}
       </Modal>
     );
   }
 
-  if (dataSourceForDelete) {
-    return <DeleteModal dataSource={dataSourceForDelete} />;
+  if (serverForDelete) {
+    return <DeleteModal server={serverForDelete} />;
   }
 
   return null;

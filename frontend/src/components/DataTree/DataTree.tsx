@@ -5,7 +5,7 @@ import Breadcrumbs from '../../components/DataTree/Breadcrumbs/Breadcrumbs';
 import { PathState } from './path.state';
 import Search from '../../components/DataTree/Search';
 import DisplayTree from '../../components/DataTree/DisplayTree';
-import DataSourceFormButton from '../../components/DataSource/Form/DataSourceFormButton';
+import ServerFormButton from '../../components/Server/Form/ServerFormButton';
 import { Plus } from '../../icons';
 import DataTreeModals from '../../components/DataTree/Modals/DataTreeModals';
 
@@ -18,13 +18,13 @@ export default function DataTree() {
       <DataTreeModals />
       <div className="p-4 flex items-center">
         <Search />
-        <DataSourceFormButton>
+        <ServerFormButton>
           {(toggle) => (
             <button className="w-6 h-6 ml-2 flex-center" onClick={toggle}>
               <Plus size={16} />
             </button>
           )}
-        </DataSourceFormButton>
+        </ServerFormButton>
       </div>
       <Scrollbars>
         <div className="p-4 pt-0 inline-block min-w-full">

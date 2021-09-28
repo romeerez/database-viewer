@@ -37,18 +37,6 @@ export enum ConstraintType {
   Exclude = 'Exclude'
 }
 
-export type DataSource = {
-  __typename?: 'DataSource';
-  url: Scalars['String'];
-  databases: Array<Database>;
-  types: Array<Type>;
-};
-
-
-export type DataSourceDatabasesArgs = {
-  name?: Maybe<Scalars['String']>;
-};
-
 export type Database = {
   __typename?: 'Database';
   url: Scalars['String'];
@@ -108,12 +96,12 @@ export type Procedure = {
 
 export type Query = {
   __typename?: 'Query';
-  dataSources: Array<DataSource>;
+  servers: Array<Server>;
   executeQuery: QueryResult;
 };
 
 
-export type QueryDataSourcesArgs = {
+export type QueryServersArgs = {
   urls: Array<Scalars['String']>;
 };
 
@@ -137,6 +125,18 @@ export type Schema = {
   views: Array<View>;
   procedures: Array<Procedure>;
   types: Array<Type>;
+};
+
+export type Server = {
+  __typename?: 'Server';
+  url: Scalars['String'];
+  databases: Array<Database>;
+  types: Array<Type>;
+};
+
+
+export type ServerDatabasesArgs = {
+  name?: Maybe<Scalars['String']>;
 };
 
 export type Table = {
@@ -195,9 +195,9 @@ export type GetDataTreeQueryVariables = Exact<{
 
 export type GetDataTreeQuery = (
   { __typename?: 'Query' }
-  & { dataSources: Array<(
-    { __typename?: 'DataSource' }
-    & Pick<DataSource, 'url'>
+  & { servers: Array<(
+    { __typename?: 'Server' }
+    & Pick<Server, 'url'>
     & { types: Array<(
       { __typename?: 'Type' }
       & Pick<Type, 'id' | 'name' | 'schemaName'>

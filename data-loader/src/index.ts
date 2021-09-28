@@ -1,7 +1,7 @@
 import {
-  DataSource,
+  Server,
   MutationCheckConnectionArgs,
-  QueryDataSourcesArgs,
+  QueryServersArgs,
   QueryExecuteQueryArgs,
   QueryResult,
   Type,
@@ -11,9 +11,9 @@ import * as repo from './repository';
 
 export type { GetDB, DB };
 
-export const getDataSources = ({
+export const getServers = ({
   urls,
-}: QueryDataSourcesArgs): { url: DataSource['url'] }[] => {
+}: QueryServersArgs): { url: Server['url'] }[] => {
   return urls.map((url) => ({ url }));
 };
 

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { DataSourceTree, SchemaTree } from '../dataTree.service';
+import { ServerTree, SchemaTree } from '../dataTree.service';
 import { createOpenState } from '../open.state';
 import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../Common/Menu/MenuItem';
@@ -22,7 +22,7 @@ export default function Schema({
   schema,
   openState,
 }: {
-  source: DataSourceTree;
+  source: ServerTree;
   sourceName: string;
   databaseName: string;
   top: number;

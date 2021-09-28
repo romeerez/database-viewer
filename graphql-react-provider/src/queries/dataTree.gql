@@ -1,5 +1,5 @@
 query GetDataTree($urls: [String!]!) {
-  dataSources(urls: $urls) {
+  servers(urls: $urls) {
     url
     types {
       id

@@ -1,8 +1,8 @@
 import React from 'react';
-import FormModal from '../../../components/DataSource/FormModal';
+import FormModal from '../../../components/Server/FormModal';
 import { useToggle } from 'react-use';
 
-export default function DataSourceFormButton({
+export default function ServerFormButton({
   children,
 }: {
   children(toggle: () => void): React.ReactNode;

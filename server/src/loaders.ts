@@ -2,17 +2,17 @@ import { MercuriusLoaders } from 'mercurius';
 import * as dataLoader from 'data-loader';
 
 export const loaders: MercuriusLoaders = {
-  DataSource: {
-    async databases(dataSources, ctx) {
+  Server: {
+    async databases(servers, ctx) {
       return await dataLoader.getDatabases(
         ctx.getDB,
-        dataSources.map(({ obj }) => obj.url),
+        servers.map(({ obj }) => obj.url),
       );
     },
-    async types(dataSources, ctx) {
+    async types(servers, ctx) {
       return await dataLoader.getSystemDataTypes(
         ctx.getDB,
-        dataSources.map(({ obj }) => obj.url),
+        servers.map(({ obj }) => obj.url),
       );
     },
   },

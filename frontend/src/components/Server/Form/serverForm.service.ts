@@ -1,7 +1,7 @@
 import { Form } from '../../../lib/useForm';
 import React from 'react';
-import { DataSourceInLocalStore } from '../../../components/DataSource/types';
-import { useSaveDataSource } from '../../../components/DataSource/dataSource.service';
+import { ServerInLocalStore } from '../../../components/Server/types';
+import { useSaveServer } from '../../../components/Server/server.service';
 
 const urlAffectiveFields = ['host', 'port', 'user', 'password', 'database'];
 
@@ -61,14 +61,14 @@ export const useConnectURLAndOtherFields = (form: Form) => {
 
 export const useSubmit = ({
   form,
-  dataSource,
+  server,
   onClose,
 }: {
   form: Form<{ name: string; url: string }>;
-  dataSource?: DataSourceInLocalStore;
+  server?: ServerInLocalStore;
   onClose(): void;
 }) => {
-  const { save, loading } = useSaveDataSource({ dataSource, onClose });
+  const { save, loading } = useSaveServer({ server, onClose });
   const submit = async () => {
     const values = form.getValues();
     const errors = await save(values);

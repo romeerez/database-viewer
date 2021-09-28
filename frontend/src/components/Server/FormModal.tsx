@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '../../components/Common/Modal/Modal';
-import DataSourceForm from '../../components/DataSource/Form/DataSourceForm';
+import ServerForm from '../../components/Server/Form/ServerForm';
 
 export default function FormModal({
   open,
@@ -11,7 +11,7 @@ export default function FormModal({
 }) {
   return (
     <Modal open={open} onClose={onClose} className="max-w-lg" closeButton>
-      {(onClose) => <DataSourceForm onClose={onClose} />}
+      {(onClose) => <ServerForm onClose={onClose} />}
     </Modal>
   );
 }

@@ -3,7 +3,7 @@ import {
   loadStateFromLocalStorage,
   saveStateToLocalStorage,
 } from './open.state';
-import { DataSourceInLocalStore } from '../DataSource/types';
+import { ServerInLocalDb } from '../Server/types';
 import { createStore } from 'jastaman';
 
 export const DataTreeState = createStore({
@@ -34,13 +34,13 @@ export const searchOpenState = createOpenState({
 
 export const modalsState = createStore({
   state: {
-    dataSourceForEdit: undefined as DataSourceInLocalStore | undefined,
-    dataSourceForDelete: undefined as DataSourceInLocalStore | undefined,
+    serverForEdit: undefined as ServerInLocalDb | undefined,
+    serverForDelete: undefined as ServerInLocalDb | undefined,
   },
-  setDataSourceForEdit(value?: DataSourceInLocalStore) {
-    modalsState.set({ dataSourceForEdit: value });
+  setServerForEdit(value?: ServerInLocalDb) {
+    modalsState.set({ serverForEdit: value });
   },
-  setDataSourceForDelete(value?: DataSourceInLocalStore) {
-    modalsState.set({ dataSourceForDelete: value });
+  setServerForDelete(value?: ServerInLocalDb) {
+    modalsState.set({ serverForDelete: value });
   },
 });

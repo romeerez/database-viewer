@@ -4,7 +4,7 @@ import * as dataLoader from 'data-loader';
 
 export const resolvers: IResolvers = {
   Query: {
-    dataSources: async (root, params) => dataLoader.getDataSources(params),
+    servers: async (root, params) => dataLoader.getServers(params),
     executeQuery: async (root, params, ctx) => {
       return await dataLoader.executeQuery(ctx.getDB, params);
     },

@@ -15,7 +15,7 @@ import { useFloatingInputService } from './FloatingInput/FloatingInput.service';
 import { useTableService } from './Table/Table.service';
 import { useErrorService } from './Error/error.service';
 import Error from './Error/Error';
-import { dataSourcesStore } from '../DataSource/dataSource.store';
+import { serversStore } from '../Server/server.store';
 import { useConditionsService } from './Conditions/Conditions.service';
 import ConfirmLoosingChanges from './ConfirmLoosingChanges/ConfirmLoosingChanges';
 import { useConfirmLoosingChangesService } from './ConfirmLoosingChanges/confirmLoosingChanges.service';
@@ -35,11 +35,11 @@ export default function TablePage() {
 
 const TablePageReMountable = () => {
   const { params } = useRouteMatch<Params>();
-  const { data: localDataSources } = dataSourcesStore.useDataSources();
+  const { data: localServers } = serversStore.useServers();
   const { sourceName } = params;
   const sourceUrl = useMemo(
-    () => localDataSources?.find((source) => source.name === sourceName)?.url,
-    [sourceName, localDataSources],
+    () => localServers?.find((source) => source.name === sourceName)?.url,
+    [sourceName, localServers],
   );
 
   const tableRef = useRef<HTMLTableElement>(null);

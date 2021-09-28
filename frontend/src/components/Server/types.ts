@@ -1,6 +1,6 @@
 export type Driver = 'postgres';
 
-export type DataSourceInLocalStore = {
+export type ServerInLocalStore = {
   id: number;
   name: string;
   url: string;
@@ -8,6 +8,6 @@ export type DataSourceInLocalStore = {
   createdAt: Date;
 };
 
-export type DataSourceInLocalStoreWithDriver = DataSourceInLocalStore & {
+export type ServerInLocalStoreWithDriver = ServerInLocalStore & {
   driver: Driver;
 };

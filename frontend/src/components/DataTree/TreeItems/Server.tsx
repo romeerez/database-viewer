@@ -2,7 +2,7 @@ import React from 'react';
 import { Postgresql } from '../../../icons';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
-import { DataSourceTree } from '../dataTree.service';
+import { ServerTree } from '../dataTree.service';
 import { createOpenState } from '../open.state';
 import Database from '../../../components/DataTree/TreeItems/Database';
 import { PathState } from '../path.state';
@@ -10,7 +10,7 @@ import routes from '../../../lib/routes';
 import cn from 'classnames';
 import { modalsState } from '../dataTree.state';
 
-export default function DataSource({
+export default function Server({
   top,
   zIndex,
   paddingLeft,
@@ -20,7 +20,7 @@ export default function DataSource({
   top: number;
   zIndex: number;
   paddingLeft: number;
-  source: DataSourceTree;
+  source: ServerTree;
   openState: ReturnType<typeof createOpenState>;
 }) {
   const { name } = source;
@@ -41,12 +41,12 @@ export default function DataSource({
       open={open}
       setOpen={(open) => openState.setItem(open, name)}
       openTree={() => PathState.setPath([name])}
-      to={routes.dataSource(name)}
+      to={routes.server(name)}
       menu={(toggle) => (
         <>
           <MenuItem
             onClick={() => {
-              modalsState.setDataSourceForEdit(source.dataSourceInLocalDb);
+              modalsState.setServerForEdit(source.serverInLocalDb);
               toggle();
             }}
           >
@@ -54,7 +54,7 @@ export default function DataSource({
           </MenuItem>
           <MenuItem
             onClick={() => {
-              modalsState.setDataSourceForDelete(source.dataSourceInLocalDb);
+              modalsState.setServerForDelete(source.serverInLocalDb);
               toggle();
             }}
           >

@@ -1,14 +1,14 @@
 import React from 'react';
-import { DataSourceTree } from '../../components/DataTree/dataTree.service';
+import { ServerTree } from '../../components/DataTree/dataTree.service';
 import { createOpenState } from '../../components/DataTree/open.state';
 import Table from '../../components/DataTree/TreeItems/Table';
 import Schema from '../../components/DataTree/TreeItems/Schema';
 import Database from '../../components/DataTree/TreeItems/Database';
-import DataSource from '../../components/DataTree/TreeItems/DataSource';
+import Server from '../../components/DataTree/TreeItems/Server';
 
 const top = 48;
 const paddingLeft = 8;
-const dataSourceZIndex = 10;
+const serverZIndex = 10;
 
 export default function DisplayTree({
   path,
@@ -16,7 +16,7 @@ export default function DisplayTree({
   openState,
 }: {
   path: string[];
-  tree: DataSourceTree[];
+  tree: ServerTree[];
   openState: ReturnType<typeof createOpenState>;
 }) {
   const len = path.length;
@@ -72,10 +72,10 @@ export default function DisplayTree({
     }
 
     return (
-      <DataSource
+      <Server
         key={source.url}
         top={top}
-        zIndex={dataSourceZIndex}
+        zIndex={serverZIndex}
         source={source}
         openState={openState}
         paddingLeft={paddingLeft}
@@ -83,12 +83,12 @@ export default function DisplayTree({
     );
   }
 
-  const zIndex = dataSourceZIndex + tree.length - 1;
+  const zIndex = serverZIndex + tree.length - 1;
 
   return (
     <>
       {tree.map((source, i) => (
-        <DataSource
+        <Server
           key={source.url}
           top={top}
           zIndex={zIndex - i}
