@@ -7,10 +7,12 @@ import {
   useResizeSidebar,
   useResizeQueries,
   useQueriesPanelState,
-} from '../../components/Sidebar/sidebar.service';
+} from './sidebar.service';
 import cn from 'classnames';
 import QueriesTree from '../../components/Query/QueriesTree/QueriesTree';
 import SidebarPanel from '../../components/Sidebar/SidebarPanel';
+import routes from '../../lib/routes';
+import { Link } from 'react-router-dom';
 
 export default function Sidebar({ className }: { className?: string }) {
   const resizeSidebar = useResizeSidebar();
@@ -26,10 +28,10 @@ export default function Sidebar({ className }: { className?: string }) {
       >
         <div className="p-4 pb-0 flex-shrink-0 bg-darker-5">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center">
+            <Link to={routes.root} className="flex items-center">
               <Logo size={26} className="mr-2 text-accent" />
               <b>DataFigata</b>
-            </div>
+            </Link>
             <SidebarMenu />
           </div>
         </div>
