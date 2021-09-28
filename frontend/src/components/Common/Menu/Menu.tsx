@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import Appear from '../../../components/Common/Appear/Appear';
 import Tooltip from '../../../components/Common/Tooltip/Tooltip';
+import OverlayItem from '../OverlayContent/OverlayItem';
 
 type Toggle = (e?: React.SyntheticEvent | boolean) => void;
 
@@ -68,17 +69,17 @@ export default function Menu({
   const menu = (
     <div ref={ref} className={cn('relative', className)}>
       {button(toggle)}
-      <Appear
-        open={isOpen}
-        onClose={close}
-        className={cn(
-          'absolute z-40 text-md top-full bg-primary-gradient-lighter min-w-full rounded py-1 shadow',
-          menuClass,
-        )}
-        style={menuStyle}
-      >
-        {children(toggle)}
-      </Appear>
+      <OverlayItem targetRef={ref} open={isOpen} onClose={close}>
+        <div
+          className={cn(
+            'absolute transform -translate-x-1/2 text-md bg-primary-gradient-lighter rounded py-1 shadow',
+            menuClass,
+          )}
+          style={menuStyle}
+        >
+          {children(toggle)}
+        </div>
+      </OverlayItem>
     </div>
   );
 

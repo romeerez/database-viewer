@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import OverlayContent from './components/Common/OverlayContent/OverlayContent';
 
 dayjs.extend(utc);
 
@@ -34,6 +35,7 @@ export const DatabaseViewer = ({
             newestOnTop
             theme="colored"
           />
+          <OverlayContent />
         </ReactRouter>
       </APIContext.Provider>
     </React.StrictMode>

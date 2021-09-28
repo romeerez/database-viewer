@@ -94,7 +94,6 @@ export default function TreeItem({
           <div className="absolute h-8 py-1 bottom-0 bg-dark-3 text-light-5 hidden group-hover:flex items-center justify-center">
             {menu && (
               <Menu
-                menuClass="-top-2 -right-2"
                 button={(toggle) => (
                   <button
                     className="h-6 w-6 -left-4 flex-center hover:text-light-2"
