@@ -1,15 +1,12 @@
 import { computed, shallowEqual, useCreateStore } from 'jastaman';
-import {
-  SchemaTree,
-  TableTree,
-  useDataTree,
-} from '../../DataTree/dataTree.service';
+import { useDataTree } from '../../DataTree/dataTree.service';
 import { Field, GetDataTreeQuery, QueryResult } from 'types';
 import { toast } from 'react-toastify';
 import { getTypeName } from '../../../lib/utils';
 import { Params } from '../TablePage';
 import { keyValueStore } from '../../../lib/keyValue.store';
 import { ConditionsService } from '../Conditions/Conditions.service';
+import { SchemaTree, TableTree } from '../../DataTree/dataTree.types';
 
 const defaultLimit = 10;
 

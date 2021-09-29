@@ -2,7 +2,6 @@ import React from 'react';
 import { useTablePageContext } from '../TablePage.context';
 import { FieldInfo } from '../TableData/tableData.store';
 import cn from 'classnames';
-import { TableTree } from '../../DataTree/dataTree.service';
 import {
   columnHasForeignKey,
   isColumnIndexed,
@@ -12,6 +11,7 @@ import ColumnIcon from '../../Column/ColumnIcon';
 import ColumnInfo from '../../Column/ColumnTitle';
 import Tooltip from '../../Common/Tooltip/Tooltip';
 import { Sort, SortUp, SortDown } from '../../../icons';
+import { TableTree } from '../../DataTree/dataTree.types';
 
 export default function ColumnTitle({
   table,

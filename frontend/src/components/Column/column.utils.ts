@@ -1,4 +1,4 @@
-import { TableTree } from '../DataTree/dataTree.service';
+import { TableTree } from '../DataTree/dataTree.types';
 
 export const isColumnIndexed = (table: TableTree, name: string) =>
   table.indices.some((index) => index.columnNames.includes(name));

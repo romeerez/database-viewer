@@ -1,7 +1,7 @@
 import React from 'react';
-import { TableTrigger as TriggerType } from '../dataTree.service';
 import TreeItem from '../TreeItems/TreeItem';
 import { Trigger as TriggerIcon } from '../../../icons';
+import { TableTrigger as TriggerType } from '../dataTree.types';
 
 const sortWeights: Record<string, number> = {
   insert: 0,

@@ -39,7 +39,7 @@ export const useSaveServer = ({
     if (nameTaken) {
       errors.push({
         field: 'name',
-        message: 'server with this name already exists',
+        message: 'Server with this name already exists',
       });
     }
 

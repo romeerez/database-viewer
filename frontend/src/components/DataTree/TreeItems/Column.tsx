@@ -1,8 +1,4 @@
 import React from 'react';
-import {
-  TableTree,
-  Column as ColumnType,
-} from '../../DataTree/dataTree.service';
 import TreeItem from '../../DataTree/TreeItems/TreeItem';
 import MenuItem from '../../Common/Menu/MenuItem';
 import ColumnIcon from '../../Column/ColumnIcon';
@@ -12,6 +8,7 @@ import {
   isColumnPrimary,
 } from '../../Column/column.utils';
 import ColumnTitle from '../../Column/ColumnTitle';
+import { Column as ColumnType, TableTree } from '../dataTree.types';
 
 export default function Column({
   paddingLeft,

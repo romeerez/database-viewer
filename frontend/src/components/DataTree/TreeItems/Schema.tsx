@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { ServerTree, SchemaTree } from '../dataTree.service';
 import { createOpenState } from '../open.state';
 import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../Common/Menu/MenuItem';
@@ -8,7 +7,11 @@ import Folder from '../TreeItems/Folder';
 import { PathState } from '../path.state';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
-import { Folder as FolderType } from '../dataTree.types';
+import {
+  Folder as FolderType,
+  SchemaTree,
+  ServerTree,
+} from '../dataTree.types';
 import Table from './Table';
 import View from './View';
 import Procedure from './Procedure';

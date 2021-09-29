@@ -1,5 +1,5 @@
 import React from 'react';
-import { Column as ColumnType } from '../DataTree/dataTree.service';
+import { Column as ColumnType } from '../DataTree/dataTree.types';
 
 export default function ColumnTitle({
   column,

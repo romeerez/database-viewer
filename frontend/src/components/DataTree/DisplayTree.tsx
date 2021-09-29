@@ -1,10 +1,10 @@
 import React from 'react';
-import { ServerTree } from '../../components/DataTree/dataTree.service';
 import { createOpenState } from '../../components/DataTree/open.state';
 import Table from '../../components/DataTree/TreeItems/Table';
 import Schema from '../../components/DataTree/TreeItems/Schema';
 import Database from '../../components/DataTree/TreeItems/Database';
 import Server from '../../components/DataTree/TreeItems/Server';
+import { ServerTree } from './dataTree.types';
 
 const top = 48;
 const paddingLeft = 8;

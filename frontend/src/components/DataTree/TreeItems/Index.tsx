@@ -1,8 +1,8 @@
 import React from 'react';
-import { Index as IndexType } from '../dataTree.service';
 import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import { Info } from '../../../icons';
+import { Index as IndexType } from '../dataTree.types';
 
 export default function Index({
   paddingLeft,

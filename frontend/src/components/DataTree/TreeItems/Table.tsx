@@ -1,5 +1,4 @@
 import React from 'react';
-import { TableTree } from '../dataTree.service';
 import { createOpenState } from '../open.state';
 import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
@@ -12,6 +11,7 @@ import Index from '../TreeItems/Index';
 import TableTrigger from './TableTrigger';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
+import { TableTree } from '../dataTree.types';
 
 export default function Table({
   sourceName,

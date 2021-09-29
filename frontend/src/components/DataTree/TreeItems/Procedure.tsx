@@ -1,12 +1,12 @@
 import React from 'react';
-import {
-  SchemaTree,
-  Procedure as ProcedureType,
-  ServerTree,
-} from '../dataTree.service';
 import TreeItem from './TreeItem';
 import { Functions } from '../../../icons';
 import { getTypeName } from '../../../lib/utils';
+import {
+  Procedure as ProcedureType,
+  SchemaTree,
+  ServerTree,
+} from '../dataTree.types';
 
 export default function Procedure({
   source,

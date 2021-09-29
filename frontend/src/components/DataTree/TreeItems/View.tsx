@@ -1,11 +1,11 @@
 import React from 'react';
-import { ViewTree } from '../dataTree.service';
 import { createOpenState } from '../open.state';
 import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import { Pageview } from '../../../icons';
 import { PathState } from '../path.state';
 import Column from '../TreeItems/Column';
+import { ViewTree } from '../dataTree.types';
 
 export default function View({
   sourceName,

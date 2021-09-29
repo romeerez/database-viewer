@@ -7,7 +7,7 @@ import Schema from '../../../components/DataTree/TreeItems/Schema';
 import { PathState } from '../path.state';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
-import { DatabaseTree, ServerTree } from '../dataTree.service';
+import { DatabaseTree, ServerTree } from '../dataTree.types';
 
 export default function Database({
   source,

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Constraint as ConstraintType } from '../../../components/DataTree/dataTree.service';
 import { createOpenState } from '../open.state';
 import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import { Key } from '../../../icons';
+import { Constraint as ConstraintType } from '../dataTree.types';
 
 export default function Constraint({
   paddingLeft,

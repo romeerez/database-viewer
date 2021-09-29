@@ -2,13 +2,13 @@ import React from 'react';
 import { Postgresql } from '../../../icons';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
-import { ServerTree } from '../dataTree.service';
 import { createOpenState } from '../open.state';
 import Database from '../../../components/DataTree/TreeItems/Database';
 import { PathState } from '../path.state';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
 import { modalsState } from '../dataTree.state';
+import { ServerTree } from '../dataTree.types';
 
 export default function Server({
   top,

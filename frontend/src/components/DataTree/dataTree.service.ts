@@ -9,37 +9,12 @@ import { serversStore } from '../Server/server.store';
 import { GetDataTreeQuery } from 'types';
 import { useAPIContext } from '../../lib/apiContext';
 
-export type ServerTree = Exclude<
-  ReturnType<typeof mapDataTree>,
-  undefined
->[number];
-
-export type DatabaseTree = ServerTree['databases'][number];
-
-export type SchemaTree = DatabaseTree['schemas'][number];
-
-export type TableTree = SchemaTree['tables'][number];
-
-export type ViewTree = SchemaTree['views'][number];
-
-export type Column = TableTree['columns'][number];
-
-export type Index = TableTree['indices'][number];
-
-export type Constraint = TableTree['constraints'][number];
-
-export type ForeignKey = TableTree['foreignKeys'][number];
-
-export type TableTrigger = TableTree['triggers'][number];
-
-export type Procedure = SchemaTree['procedures'][number];
-
 const lowerCache: Record<string, string> = {};
 
 const toLower = (string: string) =>
   lowerCache[string] || (lowerCache[string] = string.toLocaleLowerCase());
 
-const mapDataTree = (
+export const mapDataTree = (
   serversLocal: ServerInLocalStoreWithDriver[],
   data: GetDataTreeQuery,
   search: string,
@@ -170,8 +145,11 @@ export const useDataTree = () => {
 
   const [load] = useGetDataTreeLazyQuery({
     onCompleted(data) {
+      console.log('loaded data', data);
       setTree((tree) => {
+        console.log('already existing tree', tree);
         if (!tree) return data;
+        console.log('serversLocal', serversLocal);
         if (!serversLocal) return { ...data, servers: [] };
 
         const map: Record<string, GetDataTreeQuery['servers'][number]> = {};
@@ -195,15 +173,15 @@ export const useDataTree = () => {
     if (!serversLocal) return;
 
     const urls = serversLocal.map((item) => item.url);
-    let filteredUrls = urls;
+    let urlsToLoad = urls;
 
     if (tree) {
-      filteredUrls = filteredUrls.filter(
+      urlsToLoad = urlsToLoad.filter(
         (url) => !tree.servers.some((item) => item.url === url),
       );
     }
 
-    if (!filteredUrls.length) {
+    if (!urlsToLoad.length) {
       setTree((tree) =>
         tree
           ? {
@@ -215,9 +193,10 @@ export const useDataTree = () => {
       return;
     }
 
+    console.log('load', urlsToLoad);
     load({
       variables: {
-        urls: filteredUrls,
+        urls: urlsToLoad,
       },
     });
   }, [serversLocal]);

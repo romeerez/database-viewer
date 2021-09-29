@@ -2872,18 +2872,18 @@ path-type@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
-pg-adapter@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/pg-adapter/-/pg-adapter-1.3.0.tgz#b395d871ed7c38333f709c049743fb2df61c3ad5"
-  integrity sha512-EyTOCcVCr37NBSUW+oGSJY3l0X7l+6EOsfwIWFJ03S7feNd/x1XdaHbh1B3ImSRmgeWDq92Yjkii+TsKgyGh9w==
-  dependencies:
-    chalk "^3.0.0"
-    pg-promise "^10.9.5"
-
 pg-adapter@^1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/pg-adapter/-/pg-adapter-1.3.5.tgz#e7ae25733e6e8b4d6f7544f12926798f53d5344c"
   integrity sha512-g0tZo16PXq/52MnrEEjj3D+dW0NFy5kk7n9EzWgkyAUrYR/Qhr+bfEYJ7zNVG6FGminrt+wXY83uQKJDNs91yQ==
+  dependencies:
+    chalk "^3.0.0"
+    pg-promise "^10.9.5"
+
+pg-adapter@^1.3.6:
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/pg-adapter/-/pg-adapter-1.3.6.tgz#26144fee0209c3d25cc635324edb647cf2c99f44"
+  integrity sha512-DqqdoBDcpXri/KiJBaQ5k9WzmbbD89kv8resBKdH7OulbqcUAO8Mh95OJG+lvW83Rzm/aY2Ked6BZaMSp8bOzw==
   dependencies:
     chalk "^3.0.0"
     pg-promise "^10.9.5"
