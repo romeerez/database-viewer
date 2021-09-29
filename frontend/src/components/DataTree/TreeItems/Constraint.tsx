@@ -9,7 +9,7 @@ export default function Constraint({
   paddingLeft,
   constraint,
 }: {
-  sourceName: string;
+  serverName: string;
   databaseName: string;
   schemaName: string;
   paddingLeft: number;

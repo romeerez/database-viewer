@@ -44,10 +44,7 @@ handle(
     if (typeof urls === 'string') urls = [urls];
     const servers = dataLoader.getServers({ urls });
 
-    const [types, databases] = await Promise.all([
-      dataLoader.getSystemDataTypes(getDB, urls),
-      dataLoader.getDatabases(getDB, urls),
-    ]);
+    const databases = await dataLoader.getDatabases(getDB, urls);
 
     const schemas = await dataLoader.getSchemas(
       getDB,
@@ -56,11 +53,10 @@ handle(
 
     const schemasFlat = schemas.flat();
     const [
-      schemaTypes,
       { tables, columns, indices, foreignKeys, constraints, triggers },
       { views, viewColumns },
+      procedures,
     ] = await Promise.all([
-      dataLoader.getSchemaDataTypes(getDB, schemasFlat),
       dataLoader.getTables(getDB, schemasFlat).then(async (tables) => {
         const tablesFlat = tables.flat();
         const [columns, indices, foreignKeys, constraints, triggers] =
@@ -80,6 +76,7 @@ handle(
 
         return { views, viewColumns };
       }),
+      dataLoader.getProcedures(getDB, schemasFlat),
     ]);
 
     let databaseIndex = -1;
@@ -90,7 +87,6 @@ handle(
     return {
       servers: servers.map((obj, serverIndex) => ({
         ...obj,
-        types: types[serverIndex],
         databases: databases[serverIndex].map((database) => {
           databaseIndex++;
 
@@ -101,7 +97,6 @@ handle(
 
               return {
                 ...schema,
-                types: schemaTypes[schemaIndex],
                 tables: tables[schemaIndex].map((table) => {
                   tableIndex++;
 
@@ -122,6 +117,7 @@ handle(
                     columns: viewColumns[viewIndex],
                   };
                 }),
+                procedures: procedures[schemaIndex],
               };
             }),
           };

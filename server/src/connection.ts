@@ -36,25 +36,6 @@ export const getConnection = async (
         1082: undefined, // don't parse date
       });
 
-      const { query } = db;
-      (db as any).query = async (q: string) => {
-        let result: any = 12345;
-
-        setTimeout(() => {
-          if (result === 12345) {
-            console.log('!!!!!!!!!', {
-              url,
-              counter: globalPool[url]?.counter,
-              closing: globalPool[url]?.closingPromise,
-            });
-            console.log(q);
-          }
-        }, 3000);
-
-        result = await query.call(db, q);
-        return result;
-      };
-
       const connection: Connection = { db } as Connection;
 
       const cb = () => {

@@ -7,26 +7,20 @@ import Folder from '../TreeItems/Folder';
 import { PathState } from '../path.state';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
-import {
-  Folder as FolderType,
-  SchemaTree,
-  ServerTree,
-} from '../dataTree.types';
+import { Folder as FolderType, SchemaTree } from '../dataTree.types';
 import Table from './Table';
 import View from './View';
 import Procedure from './Procedure';
 
 export default function Schema({
-  source,
-  sourceName,
+  serverName,
   databaseName,
   top,
   paddingLeft,
   schema,
   openState,
 }: {
-  source: ServerTree;
-  sourceName: string;
+  serverName: string;
   databaseName: string;
   top: number;
   paddingLeft: number;
@@ -34,7 +28,7 @@ export default function Schema({
   openState: ReturnType<typeof createOpenState>;
 }) {
   const { name } = schema;
-  const open = openState.useItem(sourceName, databaseName, name);
+  const open = openState.useItem(serverName, databaseName, name);
 
   const folderTop = top + 32;
   const folderPaddingLeft = paddingLeft + 16;
@@ -63,10 +57,10 @@ export default function Schema({
       title={name}
       open={open}
       setOpen={(open) =>
-        openState.setItem(open, sourceName, databaseName, name)
+        openState.setItem(open, serverName, databaseName, name)
       }
-      openTree={() => PathState.setPath([sourceName, databaseName, name])}
-      to={routes.schema(sourceName, databaseName, name)}
+      openTree={() => PathState.setPath([serverName, databaseName, name])}
+      to={routes.schema(serverName, databaseName, name)}
       menu={() => (
         <>
           <MenuItem>Edit</MenuItem>
@@ -75,7 +69,7 @@ export default function Schema({
       )}
     >
       <Folder
-        sourceName={sourceName}
+        serverName={serverName}
         databaseName={databaseName}
         schemaName={schema.name}
         type={FolderType.tables}
@@ -87,7 +81,7 @@ export default function Schema({
         {schema.tables.map((table) => (
           <Table
             key={table.name}
-            sourceName={sourceName}
+            serverName={serverName}
             databaseName={databaseName}
             schemaName={schema.name}
             table={table}
@@ -98,7 +92,7 @@ export default function Schema({
         ))}
       </Folder>
       <Folder
-        sourceName={sourceName}
+        serverName={serverName}
         databaseName={databaseName}
         schemaName={schema.name}
         type={FolderType.views}
@@ -110,7 +104,7 @@ export default function Schema({
         {schema.views.map((view) => (
           <View
             key={view.name}
-            sourceName={sourceName}
+            serverName={serverName}
             databaseName={databaseName}
             schemaName={schema.name}
             view={view}
@@ -121,7 +115,7 @@ export default function Schema({
         ))}
       </Folder>
       <Folder
-        sourceName={sourceName}
+        serverName={serverName}
         databaseName={databaseName}
         schemaName={schema.name}
         type={FolderType.routines}
@@ -133,15 +127,13 @@ export default function Schema({
         {routines.map((routine) => (
           <Procedure
             key={routine.name}
-            source={source}
-            schema={schema}
             procedure={routine}
             paddingLeft={innerPaddingLeft}
           />
         ))}
       </Folder>
       <Folder
-        sourceName={sourceName}
+        serverName={serverName}
         databaseName={databaseName}
         schemaName={schema.name}
         type={FolderType.triggers}
@@ -153,15 +145,13 @@ export default function Schema({
         {triggers.map((routine) => (
           <Procedure
             key={routine.name}
-            source={source}
-            schema={schema}
             procedure={routine}
             paddingLeft={innerPaddingLeft}
           />
         ))}
       </Folder>
       <Folder
-        sourceName={sourceName}
+        serverName={serverName}
         databaseName={databaseName}
         schemaName={schema.name}
         type={FolderType.aggregates}
@@ -173,8 +163,6 @@ export default function Schema({
         {aggregates.map((routine) => (
           <Procedure
             key={routine.name}
-            source={source}
-            schema={schema}
             procedure={routine}
             paddingLeft={innerPaddingLeft}
           />

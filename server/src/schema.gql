@@ -10,7 +10,6 @@ type Mutation {
 type Server {
   url: String!
   databases(name: String): [Database!]!
-  types: [Type!]!
 }
 
 type Database {
@@ -25,7 +24,6 @@ type Schema {
   tables: [Table!]!
   views: [View!]!
   procedures: [Procedure!]!
-  types: [Type!]!
 }
 
 type Table {
@@ -50,11 +48,11 @@ type Procedure {
   schemaName: String!
   name: String!
   returnSet: Boolean!
-  returnType: Int!
+  returnType: String!
   kind: String!
   isTrigger: Boolean!
-  argTypes: [Int!]
-  argModes: [String!]
+  argTypes: [String!]!
+  argModes: [String!]!
   argNames: [String!]
 }
 
@@ -101,12 +99,6 @@ enum ConstraintType {
   Exclude
 }
 
-type Type {
-  schemaName: String!
-  id: Int!
-  name: String!
-}
-
 type QueryResult {
   fields: [Field!]!
   rows: [[String]!]!
@@ -114,7 +106,7 @@ type QueryResult {
 
 type Field {
   name: String!
-  type: Int!
+  type: String!
 }
 
 type Trigger {

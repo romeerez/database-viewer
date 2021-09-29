@@ -58,7 +58,6 @@ export type Server = {
   __typename?: 'Server';
   url: Scalars['String'];
   databases: Array<Database>;
-  types: Array<Type>;
 };
 
 export type ServerdatabasesArgs = {
@@ -79,7 +78,6 @@ export type Schema = {
   tables: Array<Table>;
   views: Array<View>;
   procedures: Array<Procedure>;
-  types: Array<Type>;
 };
 
 export type Table = {
@@ -107,11 +105,12 @@ export type Procedure = {
   schemaName: Scalars['String'];
   name: Scalars['String'];
   returnSet: Scalars['Boolean'];
-  returnType: Scalars['Int'];
+  returnType: Scalars['String'];
   kind: Scalars['String'];
-  argTypes?: Maybe<Array<Scalars['Int']>>;
-  argModes?: Maybe<Array<Scalars['String']>>;
-  argNames?: Maybe<Array<Scalars['String']>>;
+  isTrigger: Scalars['Boolean'];
+  argTypes: Array<Scalars['String']>;
+  argModes: Array<Scalars['String']>;
+  argNames: Array<Scalars['String']>;
 };
 
 export type Column = {
@@ -161,13 +160,6 @@ export enum ConstraintType {
   Exclude = 'Exclude',
 }
 
-export type Type = {
-  __typename?: 'Type';
-  schemaName: Scalars['String'];
-  id: Scalars['Int'];
-  name: Scalars['String'];
-};
-
 export type QueryResult = {
   __typename?: 'QueryResult';
   fields: Array<Field>;
@@ -177,7 +169,7 @@ export type QueryResult = {
 export type Field = {
   __typename?: 'Field';
   name: Scalars['String'];
-  type: Scalars['Int'];
+  type: Scalars['String'];
 };
 
 export type Trigger = {
@@ -316,13 +308,11 @@ export type ResolversTypes = {
   Table: ResolverTypeWrapper<Table>;
   View: ResolverTypeWrapper<View>;
   Procedure: ResolverTypeWrapper<Procedure>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   Column: ResolverTypeWrapper<Column>;
   Index: ResolverTypeWrapper<Index>;
   ForeignKey: ResolverTypeWrapper<ForeignKey>;
   Constraint: ResolverTypeWrapper<Constraint>;
   ConstraintType: ConstraintType;
-  Type: ResolverTypeWrapper<Type>;
   QueryResult: ResolverTypeWrapper<QueryResult>;
   Field: ResolverTypeWrapper<Field>;
   Trigger: ResolverTypeWrapper<Trigger>;
@@ -340,12 +330,10 @@ export type ResolversParentTypes = {
   Table: Table;
   View: View;
   Procedure: Procedure;
-  Int: Scalars['Int'];
   Column: Column;
   Index: Index;
   ForeignKey: ForeignKey;
   Constraint: Constraint;
-  Type: Type;
   QueryResult: QueryResult;
   Field: Field;
   Trigger: Trigger;
@@ -392,7 +380,6 @@ export type ServerResolvers<
     ContextType,
     RequireFields<ServerdatabasesArgs, never>
   >;
-  types?: Resolver<Array<ResolversTypes['Type']>, ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -419,7 +406,6 @@ export type SchemaResolvers<
     ParentType,
     ContextType
   >;
-  types?: Resolver<Array<ResolversTypes['Type']>, ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -468,23 +454,12 @@ export type ProcedureResolvers<
   schemaName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   returnSet?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  returnType?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  returnType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   kind?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  argTypes?: Resolver<
-    Maybe<Array<ResolversTypes['Int']>>,
-    ParentType,
-    ContextType
-  >;
-  argModes?: Resolver<
-    Maybe<Array<ResolversTypes['String']>>,
-    ParentType,
-    ContextType
-  >;
-  argNames?: Resolver<
-    Maybe<Array<ResolversTypes['String']>>,
-    ParentType,
-    ContextType
-  >;
+  isTrigger?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  argTypes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  argModes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  argNames?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -564,16 +539,6 @@ export type ConstraintResolvers<
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TypeResolvers<
-  ContextType = MercuriusContext,
-  ParentType extends ResolversParentTypes['Type'] = ResolversParentTypes['Type'],
-> = {
-  schemaName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type QueryResultResolvers<
   ContextType = MercuriusContext,
   ParentType extends ResolversParentTypes['QueryResult'] = ResolversParentTypes['QueryResult'],
@@ -592,7 +557,7 @@ export type FieldResolvers<
   ParentType extends ResolversParentTypes['Field'] = ResolversParentTypes['Field'],
 > = {
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -628,7 +593,6 @@ export type Resolvers<ContextType = MercuriusContext> = {
   Index?: IndexResolvers<ContextType>;
   ForeignKey?: ForeignKeyResolvers<ContextType>;
   Constraint?: ConstraintResolvers<ContextType>;
-  Type?: TypeResolvers<ContextType>;
   QueryResult?: QueryResultResolvers<ContextType>;
   Field?: FieldResolvers<ContextType>;
   Trigger?: TriggerResolvers<ContextType>;
@@ -670,7 +634,6 @@ export interface Loaders<
       ServerdatabasesArgs,
       TContext
     >;
-    types?: LoaderResolver<Array<Type>, Server, {}, TContext>;
   };
 
   Database?: {
@@ -685,7 +648,6 @@ export interface Loaders<
     tables?: LoaderResolver<Array<Table>, Schema, {}, TContext>;
     views?: LoaderResolver<Array<View>, Schema, {}, TContext>;
     procedures?: LoaderResolver<Array<Procedure>, Schema, {}, TContext>;
-    types?: LoaderResolver<Array<Type>, Schema, {}, TContext>;
   };
 
   Table?: {
@@ -710,22 +672,23 @@ export interface Loaders<
     schemaName?: LoaderResolver<Scalars['String'], Procedure, {}, TContext>;
     name?: LoaderResolver<Scalars['String'], Procedure, {}, TContext>;
     returnSet?: LoaderResolver<Scalars['Boolean'], Procedure, {}, TContext>;
-    returnType?: LoaderResolver<Scalars['Int'], Procedure, {}, TContext>;
+    returnType?: LoaderResolver<Scalars['String'], Procedure, {}, TContext>;
     kind?: LoaderResolver<Scalars['String'], Procedure, {}, TContext>;
+    isTrigger?: LoaderResolver<Scalars['Boolean'], Procedure, {}, TContext>;
     argTypes?: LoaderResolver<
-      Maybe<Array<Scalars['Int']>>,
+      Array<Scalars['String']>,
       Procedure,
       {},
       TContext
     >;
     argModes?: LoaderResolver<
-      Maybe<Array<Scalars['String']>>,
+      Array<Scalars['String']>,
       Procedure,
       {},
       TContext
     >;
     argNames?: LoaderResolver<
-      Maybe<Array<Scalars['String']>>,
+      Array<Scalars['String']>,
       Procedure,
       {},
       TContext
@@ -793,12 +756,6 @@ export interface Loaders<
     >;
   };
 
-  Type?: {
-    schemaName?: LoaderResolver<Scalars['String'], Type, {}, TContext>;
-    id?: LoaderResolver<Scalars['Int'], Type, {}, TContext>;
-    name?: LoaderResolver<Scalars['String'], Type, {}, TContext>;
-  };
-
   QueryResult?: {
     fields?: LoaderResolver<Array<Field>, QueryResult, {}, TContext>;
     rows?: LoaderResolver<
@@ -811,7 +768,7 @@ export interface Loaders<
 
   Field?: {
     name?: LoaderResolver<Scalars['String'], Field, {}, TContext>;
-    type?: LoaderResolver<Scalars['Int'], Field, {}, TContext>;
+    type?: LoaderResolver<Scalars['String'], Field, {}, TContext>;
   };
 
   Trigger?: {
@@ -826,6 +783,7 @@ export interface Loaders<
   };
 }
 declare module 'mercurius' {
-  type IResolvers = Resolvers<import('mercurius').MercuriusContext>;
-  type MercuriusLoaders = Loaders;
+  interface IResolvers
+    extends Resolvers<import('mercurius').MercuriusContext> {}
+  interface MercuriusLoaders extends Loaders {}
 }

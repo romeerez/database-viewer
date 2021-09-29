@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Sync, Plus } from '../../../icons';
 import { useKey } from 'react-use';
 import RemoveButton from '../ControlPanel/RemoveButton';
@@ -39,7 +39,7 @@ export default function ControlPanel() {
   return (
     <>
       <div className="flex items-center px-2 border-b border-dark-4">
-        <Pagination confirmLoosingChanges={confirmLoosingChanges} />
+        <Pagination />
         <Tooltip text="Reload page" hotkey="alt+r">
           <button
             className="w-8 h-8 flex-center rounded hover:bg-lighter"

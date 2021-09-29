@@ -9,12 +9,6 @@ export const loaders: MercuriusLoaders = {
         servers.map(({ obj }) => obj.url),
       );
     },
-    async types(servers, ctx) {
-      return await dataLoader.getSystemDataTypes(
-        ctx.getDB,
-        servers.map(({ obj }) => obj.url),
-      );
-    },
   },
   Database: {
     async schemas(databases, ctx) {
@@ -39,12 +33,6 @@ export const loaders: MercuriusLoaders = {
     },
     async procedures(schemas, ctx) {
       return await dataLoader.getProcedures(
-        ctx.getDB,
-        schemas.map(({ obj }) => obj),
-      );
-    },
-    async types(schemas, ctx) {
-      return await dataLoader.getSchemaDataTypes(
         ctx.getDB,
         schemas.map(({ obj }) => obj),
       );

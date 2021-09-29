@@ -8,7 +8,7 @@ import Column from '../TreeItems/Column';
 import { ViewTree } from '../dataTree.types';
 
 export default function View({
-  sourceName,
+  serverName,
   databaseName,
   schemaName,
   paddingLeft,
@@ -16,7 +16,7 @@ export default function View({
   top,
   openState,
 }: {
-  sourceName: string;
+  serverName: string;
   databaseName: string;
   schemaName: string;
   paddingLeft: number;
@@ -26,7 +26,7 @@ export default function View({
 }) {
   const { name } = view;
   const open = openState.useItem(
-    sourceName,
+    serverName,
     databaseName,
     schemaName,
     'views',
@@ -52,7 +52,7 @@ export default function View({
       setOpen={(open) =>
         openState.setItem(
           open,
-          sourceName,
+          serverName,
           databaseName,
           schemaName,
           'views',
@@ -60,7 +60,7 @@ export default function View({
         )
       }
       openTree={() =>
-        PathState.setPath([sourceName, databaseName, schemaName, name])
+        PathState.setPath([serverName, databaseName, schemaName, name])
       }
       menu={() => (
         <>

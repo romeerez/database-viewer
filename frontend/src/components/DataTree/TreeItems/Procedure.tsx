@@ -1,38 +1,17 @@
 import React from 'react';
 import TreeItem from './TreeItem';
 import { Functions } from '../../../icons';
-import { getTypeName } from '../../../lib/utils';
-import {
-  Procedure as ProcedureType,
-  SchemaTree,
-  ServerTree,
-} from '../dataTree.types';
+import { Procedure as ProcedureType } from '../dataTree.types';
 
 export default function Procedure({
-  source,
-  schema,
   procedure,
   paddingLeft,
 }: {
-  source: ServerTree;
-  schema: SchemaTree;
   procedure: ProcedureType;
   paddingLeft: number;
 }) {
-  const {
-    name,
-    returnSet,
-    returnType: returnTypeId,
-    argTypes: argTypeIds = [],
-    argModes: argModesOrNull,
-    argNames,
-  } = procedure;
-
-  const argTypes = (argTypeIds ?? []).map((id) =>
-    getTypeName(id, schema.types, source.types),
-  );
-  const returnType = getTypeName(returnTypeId, schema.types, source.types);
-  const argModes = argModesOrNull ?? [];
+  const { name, returnSet, returnType, argTypes, argModes, argNames } =
+    procedure;
 
   return (
     <TreeItem

@@ -12,16 +12,13 @@ import { useTablePageContext } from '../TablePage.context';
 import cn from 'classnames';
 import Tooltip from '../../../components/Common/Tooltip/Tooltip';
 import { useKey } from 'react-use';
-import { ConfirmLoosingChanges } from './ControlPanel';
 
 const limits = [10, 25, 50, 100, 500, 1000, undefined];
 
-export default function Pagination({
-  confirmLoosingChanges,
-}: {
-  confirmLoosingChanges: ConfirmLoosingChanges;
-}) {
-  const { tableDataService } = useTablePageContext();
+export default function Pagination() {
+  const { tableDataService, confirmLoosingChangesService } =
+    useTablePageContext();
+  const { confirmLoosingChanges } = confirmLoosingChangesService;
   const count = tableDataService.use((state) => state.count);
   const { offset, limit } = tableDataService.use((state) => state.queryParams);
 

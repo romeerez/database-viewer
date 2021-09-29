@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import { ObjectSchema } from 'yup';
+import { ObjectSchema, ValidationError } from 'yup';
 import { useForm as useFormOriginal } from 'react-hook-form';
 import {
   FieldValues,
@@ -27,7 +27,7 @@ const useYupValidationResolver = <T extends object | undefined>(
       } catch (errors) {
         return {
           values: {},
-          errors: errors.inner.reduce(
+          errors: (errors as ValidationError).inner.reduce(
             (
               allErrors: Record<string, unknown>,
               currentError: { path: string; type?: string; message: string },

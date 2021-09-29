@@ -2,7 +2,6 @@ import { computed, shallowEqual, useCreateStore } from 'jastaman';
 import { useDataTree } from '../../DataTree/dataTree.service';
 import { Field, GetDataTreeQuery, QueryResult } from 'types';
 import { toast } from 'react-toastify';
-import { getTypeName } from '../../../lib/utils';
 import { Params } from '../TablePage';
 import { keyValueStore } from '../../../lib/keyValue.store';
 import { ConditionsService } from '../Conditions/Conditions.service';
@@ -196,15 +195,7 @@ const getFieldsInfo = ({
 }) => {
   if (!server || !schema || !table || !rawFields) return;
 
-  const sourceTypes = server.types;
-  const schemaTypes = schema.types;
-
-  return rawFields.map(({ name, type: typeId }) => {
-    const type = getTypeName(typeId, schemaTypes, sourceTypes);
-    if (!type) {
-      throw new Error(`Can't find type for ${name} column`);
-    }
-
+  return rawFields.map(({ name, type }) => {
     const column = table.columns.find((column) => column.name === name);
     if (!column) {
       throw new Error(`Can't get definition of ${name} column`);

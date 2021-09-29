@@ -145,11 +145,8 @@ export const useDataTree = () => {
 
   const [load] = useGetDataTreeLazyQuery({
     onCompleted(data) {
-      console.log('loaded data', data);
       setTree((tree) => {
-        console.log('already existing tree', tree);
         if (!tree) return data;
-        console.log('serversLocal', serversLocal);
         if (!serversLocal) return { ...data, servers: [] };
 
         const map: Record<string, GetDataTreeQuery['servers'][number]> = {};
@@ -193,7 +190,6 @@ export const useDataTree = () => {
       return;
     }
 
-    console.log('load', urlsToLoad);
     load({
       variables: {
         urls: urlsToLoad,

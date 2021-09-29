@@ -7,7 +7,7 @@ import cn from 'classnames';
 import { Folder as FolderType } from '../dataTree.types';
 
 export default function Folder({
-  sourceName,
+  serverName,
   databaseName,
   schemaName,
   type,
@@ -17,7 +17,7 @@ export default function Folder({
   openState,
   children,
 }: {
-  sourceName: string;
+  serverName: string;
   databaseName: string;
   schemaName: string;
   type: FolderType;
@@ -27,7 +27,7 @@ export default function Folder({
   openState: ReturnType<typeof createOpenState>;
   children: ReactNode;
 }) {
-  const open = openState.useItem(sourceName, databaseName, schemaName, type);
+  const open = openState.useItem(serverName, databaseName, schemaName, type);
 
   return (
     <TreeItem
@@ -46,10 +46,10 @@ export default function Folder({
       }
       open={open}
       setOpen={(open) =>
-        openState.setItem(open, sourceName, databaseName, schemaName, type)
+        openState.setItem(open, serverName, databaseName, schemaName, type)
       }
       openTree={() =>
-        PathState.setPath([sourceName, databaseName, schemaName, type])
+        PathState.setPath([serverName, databaseName, schemaName, type])
       }
     >
       {children}

@@ -2,7 +2,6 @@ import { DB } from './types';
 import { URL } from 'url';
 import {
   QueryResult,
-  Type,
   Schema,
   Table,
   Column,
@@ -23,10 +22,18 @@ export const executeQuery = async (
       QueryResult['rows']
     >(query);
 
+    const ids = fields.map((field) => field.dataTypeID);
+
+    const types = await db.arrays<[string][]>(`
+      SELECT typname
+      FROM unnest(array[${ids.join(', ')}]) as typeId
+      JOIN pg_type ON oid = typeId
+    `);
+
     return {
-      fields: fields.map((field) => ({
+      fields: fields.map((field, i) => ({
         name: field.name,
-        type: field.dataTypeID,
+        type: types[i][0],
       })),
       rows: result,
     };
@@ -74,15 +81,6 @@ export const getDatabases = async (db: DB, url: string) => {
       name: row.name,
     };
   });
-};
-
-export const getSystemDataTypes = async (db: DB): Promise<Type[]> => {
-  return await db.query<Type[]>(`
-    SELECT t.oid "id", typname "name", nspname "schemaName"
-    FROM pg_type t
-    JOIN pg_catalog.pg_namespace n on n.oid = typnamespace
-    WHERE nspname IN ('pg_catalog', 'pg_toast', 'information_schema')
-  `);
 };
 
 export const getSchemas = async (
@@ -144,31 +142,26 @@ export const getProcedures = async (db: DB, schemaNames: string[]) => {
       n.nspname AS "schemaName",
       proname AS name,
       proretset AS "returnSet",
-      prorettype AS "returnType",
+      (
+        SELECT typname FROM pg_type WHERE oid = prorettype
+      ) AS "returnType",
       prokind AS "kind",
       coalesce((
         SELECT true FROM information_schema.triggers
         WHERE n.nspname = trigger_schema AND trigger_name = proname
         LIMIT 1
       ), false) AS "isTrigger",
+      coalesce((
+        SELECT json_agg(pg_type.typname)
+        FROM unnest(coalesce(proallargtypes, proargtypes)) typeId
+        JOIN pg_type ON pg_type.oid = typeId
+      ), '[]') AS "types",
       coalesce(to_json(proallargtypes::int[]), to_json(proargtypes::int[])) AS "argTypes",
-      to_json(proargmodes) AS "argModes",
+      coalesce(to_json(proargmodes), '[]') AS "argModes",
       to_json(proargnames) AS "argNames"
     FROM pg_proc p
     JOIN pg_namespace n ON p.pronamespace = n.oid
     WHERE n.nspname IN (${schemaNames.map(quote).join(', ')})
-  `);
-};
-
-export const getSchemaDataTypes = async (
-  db: DB,
-  schemaNames: string[],
-): Promise<Type[]> => {
-  return await db.query<Type[]>(`
-    SELECT t.oid "id", typname "name", nspname "schemaName"
-    FROM pg_type t
-    JOIN pg_catalog.pg_namespace n on n.oid = typnamespace
-    WHERE nspname IN (${schemaNames.map(quote).join(', ')})
   `);
 };
 

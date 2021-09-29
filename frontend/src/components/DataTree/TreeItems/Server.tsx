@@ -14,23 +14,23 @@ export default function Server({
   top,
   zIndex,
   paddingLeft,
-  source,
+  server,
   openState,
 }: {
   top: number;
   zIndex: number;
   paddingLeft: number;
-  source: ServerTree;
+  server: ServerTree;
   openState: ReturnType<typeof createOpenState>;
 }) {
-  const { name } = source;
+  const { name } = server;
   const open = openState.useItem(name);
   const innerTop = top + 32;
   const innerPaddingLeft = paddingLeft + 16;
 
   return (
     <TreeItem
-      key={source.url}
+      key={server.url}
       className="relative flex flex-col"
       paddingLeft={paddingLeft}
       buttonStyle={{ top, zIndex }}
@@ -46,7 +46,7 @@ export default function Server({
         <>
           <MenuItem
             onClick={() => {
-              modalsState.setServerForEdit(source.serverInLocalDb);
+              modalsState.setServerForEdit(server.serverInLocalDb);
               toggle();
             }}
           >
@@ -54,7 +54,7 @@ export default function Server({
           </MenuItem>
           <MenuItem
             onClick={() => {
-              modalsState.setServerForDelete(source.serverInLocalDb);
+              modalsState.setServerForDelete(server.serverInLocalDb);
               toggle();
             }}
           >
@@ -63,11 +63,11 @@ export default function Server({
         </>
       )}
     >
-      {source.databases.map((database) => (
+      {server.databases.map((database) => (
         <Database
           key={database.name}
-          source={source}
-          sourceName={name}
+          server={server}
+          serverName={name}
           database={database}
           openState={openState}
           top={innerTop}

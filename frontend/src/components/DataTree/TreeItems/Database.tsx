@@ -10,22 +10,21 @@ import cn from 'classnames';
 import { DatabaseTree, ServerTree } from '../dataTree.types';
 
 export default function Database({
-  source,
-  sourceName,
+  serverName,
   top,
   paddingLeft,
   database,
   openState,
 }: {
-  source: ServerTree;
-  sourceName: string;
+  server: ServerTree;
+  serverName: string;
   top: number;
   paddingLeft: number;
   database: DatabaseTree;
   openState: ReturnType<typeof createOpenState>;
 }) {
   const { name } = database;
-  const open = openState.useItem(sourceName, name);
+  const open = openState.useItem(serverName, name);
   const innerTop = top + 32;
   const innerPaddingLeft = paddingLeft + 16;
 
@@ -43,9 +42,9 @@ export default function Database({
       )}
       title={name}
       open={open}
-      setOpen={(open) => openState.setItem(open, sourceName, name)}
-      openTree={() => PathState.setPath([sourceName, name])}
-      to={routes.database(sourceName, name)}
+      setOpen={(open) => openState.setItem(open, serverName, name)}
+      openTree={() => PathState.setPath([serverName, name])}
+      to={routes.database(serverName, name)}
       menu={() => (
         <>
           <MenuItem>Edit</MenuItem>
@@ -56,8 +55,7 @@ export default function Database({
       {database.schemas.map((schema) => (
         <Schema
           key={schema.name}
-          source={source}
-          sourceName={sourceName}
+          serverName={serverName}
           databaseName={name}
           schema={schema}
           openState={openState}

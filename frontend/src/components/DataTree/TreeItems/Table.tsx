@@ -14,7 +14,7 @@ import cn from 'classnames';
 import { TableTree } from '../dataTree.types';
 
 export default function Table({
-  sourceName,
+  serverName,
   databaseName,
   schemaName,
   paddingLeft,
@@ -22,7 +22,7 @@ export default function Table({
   top,
   openState,
 }: {
-  sourceName: string;
+  serverName: string;
   databaseName: string;
   schemaName: string;
   paddingLeft: number;
@@ -32,7 +32,7 @@ export default function Table({
 }) {
   const { name } = table;
   const open = openState.useItem(
-    sourceName,
+    serverName,
     databaseName,
     schemaName,
     'tables',
@@ -53,7 +53,7 @@ export default function Table({
       setOpen={(open) =>
         openState.setItem(
           open,
-          sourceName,
+          serverName,
           databaseName,
           schemaName,
           'tables',
@@ -61,9 +61,9 @@ export default function Table({
         )
       }
       openTree={() =>
-        PathState.setPath([sourceName, databaseName, schemaName, name])
+        PathState.setPath([serverName, databaseName, schemaName, name])
       }
-      to={routes.table(sourceName, databaseName, schemaName, name)}
+      to={routes.table(serverName, databaseName, schemaName, name)}
       menu={() => (
         <>
           <MenuItem>Edit</MenuItem>
@@ -82,7 +82,7 @@ export default function Table({
       {table.constraints.map((constraint) => (
         <Constraint
           key={constraint.name}
-          sourceName={sourceName}
+          serverName={serverName}
           databaseName={databaseName}
           schemaName={schemaName}
           constraint={constraint}
@@ -93,7 +93,7 @@ export default function Table({
       {table.foreignKeys.map((foreignKey) => (
         <ForeignKey
           key={foreignKey.name}
-          sourceName={sourceName}
+          serverName={serverName}
           databaseName={databaseName}
           schemaName={schemaName}
           foreignKey={foreignKey}

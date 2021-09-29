@@ -4,7 +4,6 @@ import {
   QueryServersArgs,
   QueryExecuteQueryArgs,
   QueryResult,
-  Type,
 } from 'types';
 import { GetDB, DB, Await } from './types';
 import * as repo from './repository';
@@ -38,15 +37,6 @@ export const getDatabases = async (getDB: GetDB, urls: string[]) => {
     urls.map(async (url) => {
       const db = await getDB(url);
       return await repo.getDatabases(db, url);
-    }),
-  );
-};
-
-export const getSystemDataTypes = async (getDB: GetDB, urls: string[]) => {
-  return await Promise.all(
-    urls.map(async (url) => {
-      const db = await getDB(url);
-      return await repo.getSystemDataTypes(db);
     }),
   );
 };
@@ -141,42 +131,6 @@ export const getProcedures = async (
 
   return schemas.map((schema) =>
     grouped[schema.url].filter((item) => item.schemaName === schema.name),
-  );
-};
-
-export const getSchemaDataTypes = async (
-  getDB: GetDB,
-  schemas: { url: string; name: string }[],
-) => {
-  if (schemas.length === 0) return [];
-
-  const map = new Map<string, { schemaNames: Set<string>; types: Type[] }>();
-
-  schemas.forEach((obj) => {
-    let data = map.get(obj.url);
-    if (!data) {
-      data = { schemaNames: new Set(), types: [] };
-      map.set(obj.url, data);
-    }
-    data.schemaNames.add(obj.name);
-  });
-
-  await Promise.all(
-    Array.from(map.keys()).map(async (url) => {
-      const db = await getDB(url);
-      const data = map.get(url);
-      if (!data) return;
-
-      data.types = await repo.getSchemaDataTypes(
-        db,
-        Array.from(data.schemaNames),
-      );
-    }),
-  );
-
-  return schemas.map(
-    ({ url, name }) =>
-      map.get(url)?.types.filter((type) => type.schemaName === name) || [],
   );
 };
 

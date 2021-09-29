@@ -50,7 +50,7 @@ export type Database = {
 export type Field = {
   __typename?: 'Field';
   name: Scalars['String'];
-  type: Scalars['Int'];
+  type: Scalars['String'];
 };
 
 export type ForeignKey = {
@@ -89,11 +89,11 @@ export type Procedure = {
   schemaName: Scalars['String'];
   name: Scalars['String'];
   returnSet: Scalars['Boolean'];
-  returnType: Scalars['Int'];
+  returnType: Scalars['String'];
   kind: Scalars['String'];
   isTrigger: Scalars['Boolean'];
-  argTypes?: Maybe<Array<Scalars['Int']>>;
-  argModes?: Maybe<Array<Scalars['String']>>;
+  argTypes: Array<Scalars['String']>;
+  argModes: Array<Scalars['String']>;
   argNames?: Maybe<Array<Scalars['String']>>;
 };
 
@@ -127,14 +127,12 @@ export type Schema = {
   tables: Array<Table>;
   views: Array<View>;
   procedures: Array<Procedure>;
-  types: Array<Type>;
 };
 
 export type Server = {
   __typename?: 'Server';
   url: Scalars['String'];
   databases: Array<Database>;
-  types: Array<Type>;
 };
 
 
@@ -166,13 +164,6 @@ export type Trigger = {
   definition: Scalars['String'];
 };
 
-export type Type = {
-  __typename?: 'Type';
-  schemaName: Scalars['String'];
-  id: Scalars['Int'];
-  name: Scalars['String'];
-};
-
 export type View = {
   __typename?: 'View';
   url: Scalars['String'];
@@ -201,19 +192,13 @@ export type GetDataTreeQuery = (
   & { servers: Array<(
     { __typename?: 'Server' }
     & Pick<Server, 'url'>
-    & { types: Array<(
-      { __typename?: 'Type' }
-      & Pick<Type, 'id' | 'name' | 'schemaName'>
-    )>, databases: Array<(
+    & { databases: Array<(
       { __typename?: 'Database' }
       & Pick<Database, 'name'>
       & { schemas: Array<(
         { __typename?: 'Schema' }
         & Pick<Schema, 'name'>
-        & { types: Array<(
-          { __typename?: 'Type' }
-          & Pick<Type, 'id' | 'name' | 'schemaName'>
-        )>, tables: Array<(
+        & { tables: Array<(
           { __typename?: 'Table' }
           & Pick<Table, 'name'>
           & { columns: Array<(
@@ -316,20 +301,10 @@ export const GetDataTreeDocument = gql`
     query GetDataTree($urls: [String!]!) {
   servers(urls: $urls) {
     url
-    types {
-      id
-      name
-      schemaName
-    }
     databases {
       name
       schemas {
         name
-        types {
-          id
-          name
-          schemaName
-        }
         tables {
           name
           columns {

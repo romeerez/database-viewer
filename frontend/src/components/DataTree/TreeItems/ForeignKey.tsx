@@ -9,7 +9,7 @@ export default function ForeignKey({
   paddingLeft,
   foreignKey,
 }: {
-  sourceName: string;
+  serverName: string;
   databaseName: string;
   schemaName: string;
   paddingLeft: number;

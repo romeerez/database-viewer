@@ -1,5 +1,5 @@
 import React from 'react';
-import { createOpenState } from '../../components/DataTree/open.state';
+import { createOpenState } from './open.state';
 import Table from '../../components/DataTree/TreeItems/Table';
 import Schema from '../../components/DataTree/TreeItems/Schema';
 import Database from '../../components/DataTree/TreeItems/Database';
@@ -21,10 +21,10 @@ export default function DisplayTree({
 }) {
   const len = path.length;
 
-  const source = len > 0 && tree.find(({ name }) => name === path[0]);
-  if (source) {
+  const server = len > 0 && tree.find(({ name }) => name === path[0]);
+  if (server) {
     const database =
-      len > 1 && source.databases.find(({ name }) => name === path[1]);
+      len > 1 && server.databases.find(({ name }) => name === path[1]);
     if (database) {
       const schema =
         len > 2 && database.schemas.find(({ name }) => name === path[2]);
@@ -34,9 +34,9 @@ export default function DisplayTree({
         if (table) {
           return (
             <Table
-              key={source.url}
+              key={server.url}
               top={top}
-              sourceName={source.name}
+              serverName={server.name}
               databaseName={database.name}
               schemaName={schema.name}
               table={table}
@@ -48,9 +48,9 @@ export default function DisplayTree({
 
         return (
           <Schema
-            key={source.url}
+            key={server.url}
             top={top}
-            sourceName={source.name}
+            serverName={server.name}
             databaseName={database.name}
             schema={schema}
             openState={openState}
@@ -61,9 +61,10 @@ export default function DisplayTree({
 
       return (
         <Database
-          key={source.url}
+          key={server.url}
           top={top}
-          sourceName={source.name}
+          server={server}
+          serverName={server.name}
           database={database}
           openState={openState}
           paddingLeft={paddingLeft}
@@ -73,10 +74,10 @@ export default function DisplayTree({
 
     return (
       <Server
-        key={source.url}
+        key={server.url}
         top={top}
         zIndex={serverZIndex}
-        source={source}
+        server={server}
         openState={openState}
         paddingLeft={paddingLeft}
       />
@@ -87,12 +88,12 @@ export default function DisplayTree({
 
   return (
     <>
-      {tree.map((source, i) => (
+      {tree.map((server, i) => (
         <Server
-          key={source.url}
+          key={server.url}
           top={top}
           zIndex={zIndex - i}
-          source={source}
+          server={server}
           openState={openState}
           paddingLeft={paddingLeft}
         />
