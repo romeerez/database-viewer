@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useLocation, useRouteMatch } from 'react-router-dom';
 import Header from './Header';
 import ControlPanel from '../../components/Table/ControlPanel/ControlPanel';
@@ -19,6 +19,8 @@ import { serversStore } from '../Server/server.store';
 import { useConditionsService } from './Conditions/Conditions.service';
 import ConfirmLoosingChanges from './ConfirmLoosingChanges/ConfirmLoosingChanges';
 import { useConfirmLoosingChangesService } from './ConfirmLoosingChanges/confirmLoosingChanges.service';
+import history from '../../lib/history';
+import routes from '../../lib/routes';
 
 export type Params = {
   sourceName: string;
@@ -35,12 +37,19 @@ export default function TablePage() {
 
 const TablePageReMountable = () => {
   const { params } = useRouteMatch<Params>();
-  const { data: localServers } = serversStore.useServers();
+  const { data: localServers, status: localServersStatus } =
+    serversStore.useServers();
   const { sourceName } = params;
   const sourceUrl = useMemo(
     () => localServers?.find((source) => source.name === sourceName)?.url,
     [sourceName, localServers],
   );
+
+  useEffect(() => {
+    if (localServersStatus === 'ready' && !sourceUrl) {
+      history.push(routes.root);
+    }
+  }, [localServersStatus, sourceUrl]);
 
   const tableRef = useRef<HTMLTableElement>(null);
   const tableService = useTableService({ tableRef });

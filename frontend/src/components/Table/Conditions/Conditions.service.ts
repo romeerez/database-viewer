@@ -26,15 +26,15 @@ export const useConditionsService = ({
         return loading || keyValueStore.getItem<string>(getValueKey(type));
       },
       useHistory(type: ConditionType): Item<string[]> {
-        return loading || keyValueStore.useItem<string[]>(getHistoryKey(type));
+        const item = keyValueStore.useItem<string[]>(getHistoryKey(type));
+        return loading || item;
       },
       useValue(
         type: ConditionType,
         options?: { onLoad(value?: string): void },
       ): Item<string> {
-        return (
-          loading || keyValueStore.useItem<string>(getValueKey(type), options)
-        );
+        const item = keyValueStore.useItem<string>(getValueKey(type), options);
+        return loading || item;
       },
       updateHistory(
         type: ConditionType,

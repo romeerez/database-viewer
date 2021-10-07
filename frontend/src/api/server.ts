@@ -6,7 +6,7 @@ import {
 } from 'types';
 import { useAPIContext } from '../lib/apiContext';
 import { useLocalServers } from '../components/Server/server.service';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export const useLoadServerTree = (params: GetDataTreeQueryVariables) => {
   const apiContext = useAPIContext();
@@ -28,12 +28,11 @@ export const useLazyLoadServerTree = () => {
     },
   );
 
-  return [
-    (url: string) => {
-      setUrl(url);
-    },
-    query,
-  ] as const;
+  const load = useCallback((url: string) => {
+    setUrl(url);
+  }, []);
+
+  return [load, query] as const;
 };
 
 export const useLoadAllServerTrees = (): GetDataTreeQuery['server'][] => {

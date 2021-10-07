@@ -37,9 +37,8 @@ function ConditionInner({
   sourceUrl: string;
 }) {
   const { tableDataService, conditionsService } = useTablePageContext();
-  const { databaseName, schemaName, tableName } = tableDataService.use(
-    (state) => state.params,
-  );
+  const { databaseName, schemaName, tableName } =
+    tableDataService.use('params');
 
   const editorRef = useEditorRef();
   const onSubmitRef = useRef(onSubmit);
