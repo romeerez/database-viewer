@@ -1,5 +1,4 @@
 import React from 'react';
-import { createOpenState } from '../open.state';
 import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import { Key } from '../../../icons';
@@ -9,12 +8,8 @@ export default function ForeignKey({
   paddingLeft,
   foreignKey,
 }: {
-  serverName: string;
-  databaseName: string;
-  schemaName: string;
   paddingLeft: number;
   foreignKey: ForeignKeyType;
-  openState: ReturnType<typeof createOpenState>;
 }) {
   const { name } = foreignKey;
 
@@ -28,7 +23,8 @@ export default function ForeignKey({
           <Key size={20} className="text-accent" />
         </div>
       )}
-      title={
+      name={name}
+      title={(name) => (
         <div className="flex-center">
           {name}
           <div className="ml-2 text-sm text-light-6">
@@ -37,7 +33,7 @@ export default function ForeignKey({
             {foreignKey.foreignColumnNames.join(', ')})
           </div>
         </div>
-      }
+      )}
       menu={() => (
         <>
           <MenuItem>Edit</MenuItem>

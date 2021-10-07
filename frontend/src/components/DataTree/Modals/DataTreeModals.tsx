@@ -1,11 +1,13 @@
 import React from 'react';
-import { modalsState } from '../dataTree.state';
 import Modal from '../../../components/Common/Modal/Modal';
 import ServerForm from '../../../components/Server/Form/ServerForm';
 import DeleteModal from '../../../components/Server/DeleteModal';
+import { useDataTreeContext } from '../dataTree.context';
 
 export default function DataTreeModals() {
-  const { serverForEdit, serverForDelete } = modalsState.use(
+  const { modalsService } = useDataTreeContext();
+
+  const { serverForEdit, serverForDelete } = modalsService.use(
     'serverForEdit',
     'serverForDelete',
   );
@@ -14,7 +16,7 @@ export default function DataTreeModals() {
     return (
       <Modal
         open
-        onClose={() => modalsState.setServerForEdit()}
+        onClose={() => modalsService.setServerForEdit()}
         className="max-w-lg"
         closeButton
       >
@@ -24,7 +26,12 @@ export default function DataTreeModals() {
   }
 
   if (serverForDelete) {
-    return <DeleteModal server={serverForDelete} />;
+    return (
+      <DeleteModal
+        server={serverForDelete}
+        onClose={() => modalsService.setServerForDelete()}
+      />
+    );
   }
 
   return null;

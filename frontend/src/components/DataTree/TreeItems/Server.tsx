@@ -2,29 +2,32 @@ import React from 'react';
 import { Postgresql } from '../../../icons';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import TreeItem from '../../../components/DataTree/TreeItems/TreeItem';
-import { createOpenState } from '../open.state';
 import Database from '../../../components/DataTree/TreeItems/Database';
 import { PathState } from '../path.state';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
-import { modalsState } from '../dataTree.state';
 import { ServerTree } from '../dataTree.types';
+import { ServerInLocalStore } from '../../Server/types';
+import { useDataTreeContext } from '../dataTree.context';
+import { useDataTreeServerContext } from '../server.context';
 
 export default function Server({
   top,
   zIndex,
   paddingLeft,
+  localServer,
   server,
-  openState,
 }: {
   top: number;
   zIndex: number;
   paddingLeft: number;
+  localServer: ServerInLocalStore;
   server: ServerTree;
-  openState: ReturnType<typeof createOpenState>;
 }) {
-  const { name } = server;
-  const open = openState.useItem(name);
+  const { modalsService } = useDataTreeContext();
+  const { openService } = useDataTreeServerContext();
+  const { name } = localServer;
+  const open = openService.useIsItemOpen(name);
   const innerTop = top + 32;
   const innerPaddingLeft = paddingLeft + 16;
 
@@ -37,16 +40,17 @@ export default function Server({
       icon={(match) => (
         <Postgresql size={16} className={cn('mr-2', !match && 'text-accent')} />
       )}
-      title={name}
+      name={name}
+      title={(name) => name}
       open={open}
-      setOpen={(open) => openState.setItem(open, name)}
+      setOpen={(open) => openService.setIsItemOpen(open, name)}
       openTree={() => PathState.setPath([name])}
       to={routes.server(name)}
       menu={(toggle) => (
         <>
           <MenuItem
             onClick={() => {
-              modalsState.setServerForEdit(server.serverInLocalDb);
+              modalsService.setServerForEdit(localServer);
               toggle();
             }}
           >
@@ -54,7 +58,7 @@ export default function Server({
           </MenuItem>
           <MenuItem
             onClick={() => {
-              modalsState.setServerForDelete(server.serverInLocalDb);
+              modalsService.setServerForDelete(localServer);
               toggle();
             }}
           >
@@ -69,7 +73,6 @@ export default function Server({
           server={server}
           serverName={name}
           database={database}
-          openState={openState}
           top={innerTop}
           paddingLeft={innerPaddingLeft}
         />

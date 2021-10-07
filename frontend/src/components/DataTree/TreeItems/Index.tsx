@@ -28,7 +28,8 @@ export default function Index({
           )}
         </div>
       )}
-      title={
+      name={name}
+      title={(name) => (
         <div className="flex-center">
           {name}
           <div className="text-sm ml-2 text-light-6">
@@ -36,7 +37,7 @@ export default function Index({
             {index.isUnique && <span className="ml-2">UNIQUE</span>}
           </div>
         </div>
-      }
+      )}
       menu={() => (
         <>
           <MenuItem>Edit</MenuItem>

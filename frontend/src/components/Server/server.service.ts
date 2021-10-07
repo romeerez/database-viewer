@@ -2,12 +2,14 @@ import { serversStore } from './server.store';
 import { useState } from 'react';
 import { ServerInLocalStore } from './types';
 import { toast } from 'react-toastify';
-import { useAPIContext } from '../../lib/apiContext';
+import { useCheckConnection } from '../../api/server';
 
 type Error = {
   field: 'name' | 'url';
   message: string;
 };
+
+export const useLocalServers = () => serversStore.useServers();
 
 export const useSaveServer = ({
   server,
@@ -16,8 +18,7 @@ export const useSaveServer = ({
   server?: ServerInLocalStore;
   onClose(): void;
 }) => {
-  const { useCheckConnectionMutation } = useAPIContext();
-  const [checkConnection] = useCheckConnectionMutation();
+  const { mutateAsync: checkConnection } = useCheckConnection();
 
   const [loading, setLoading] = useState(false);
 
@@ -57,7 +58,7 @@ export const useSaveServer = ({
 
     setLoading(true);
 
-    const { data } = await checkConnection({ variables: { url } });
+    const data = await checkConnection({ url });
     if (data?.checkConnection) {
       if (!server) {
         const now = new Date();

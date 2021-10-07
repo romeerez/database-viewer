@@ -1,5 +1,4 @@
 import React from 'react';
-import { createOpenState } from '../open.state';
 import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import { Table as TableIcon } from '../../../icons';
@@ -12,6 +11,7 @@ import TableTrigger from './TableTrigger';
 import routes from '../../../lib/routes';
 import cn from 'classnames';
 import { TableTree } from '../dataTree.types';
+import { useDataTreeServerContext } from '../server.context';
 
 export default function Table({
   serverName,
@@ -20,7 +20,6 @@ export default function Table({
   paddingLeft,
   table,
   top,
-  openState,
 }: {
   serverName: string;
   databaseName: string;
@@ -28,10 +27,10 @@ export default function Table({
   paddingLeft: number;
   table: TableTree;
   top: number;
-  openState: ReturnType<typeof createOpenState>;
 }) {
+  const { openService } = useDataTreeServerContext();
   const { name } = table;
-  const open = openState.useItem(
+  const open = openService.useIsItemOpen(
     serverName,
     databaseName,
     schemaName,
@@ -48,10 +47,11 @@ export default function Table({
       icon={(match) => (
         <TableIcon size={16} className={cn('mr-2', !match && 'text-accent')} />
       )}
-      title={name}
+      name={name}
+      title={(name) => name}
       open={open}
       setOpen={(open) =>
-        openState.setItem(
+        openService.setIsItemOpen(
           open,
           serverName,
           databaseName,
@@ -61,7 +61,13 @@ export default function Table({
         )
       }
       openTree={() =>
-        PathState.setPath([serverName, databaseName, schemaName, name])
+        PathState.setPath([
+          serverName,
+          databaseName,
+          schemaName,
+          'tables',
+          name,
+        ])
       }
       to={routes.table(serverName, databaseName, schemaName, name)}
       menu={() => (
@@ -82,22 +88,14 @@ export default function Table({
       {table.constraints.map((constraint) => (
         <Constraint
           key={constraint.name}
-          serverName={serverName}
-          databaseName={databaseName}
-          schemaName={schemaName}
           constraint={constraint}
-          openState={openState}
           paddingLeft={innerPaddingLeft}
         />
       ))}
       {table.foreignKeys.map((foreignKey) => (
         <ForeignKey
           key={foreignKey.name}
-          serverName={serverName}
-          databaseName={databaseName}
-          schemaName={schemaName}
           foreignKey={foreignKey}
-          openState={openState}
           paddingLeft={innerPaddingLeft}
         />
       ))}

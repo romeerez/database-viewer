@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
-import { APIContext as APIContextType } from 'types';
+import { ApiContext as ApiContextType } from 'types';
 
-export const APIContext = createContext({} as APIContextType);
+export const APIContext = createContext({} as ApiContextType);
 
 export const useAPIContext = () => useContext(APIContext);

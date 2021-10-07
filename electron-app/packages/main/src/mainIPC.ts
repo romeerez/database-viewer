@@ -37,14 +37,13 @@ const handle = <Arg, T>(channel: string, handler: (arg: Arg) => Promise<T>) => {
 handle(
   'GetDataTreeQuery',
   async ({
-    variables: { urls },
+    variables: { url },
   }: {
     variables: GetDataTreeQueryVariables;
   }): Promise<GetDataTreeQuery> => {
-    if (typeof urls === 'string') urls = [urls];
-    const servers = dataLoader.getServers({ urls });
+    const server = dataLoader.getServer({ url });
 
-    const databases = await dataLoader.getDatabases(getDB, urls);
+    const [databases] = await dataLoader.getDatabases(getDB, [url]);
 
     const schemas = await dataLoader.getSchemas(
       getDB,
@@ -85,9 +84,9 @@ handle(
     let viewIndex = -1;
 
     return {
-      servers: servers.map((obj, serverIndex) => ({
-        ...obj,
-        databases: databases[serverIndex].map((database) => {
+      server: {
+        ...server,
+        databases: databases.map((database) => {
           databaseIndex++;
 
           return {
@@ -122,7 +121,7 @@ handle(
             }),
           };
         }),
-      })),
+      },
     };
   },
 );

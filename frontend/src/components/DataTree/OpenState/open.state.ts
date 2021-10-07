@@ -1,6 +1,6 @@
-import { createStore } from 'jastaman';
+import { useCreateStore } from 'jastaman';
 
-type OpenState = Record<
+export type OpenState = Record<
   string,
   {
     open: boolean;
@@ -32,39 +32,38 @@ const ensureParsedType = (items: OpenState) => {
   }
 };
 
-export const saveStateToLocalStorage = (items: OpenState) => {
-  window.localStorage.setItem(localStorageKey, JSON.stringify(items));
-};
-
-export const createOpenState = ({
-  defaultOpen,
-  items = {},
-  onChange,
-}: {
-  defaultOpen: boolean;
-  items?: OpenState;
-  onChange?: (items: OpenState) => void;
-}) => {
-  const store = createStore({
+export const useCreateOpenState = () => {
+  const store = useCreateStore(() => ({
     state: {
-      items,
+      localStorageItems: loadStateFromLocalStorage(),
+      items: {} as OpenState,
+      animateClose: true,
     },
-    reset() {
-      store.set({ items: {} });
+    setAnimateClose(animateClose: boolean) {
+      store.set({ animateClose });
     },
-    useItem(...names: string[]) {
-      return store.use(({ items }) => {
-        let item: OpenState[string] | undefined;
-        for (const name of names) {
-          item = items[name];
-          if (!item) break;
-          items = item.items;
-        }
+    setItems(items: OpenState) {
+      store.set({ items });
+    },
+    setItemsFromLocalStorage() {
+      store.set((state) => ({ items: state.localStorageItems }));
+    },
+    useIsItemOpen(...names: string[]) {
+      return store.use(
+        ({ items }) => {
+          let item: OpenState[string] | undefined;
+          for (const name of names) {
+            item = items[name];
+            if (!item) break;
+            items = item.items;
+          }
 
-        return item?.open ?? defaultOpen;
-      }, names);
+          return item?.open;
+        },
+        [names],
+      );
     },
-    setItem(open: boolean, ...names: string[]) {
+    setIsItemOpen(open: boolean, ...names: string[]) {
       const tree = { ...store.state.items };
       let items = tree;
       let item: OpenState[string] | undefined;
@@ -79,9 +78,13 @@ export const createOpenState = ({
       }
       if (item) item.open = open;
       store.set({ items: tree });
-      if (onChange) onChange(tree);
     },
-  });
+    saveStateToLocalStorage() {
+      const { items } = store.state;
+      window.localStorage.setItem(localStorageKey, JSON.stringify(items));
+      store.set({ localStorageItems: items });
+    },
+  }));
 
   return store;
 };

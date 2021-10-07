@@ -1,10 +1,28 @@
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
+import { useMutation, UseMutationOptions, useQuery, UseQueryOptions } from 'react-query';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions =  {}
+
+function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
+  return async (): Promise<TData> => {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      ...requestInit,
+      body: JSON.stringify({ query, variables }),
+    });
+
+    const json = await res.json();
+
+    if (json.errors) {
+      const { message } = json.errors[0];
+
+      throw new Error(message);
+    }
+
+    return json.data;
+  }
+}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -99,13 +117,13 @@ export type Procedure = {
 
 export type Query = {
   __typename?: 'Query';
-  servers: Array<Server>;
+  server: Server;
   executeQuery: QueryResult;
 };
 
 
-export type QueryServersArgs = {
-  urls: Array<Scalars['String']>;
+export type QueryServerArgs = {
+  url: Scalars['String'];
 };
 
 
@@ -183,13 +201,13 @@ export type CheckConnectionMutation = (
 );
 
 export type GetDataTreeQueryVariables = Exact<{
-  urls: Array<Scalars['String']> | Scalars['String'];
+  url: Scalars['String'];
 }>;
 
 
 export type GetDataTreeQuery = (
   { __typename?: 'Query' }
-  & { servers: Array<(
+  & { server: (
     { __typename?: 'Server' }
     & Pick<Server, 'url'>
     & { databases: Array<(
@@ -230,7 +248,7 @@ export type GetDataTreeQuery = (
         )> }
       )> }
     )> }
-  )> }
+  ) }
 );
 
 export type QueryFieldsAndRowsQueryVariables = Exact<{
@@ -266,40 +284,25 @@ export type QueryRowsQuery = (
 );
 
 
-export const CheckConnectionDocument = gql`
+export const CheckConnectionDocument = `
     mutation CheckConnection($url: String!) {
   checkConnection(url: $url)
 }
     `;
-export type CheckConnectionMutationFn = Apollo.MutationFunction<CheckConnectionMutation, CheckConnectionMutationVariables>;
-
-/**
- * __useCheckConnectionMutation__
- *
- * To run a mutation, you first call `useCheckConnectionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCheckConnectionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [checkConnectionMutation, { data, loading, error }] = useCheckConnectionMutation({
- *   variables: {
- *      url: // value for 'url'
- *   },
- * });
- */
-export function useCheckConnectionMutation(baseOptions?: Apollo.MutationHookOptions<CheckConnectionMutation, CheckConnectionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CheckConnectionMutation, CheckConnectionMutationVariables>(CheckConnectionDocument, options);
-      }
-export type CheckConnectionMutationHookResult = ReturnType<typeof useCheckConnectionMutation>;
-export type CheckConnectionMutationResult = Apollo.MutationResult<CheckConnectionMutation>;
-export type CheckConnectionMutationOptions = Apollo.BaseMutationOptions<CheckConnectionMutation, CheckConnectionMutationVariables>;
-export const GetDataTreeDocument = gql`
-    query GetDataTree($urls: [String!]!) {
-  servers(urls: $urls) {
+export const useCheckConnectionMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      options?: UseMutationOptions<CheckConnectionMutation, TError, CheckConnectionMutationVariables, TContext>
+    ) =>
+    useMutation<CheckConnectionMutation, TError, CheckConnectionMutationVariables, TContext>(
+      (variables?: CheckConnectionMutationVariables) => fetcher<CheckConnectionMutation, CheckConnectionMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, CheckConnectionDocument, variables)(),
+      options
+    );
+export const GetDataTreeDocument = `
+    query GetDataTree($url: String!) {
+  server(url: $url) {
     url
     databases {
       name
@@ -366,35 +369,25 @@ export const GetDataTreeDocument = gql`
   }
 }
     `;
+export const useGetDataTreeQuery = <
+      TData = GetDataTreeQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetDataTreeQueryVariables,
+      options?: UseQueryOptions<GetDataTreeQuery, TError, TData>
+    ) =>
+    useQuery<GetDataTreeQuery, TError, TData>(
+      ['GetDataTree', variables],
+      fetcher<GetDataTreeQuery, GetDataTreeQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetDataTreeDocument, variables),
+      options
+    );
+useGetDataTreeQuery.document = GetDataTreeDocument;
 
-/**
- * __useGetDataTreeQuery__
- *
- * To run a query within a React component, call `useGetDataTreeQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetDataTreeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetDataTreeQuery({
- *   variables: {
- *      urls: // value for 'urls'
- *   },
- * });
- */
-export function useGetDataTreeQuery(baseOptions: Apollo.QueryHookOptions<GetDataTreeQuery, GetDataTreeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetDataTreeQuery, GetDataTreeQueryVariables>(GetDataTreeDocument, options);
-      }
-export function useGetDataTreeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDataTreeQuery, GetDataTreeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetDataTreeQuery, GetDataTreeQueryVariables>(GetDataTreeDocument, options);
-        }
-export type GetDataTreeQueryHookResult = ReturnType<typeof useGetDataTreeQuery>;
-export type GetDataTreeLazyQueryHookResult = ReturnType<typeof useGetDataTreeLazyQuery>;
-export type GetDataTreeQueryResult = Apollo.QueryResult<GetDataTreeQuery, GetDataTreeQueryVariables>;
-export const QueryFieldsAndRowsDocument = gql`
+useGetDataTreeQuery.getKey = (variables: GetDataTreeQueryVariables) => ['GetDataTree', variables];
+
+useGetDataTreeQuery.fetcher = (dataSource: { endpoint: string, fetchParams?: RequestInit }, variables: GetDataTreeQueryVariables) => fetcher<GetDataTreeQuery, GetDataTreeQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetDataTreeDocument, variables);
+export const QueryFieldsAndRowsDocument = `
     query QueryFieldsAndRows($url: String!, $query: String!) {
   executeQuery(url: $url, query: $query) {
     fields {
@@ -405,68 +398,46 @@ export const QueryFieldsAndRowsDocument = gql`
   }
 }
     `;
+export const useQueryFieldsAndRowsQuery = <
+      TData = QueryFieldsAndRowsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: QueryFieldsAndRowsQueryVariables,
+      options?: UseQueryOptions<QueryFieldsAndRowsQuery, TError, TData>
+    ) =>
+    useQuery<QueryFieldsAndRowsQuery, TError, TData>(
+      ['QueryFieldsAndRows', variables],
+      fetcher<QueryFieldsAndRowsQuery, QueryFieldsAndRowsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, QueryFieldsAndRowsDocument, variables),
+      options
+    );
+useQueryFieldsAndRowsQuery.document = QueryFieldsAndRowsDocument;
 
-/**
- * __useQueryFieldsAndRowsQuery__
- *
- * To run a query within a React component, call `useQueryFieldsAndRowsQuery` and pass it any options that fit your needs.
- * When your component renders, `useQueryFieldsAndRowsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useQueryFieldsAndRowsQuery({
- *   variables: {
- *      url: // value for 'url'
- *      query: // value for 'query'
- *   },
- * });
- */
-export function useQueryFieldsAndRowsQuery(baseOptions: Apollo.QueryHookOptions<QueryFieldsAndRowsQuery, QueryFieldsAndRowsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<QueryFieldsAndRowsQuery, QueryFieldsAndRowsQueryVariables>(QueryFieldsAndRowsDocument, options);
-      }
-export function useQueryFieldsAndRowsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QueryFieldsAndRowsQuery, QueryFieldsAndRowsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<QueryFieldsAndRowsQuery, QueryFieldsAndRowsQueryVariables>(QueryFieldsAndRowsDocument, options);
-        }
-export type QueryFieldsAndRowsQueryHookResult = ReturnType<typeof useQueryFieldsAndRowsQuery>;
-export type QueryFieldsAndRowsLazyQueryHookResult = ReturnType<typeof useQueryFieldsAndRowsLazyQuery>;
-export type QueryFieldsAndRowsQueryResult = Apollo.QueryResult<QueryFieldsAndRowsQuery, QueryFieldsAndRowsQueryVariables>;
-export const QueryRowsDocument = gql`
+useQueryFieldsAndRowsQuery.getKey = (variables: QueryFieldsAndRowsQueryVariables) => ['QueryFieldsAndRows', variables];
+
+useQueryFieldsAndRowsQuery.fetcher = (dataSource: { endpoint: string, fetchParams?: RequestInit }, variables: QueryFieldsAndRowsQueryVariables) => fetcher<QueryFieldsAndRowsQuery, QueryFieldsAndRowsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, QueryFieldsAndRowsDocument, variables);
+export const QueryRowsDocument = `
     query QueryRows($url: String!, $query: String!) {
   executeQuery(url: $url, query: $query) {
     rows
   }
 }
     `;
+export const useQueryRowsQuery = <
+      TData = QueryRowsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: QueryRowsQueryVariables,
+      options?: UseQueryOptions<QueryRowsQuery, TError, TData>
+    ) =>
+    useQuery<QueryRowsQuery, TError, TData>(
+      ['QueryRows', variables],
+      fetcher<QueryRowsQuery, QueryRowsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, QueryRowsDocument, variables),
+      options
+    );
+useQueryRowsQuery.document = QueryRowsDocument;
 
-/**
- * __useQueryRowsQuery__
- *
- * To run a query within a React component, call `useQueryRowsQuery` and pass it any options that fit your needs.
- * When your component renders, `useQueryRowsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useQueryRowsQuery({
- *   variables: {
- *      url: // value for 'url'
- *      query: // value for 'query'
- *   },
- * });
- */
-export function useQueryRowsQuery(baseOptions: Apollo.QueryHookOptions<QueryRowsQuery, QueryRowsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<QueryRowsQuery, QueryRowsQueryVariables>(QueryRowsDocument, options);
-      }
-export function useQueryRowsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QueryRowsQuery, QueryRowsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<QueryRowsQuery, QueryRowsQueryVariables>(QueryRowsDocument, options);
-        }
-export type QueryRowsQueryHookResult = ReturnType<typeof useQueryRowsQuery>;
-export type QueryRowsLazyQueryHookResult = ReturnType<typeof useQueryRowsLazyQuery>;
-export type QueryRowsQueryResult = Apollo.QueryResult<QueryRowsQuery, QueryRowsQueryVariables>;
+useQueryRowsQuery.getKey = (variables: QueryRowsQueryVariables) => ['QueryRows', variables];
+
+useQueryRowsQuery.fetcher = (dataSource: { endpoint: string, fetchParams?: RequestInit }, variables: QueryRowsQueryVariables) => fetcher<QueryRowsQuery, QueryRowsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, QueryRowsDocument, variables);

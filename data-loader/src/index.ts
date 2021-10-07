@@ -1,7 +1,7 @@
 import {
   Server,
   MutationCheckConnectionArgs,
-  QueryServersArgs,
+  QueryServerArgs,
   QueryExecuteQueryArgs,
   QueryResult,
 } from 'types';
@@ -10,10 +10,8 @@ import * as repo from './repository';
 
 export type { GetDB, DB };
 
-export const getServers = ({
-  urls,
-}: QueryServersArgs): { url: Server['url'] }[] => {
-  return urls.map((url) => ({ url }));
+export const getServer = ({ url }: QueryServerArgs): { url: Server['url'] } => {
+  return { url };
 };
 
 export const executeQuery = async (

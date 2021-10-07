@@ -1,20 +1,31 @@
 import React from 'react';
-import { useDataTreeForSidebar } from './dataTree.service';
 import Scrollbars from '../../components/Common/Scrollbars';
-import Breadcrumbs from '../../components/DataTree/Breadcrumbs/Breadcrumbs';
-import { PathState } from './path.state';
-import Search from '../../components/DataTree/Search';
-import DisplayTree from '../../components/DataTree/DisplayTree';
+import Search from './Search/Search';
 import ServerFormButton from '../../components/Server/Form/ServerFormButton';
 import { Plus } from '../../icons';
 import DataTreeModals from '../../components/DataTree/Modals/DataTreeModals';
+import { DataTreeContext } from './dataTree.context';
+import { useCreateSearchService } from './Search/search.service';
+import { useCreateModalsService } from './Modals/modals.service';
+import { useLocalServers } from '../Server/server.service';
+import { PathState } from './path.state';
+import Breadcrumbs from './Breadcrumbs/Breadcrumbs';
+import Server from './Server';
 
 export default function DataTree() {
-  const { tree, openState } = useDataTreeForSidebar();
   const path = PathState.use('path');
+  const { data: localServers } = useLocalServers();
+
+  const searchService = useCreateSearchService();
+  const modalsService = useCreateModalsService();
 
   return (
-    <>
+    <DataTreeContext.Provider
+      value={{
+        searchService,
+        modalsService,
+      }}
+    >
       <DataTreeModals />
       <div className="p-4 flex items-center">
         <Search />
@@ -28,7 +39,7 @@ export default function DataTree() {
       </div>
       <Scrollbars>
         <div className="p-4 pt-0 inline-block min-w-full">
-          {tree && openState && (
+          {localServers && (
             <div
               className="duration-300 transition"
               style={{
@@ -36,11 +47,13 @@ export default function DataTree() {
               }}
             >
               <Breadcrumbs />
-              <DisplayTree path={path} tree={tree} openState={openState} />
+              {localServers.map((server, i) => (
+                <Server key={i} localServer={server} />
+              ))}
             </div>
           )}
         </div>
       </Scrollbars>
-    </>
+    </DataTreeContext.Provider>
   );
 }

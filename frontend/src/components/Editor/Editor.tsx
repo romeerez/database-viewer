@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { editor as MonacoEditor } from 'monaco-editor';
-import { useDataTree } from '../DataTree/dataTree.service';
 import { enableSuggestions } from './suggestions';
 import { useExecuteWidget } from './executeWidget';
 import { useVim } from './useVim';
 import { useOnWindowResize } from '../../lib/onWindowResize';
 import cn from 'classnames';
 import style from './style.module.css';
+import { useLazyLoadServerTree } from '../../api/server';
 
 MonacoEditor.setTheme('vs-dark');
 
@@ -61,18 +61,6 @@ export default function Editor({
   const executeQueryRef = useRef(executeQuery);
   executeQueryRef.current = executeQuery;
 
-  const { tree } = useDataTree();
-  const server = sourceUrl
-    ? tree?.servers.find((source) => source.url === sourceUrl)
-    : undefined;
-  const database = databaseName
-    ? server?.databases.find((database) => database.name === databaseName)
-    : undefined;
-  const schema = schemaName
-    ? database?.schemas.find((schema) => schema.name === schemaName)
-    : undefined;
-  const tables = schema?.tables;
-
   const { addExecuteAction } = useExecuteWidget({ executeQueryRef });
 
   useEffect(() => {
@@ -116,11 +104,6 @@ export default function Editor({
     return () => editor.dispose();
   }, []);
 
-  useEffect(() => {
-    const editor = editorRef.current as ExtendedEditor;
-    enableSuggestions({ editor, tables, prepend: suggestionsPrepend });
-  }, [tables]);
-
   useVim({ editorRef, statusBarRef, disabled: disableVim });
 
   useOnWindowResize(() => editorRef.current?.resize());
@@ -157,6 +140,17 @@ export default function Editor({
     };
   }, [autoHeight, paddingTop]);
 
+  const tables = useLoadTables({
+    sourceUrl,
+    databaseName,
+    schemaName,
+  });
+
+  useEffect(() => {
+    const editor = editorRef.current as ExtendedEditor;
+    enableSuggestions({ editor, tables, prepend: suggestionsPrepend });
+  }, [tables]);
+
   return (
     <div className="h-full flex flex-col">
       <div
@@ -176,3 +170,31 @@ export default function Editor({
     </div>
   );
 }
+
+const useLoadTables = ({
+  sourceUrl,
+  databaseName,
+  schemaName,
+}: {
+  sourceUrl?: string;
+  databaseName?: string;
+  schemaName?: string;
+}) => {
+  const [loadServerTree, { data }] = useLazyLoadServerTree();
+  const server = data?.server;
+  const database = databaseName
+    ? server?.databases.find((database) => database.name === databaseName)
+    : undefined;
+  const schema = schemaName
+    ? database?.schemas.find((schema) => schema.name === schemaName)
+    : undefined;
+  const tables = schema?.tables;
+
+  useEffect(() => {
+    if (sourceUrl) {
+      loadServerTree(sourceUrl);
+    }
+  }, [loadServerTree, sourceUrl]);
+
+  return tables;
+};

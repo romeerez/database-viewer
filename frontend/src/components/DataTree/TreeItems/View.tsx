@@ -1,11 +1,11 @@
 import React from 'react';
-import { createOpenState } from '../open.state';
 import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../../components/Common/Menu/MenuItem';
 import { Pageview } from '../../../icons';
 import { PathState } from '../path.state';
 import Column from '../TreeItems/Column';
 import { ViewTree } from '../dataTree.types';
+import { useDataTreeServerContext } from '../server.context';
 
 export default function View({
   serverName,
@@ -14,7 +14,6 @@ export default function View({
   paddingLeft,
   view,
   top,
-  openState,
 }: {
   serverName: string;
   databaseName: string;
@@ -22,10 +21,10 @@ export default function View({
   paddingLeft: number;
   view: ViewTree;
   top: number;
-  openState: ReturnType<typeof createOpenState>;
 }) {
+  const { openService } = useDataTreeServerContext();
   const { name } = view;
-  const open = openState.useItem(
+  const open = openService.useIsItemOpen(
     serverName,
     databaseName,
     schemaName,
@@ -47,10 +46,11 @@ export default function View({
           />
         </div>
       )}
-      title={name}
+      name={name}
+      title={(name) => name}
       open={open}
       setOpen={(open) =>
-        openState.setItem(
+        openService.setIsItemOpen(
           open,
           serverName,
           databaseName,
@@ -60,7 +60,7 @@ export default function View({
         )
       }
       openTree={() =>
-        PathState.setPath([serverName, databaseName, schemaName, name])
+        PathState.setPath([serverName, databaseName, schemaName, 'views', name])
       }
       menu={() => (
         <>

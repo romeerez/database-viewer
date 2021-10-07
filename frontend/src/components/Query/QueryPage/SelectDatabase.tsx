@@ -1,12 +1,14 @@
 import React, { useMemo } from 'react';
 import Select from '../../../components/Common/Form/Select';
 import Input from '../../../components/Common/Form/Input';
-import { useDataTree } from '../../../components/DataTree/dataTree.service';
 import { ChevronRight } from '../../../icons';
 import ServerFormButton from '../../../components/Server/Form/ServerFormButton';
 import Spinner from '../../../components/Common/Spinner/Spinner';
 import { getSourceUrlAndDatabaseNameFromUrl } from '../../../lib/sourceUrl';
+import { useLoadAllServerTrees } from '../../../api/server';
+import { useLocalServers } from '../../Server/server.service';
 
+// TODO: fix clicking behavior
 export default function SelectDatabase({
   databaseUrl,
   setDatabaseUrl,
@@ -14,19 +16,20 @@ export default function SelectDatabase({
   databaseUrl: string;
   setDatabaseUrl(value: string): void;
 }) {
-  const { serversLocal, tree } = useDataTree();
+  const { data: localServers = [] } = useLocalServers();
+  const servers = useLoadAllServerTrees();
+
   const databaseOptions = useMemo(
     () =>
-      serversLocal &&
-      tree?.servers.flatMap((source) => {
+      servers.flatMap((server) => {
         const { sourceUrl: url } = getSourceUrlAndDatabaseNameFromUrl(
-          source.url,
+          server.url,
         );
 
         const sourceName =
-          serversLocal.find((local) => local.url === source.url)?.name || url;
+          localServers.find((local) => local.url === server.url)?.name || url;
 
-        return source.databases.map((database) => ({
+        return server.databases.map((database) => ({
           label: (
             <>
               {sourceName}
@@ -38,7 +41,7 @@ export default function SelectDatabase({
           value: `${url}/${database.name}`,
         }));
       }),
-    [serversLocal, tree],
+    [servers],
   );
 
   if (!databaseOptions) {

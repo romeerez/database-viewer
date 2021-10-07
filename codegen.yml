@@ -2,12 +2,13 @@ overwrite: true
 schema: server/src/schema.gql
 documents: "graphql-react-provider/src/**/*.gql"
 generates:
-  types/src/data.ts:
+  types/src/generated.ts:
     plugins:
-      - "typescript"
-      - "typescript-operations"
-  graphql-react-provider/src/generated/graphql.tsx:
-    plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"
+      - typescript
+      - typescript-operations
+      - typescript-react-query
+    config:
+      fetcher: fetch
+      exposeDocument: true
+      exposeQueryKeys: true
+      exposeFetcher: true

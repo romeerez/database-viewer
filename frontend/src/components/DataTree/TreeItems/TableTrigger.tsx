@@ -30,7 +30,8 @@ export default function TableTrigger({
           <TriggerIcon size={16} className="text-accent" />
         </div>
       )}
-      title={
+      name={name}
+      title={(name) => (
         <div className="flex-center">
           {name}
           <div className="text-sm ml-2 text-light-6">
@@ -42,7 +43,7 @@ export default function TableTrigger({
             {functionName && ` → ${functionName}`}
           </div>
         </div>
-      }
+      )}
     />
   );
 }

@@ -1,11 +1,15 @@
 import { useTableDataStore } from './tableData.store';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { buildQuery } from '../../../lib/queryBuilder';
-import { useAPIContext } from '../../../lib/apiContext';
 import { ErrorService } from '../Error/error.service';
 import { Params } from '../TablePage';
 import { ConditionsService } from '../Conditions/Conditions.service';
 import { shallowEqual } from 'jastaman';
+import {
+  useFieldsAndRowsLazyQuery,
+  useRowsLazyQuery,
+} from '../../../api/query';
+import { useLazyLoadServerTree } from '../../../api/server';
 
 export type TableDataService = ReturnType<typeof useDataService>;
 
@@ -22,6 +26,18 @@ export const useDataService = ({
 }) => {
   const store = useTableDataStore({ params, sourceUrl, conditionsService });
 
+  const [loadServerTree, { data: serverTree }] = useLazyLoadServerTree();
+
+  useEffect(() => {
+    if (sourceUrl) {
+      loadServerTree(sourceUrl);
+    }
+  }, [sourceUrl]);
+
+  useEffect(() => {
+    store.set({ serverTree });
+  }, [serverTree]);
+
   const service = useMemo(
     () => ({
       ...store,
@@ -30,15 +46,13 @@ export const useDataService = ({
         if (!databaseUrl) return;
 
         loadFieldsAndRows({
-          variables: {
-            url: databaseUrl,
-            query: buildQuery({
-              schemaName: params.schemaName,
-              tableName: params.tableName,
-              count: false,
-              ...queryParams,
-            }),
-          },
+          url: databaseUrl,
+          query: buildQuery({
+            schemaName: params.schemaName,
+            tableName: params.tableName,
+            count: false,
+            ...queryParams,
+          }),
         });
       },
       loadCount() {
@@ -46,15 +60,13 @@ export const useDataService = ({
         if (!databaseUrl) return;
 
         loadCount({
-          variables: {
-            url: databaseUrl,
-            query: buildQuery({
-              schemaName: params.schemaName,
-              tableName: params.tableName,
-              count: true,
-              ...queryParams,
-            }),
-          },
+          url: databaseUrl,
+          query: buildQuery({
+            schemaName: params.schemaName,
+            tableName: params.tableName,
+            count: true,
+            ...queryParams,
+          }),
         });
       },
       loadRows() {
@@ -62,15 +74,13 @@ export const useDataService = ({
         if (!databaseUrl) return;
 
         loadRows({
-          variables: {
-            url: databaseUrl,
-            query: buildQuery({
-              schemaName: params.schemaName,
-              tableName: params.tableName,
-              count: false,
-              ...queryParams,
-            }),
-          },
+          url: databaseUrl,
+          query: buildQuery({
+            schemaName: params.schemaName,
+            tableName: params.tableName,
+            count: false,
+            ...queryParams,
+          }),
         });
       },
       setLimit(value?: number) {
@@ -109,12 +119,8 @@ export const useDataService = ({
     [store],
   );
 
-  const { useQueryFieldsAndRowsLazyQuery, useQueryRowsLazyQuery } =
-    useAPIContext();
-
-  const [loadFieldsAndRows] = useQueryFieldsAndRowsLazyQuery({
-    fetchPolicy: 'no-cache',
-    onCompleted(data) {
+  const [loadFieldsAndRows] = useFieldsAndRowsLazyQuery({
+    onSuccess(data) {
       const result = data.executeQuery;
       store.set({ rawFields: result.fields, rows: result.rows });
       errorService.setError();
@@ -124,9 +130,8 @@ export const useDataService = ({
     },
   });
 
-  const [loadCount] = useQueryRowsLazyQuery({
-    fetchPolicy: 'no-cache',
-    onCompleted(data) {
+  const [loadCount] = useRowsLazyQuery({
+    onSuccess(data) {
       const count = data.executeQuery.rows[0][0];
       store.set({ count: count ? parseInt(count) : 0 });
     },
@@ -135,9 +140,8 @@ export const useDataService = ({
     },
   });
 
-  const [loadRows] = useQueryRowsLazyQuery({
-    fetchPolicy: 'no-cache',
-    onCompleted(data) {
+  const [loadRows] = useRowsLazyQuery({
+    onSuccess(data) {
       store.set({ rows: data.executeQuery.rows });
       errorService.setError();
     },

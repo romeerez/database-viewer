@@ -2,9 +2,9 @@ import { useEffect, useMemo } from 'react';
 import { useDataChangesStore } from './dataChanges.store';
 import { TableDataService } from '../TableData/tableData.service';
 import { buildTransaction } from '../../../lib/queryBuilder';
-import { useAPIContext } from '../../../lib/apiContext';
 import { toast } from 'react-toastify';
 import { ErrorService } from '../Error/error.service';
+import { useRowsLazyQuery } from '../../../api/query';
 
 export type DataChangesService = ReturnType<typeof useDataChangesService>;
 
@@ -16,7 +16,6 @@ export const useDataChangesService = ({
   errorService: ErrorService;
 }) => {
   const store = useDataChangesStore({ tableDataService });
-  const { useQueryRowsLazyQuery } = useAPIContext();
 
   const service = useMemo(
     () => ({
@@ -110,19 +109,16 @@ export const useDataChangesService = ({
 
         store.setIsLoading(true);
         executeQuery({
-          variables: {
-            url: databaseUrl,
-            query,
-          },
+          url: databaseUrl,
+          query,
         });
       },
     }),
     [store, tableDataService],
   );
 
-  const [executeQuery] = useQueryRowsLazyQuery({
-    fetchPolicy: 'no-cache',
-    onCompleted() {
+  const [executeQuery] = useRowsLazyQuery({
+    onSuccess() {
       errorService.setError();
       tableDataService.sync();
       toast('Success', { type: 'success' });

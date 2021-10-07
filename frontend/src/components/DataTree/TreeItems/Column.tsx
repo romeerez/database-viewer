@@ -38,7 +38,10 @@ export default function Column({
           hasForeignKey={hasForeignKey}
         />
       )}
-      title={<ColumnTitle column={column} isPrimary={isPrimary} />}
+      name={column.name}
+      title={(name) => (
+        <ColumnTitle column={column} name={name} isPrimary={isPrimary} />
+      )}
       menu={() => (
         <>
           <MenuItem>Edit</MenuItem>

@@ -15,7 +15,7 @@ export default function Condition({
   onSubmit(value: string): void;
 }) {
   const { tableDataService } = useTablePageContext();
-  const sourceUrl = tableDataService.use((state) => state.sourceUrl);
+  const sourceUrl = tableDataService.use('sourceUrl');
   if (!sourceUrl) return null;
 
   return (

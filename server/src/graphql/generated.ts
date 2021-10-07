@@ -32,12 +32,12 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  servers: Array<Server>;
+  server: Server;
   executeQuery: QueryResult;
 };
 
-export type QueryserversArgs = {
-  urls: Array<Scalars['String']>;
+export type QueryserverArgs = {
+  url: Scalars['String'];
 };
 
 export type QueryexecuteQueryArgs = {
@@ -110,7 +110,7 @@ export type Procedure = {
   isTrigger: Scalars['Boolean'];
   argTypes: Array<Scalars['String']>;
   argModes: Array<Scalars['String']>;
-  argNames: Array<Scalars['String']>;
+  argNames?: Maybe<Array<Scalars['String']>>;
 };
 
 export type Column = {
@@ -343,11 +343,11 @@ export type QueryResolvers<
   ContextType = MercuriusContext,
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
 > = {
-  servers?: Resolver<
-    Array<ResolversTypes['Server']>,
+  server?: Resolver<
+    ResolversTypes['Server'],
     ParentType,
     ContextType,
-    RequireFields<QueryserversArgs, 'urls'>
+    RequireFields<QueryserverArgs, 'url'>
   >;
   executeQuery?: Resolver<
     ResolversTypes['QueryResult'],
@@ -459,7 +459,11 @@ export type ProcedureResolvers<
   isTrigger?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   argTypes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   argModes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  argNames?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  argNames?: Resolver<
+    Maybe<Array<ResolversTypes['String']>>,
+    ParentType,
+    ContextType
+  >;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -688,7 +692,7 @@ export interface Loaders<
       TContext
     >;
     argNames?: LoaderResolver<
-      Array<Scalars['String']>,
+      Maybe<Array<Scalars['String']>>,
       Procedure,
       {},
       TContext

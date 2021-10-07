@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { createOpenState } from '../open.state';
 import TreeItem from '../TreeItems/TreeItem';
 import MenuItem from '../../Common/Menu/MenuItem';
 import { FlowChart } from '../../../icons';
@@ -11,6 +10,7 @@ import { Folder as FolderType, SchemaTree } from '../dataTree.types';
 import Table from './Table';
 import View from './View';
 import Procedure from './Procedure';
+import { useDataTreeServerContext } from '../server.context';
 
 export default function Schema({
   serverName,
@@ -18,17 +18,16 @@ export default function Schema({
   top,
   paddingLeft,
   schema,
-  openState,
 }: {
   serverName: string;
   databaseName: string;
   top: number;
   paddingLeft: number;
   schema: SchemaTree;
-  openState: ReturnType<typeof createOpenState>;
 }) {
+  const { openService } = useDataTreeServerContext();
   const { name } = schema;
-  const open = openState.useItem(serverName, databaseName, name);
+  const open = openService.useIsItemOpen(serverName, databaseName, name);
 
   const folderTop = top + 32;
   const folderPaddingLeft = paddingLeft + 16;
@@ -54,10 +53,11 @@ export default function Schema({
       icon={(match) => (
         <FlowChart size={16} className={cn('mr-2', !match && 'text-accent')} />
       )}
-      title={name}
+      name={name}
+      title={(name) => name}
       open={open}
       setOpen={(open) =>
-        openState.setItem(open, serverName, databaseName, name)
+        openService.setIsItemOpen(open, serverName, databaseName, name)
       }
       openTree={() => PathState.setPath([serverName, databaseName, name])}
       to={routes.schema(serverName, databaseName, name)}
@@ -76,7 +76,6 @@ export default function Schema({
         count={schema.tables.length}
         top={folderTop}
         paddingLeft={folderPaddingLeft}
-        openState={openState}
       >
         {schema.tables.map((table) => (
           <Table
@@ -86,7 +85,6 @@ export default function Schema({
             schemaName={schema.name}
             table={table}
             top={innerTop}
-            openState={openState}
             paddingLeft={innerPaddingLeft}
           />
         ))}
@@ -99,7 +97,6 @@ export default function Schema({
         count={schema.views.length}
         top={folderTop}
         paddingLeft={folderPaddingLeft}
-        openState={openState}
       >
         {schema.views.map((view) => (
           <View
@@ -109,7 +106,6 @@ export default function Schema({
             schemaName={schema.name}
             view={view}
             top={innerTop}
-            openState={openState}
             paddingLeft={innerPaddingLeft}
           />
         ))}
@@ -122,7 +118,6 @@ export default function Schema({
         count={routines.length}
         top={folderTop}
         paddingLeft={folderPaddingLeft}
-        openState={openState}
       >
         {routines.map((routine) => (
           <Procedure
@@ -140,7 +135,6 @@ export default function Schema({
         count={triggers.length}
         top={folderTop}
         paddingLeft={folderPaddingLeft}
-        openState={openState}
       >
         {triggers.map((routine) => (
           <Procedure
@@ -158,7 +152,6 @@ export default function Schema({
         count={aggregates.length}
         top={folderTop}
         paddingLeft={folderPaddingLeft}
-        openState={openState}
       >
         {aggregates.map((routine) => (
           <Procedure

@@ -1,5 +1,4 @@
 import { computed, shallowEqual, useCreateStore } from 'jastaman';
-import { useDataTree } from '../../DataTree/dataTree.service';
 import { Field, GetDataTreeQuery, QueryResult } from 'types';
 import { toast } from 'react-toastify';
 import { Params } from '../TablePage';
@@ -37,12 +36,10 @@ export const useTableDataStore = ({
   sourceUrl?: string;
   conditionsService: ConditionsService;
 }) => {
-  const { tree } = useDataTree();
-
   const store = useCreateStore(
     () => ({
       state: {
-        tree,
+        serverTree: undefined as GetDataTreeQuery | undefined,
         params,
         sourceUrl,
         rawFields: undefined as QueryResult['fields'] | undefined,
@@ -51,7 +48,6 @@ export const useTableDataStore = ({
         queryParams,
         databaseUrl: computed<string | undefined>(),
         loading: computed<boolean>(),
-        server: computed<GetDataTreeQuery['servers'][number] | undefined>(),
         schema: computed<SchemaTree | undefined>(),
         table: computed<TableTree | undefined>(),
         fields: computed<FieldInfo[] | undefined>(),
@@ -70,28 +66,20 @@ export const useTableDataStore = ({
             sourceUrl && `${sourceUrl}/${params.databaseName}`,
         ],
         loading: [
-          (state) => [state.tree, state.count, state.rows],
+          (state) => [state.serverTree, state.count, state.rows],
           (state) =>
-            !state.tree ||
+            !state.serverTree ||
             state.count === undefined ||
             state.rows === undefined,
         ],
-        server: [
-          (state) => [state.tree, state.sourceUrl, state.params],
-          ({ tree, sourceUrl, params }) => {
-            if (!tree || !sourceUrl || !params) return;
-
-            return tree.servers.find((server) => server.url === sourceUrl);
-          },
-        ],
         schema: [
-          (state) => [state.server, state.params],
-          ({ server, params }) => {
-            if (!server || !params) return;
+          (state) => [state.serverTree, state.params],
+          ({ serverTree, params }) => {
+            if (!serverTree || !params) return;
 
             const { databaseName, schemaName } = params;
 
-            const database = server.databases.find(
+            const database = serverTree.server.databases.find(
               (database) => database.name === databaseName,
             );
             if (!database) return;
@@ -112,7 +100,12 @@ export const useTableDataStore = ({
           },
         ],
         fields: [
-          (state) => [state.server, state.schema, state.table, state.rawFields],
+          (state) => [
+            state.serverTree,
+            state.schema,
+            state.table,
+            state.rawFields,
+          ],
           (state) => {
             try {
               return getFieldsInfo(state);
@@ -156,7 +149,7 @@ export const useTableDataStore = ({
       },
     }),
     {
-      setOnChange: { params, sourceUrl, tree },
+      setOnChange: { params, sourceUrl },
     },
   );
 
@@ -181,19 +174,13 @@ export const useTableDataStore = ({
 };
 
 const getFieldsInfo = ({
-  server,
-  schema,
   table,
   rawFields,
 }: {
-  server?: GetDataTreeQuery['servers'][number];
-  schema?: SchemaTree;
   table?: TableTree;
-  params: Params;
-  sourceUrl?: string;
   rawFields?: Field[];
 }) => {
-  if (!server || !schema || !table || !rawFields) return;
+  if (!table || !rawFields) return;
 
   return rawFields.map(({ name, type }) => {
     const column = table.columns.find((column) => column.name === name);

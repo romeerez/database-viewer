@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Appear from '../../../components/Common/Appear/Appear';
 import {
   ChevronRight,
@@ -8,7 +8,8 @@ import {
 import cn from 'classnames';
 import Menu from '../../../components/Common/Menu/Menu';
 import { Link, useRouteMatch } from 'react-router-dom';
-import { DataTreeState } from '../dataTree.state';
+import { useDataTreeServerContext } from '../server.context';
+import { useDataTreeContext } from '../dataTree.context';
 
 export default function TreeItem({
   open,
@@ -16,6 +17,7 @@ export default function TreeItem({
   className,
   buttonStyle,
   icon,
+  name,
   title,
   menu,
   openTree,
@@ -28,7 +30,8 @@ export default function TreeItem({
   className?: string;
   buttonStyle: React.CSSProperties;
   icon: (routeMatch: boolean) => React.ReactNode;
-  title: React.ReactNode;
+  name: string;
+  title(name: React.ReactNode): React.ReactNode;
   menu?: (toggle: () => void) => React.ReactNode;
   openTree?: () => void;
   paddingLeft: number;
@@ -40,6 +43,29 @@ export default function TreeItem({
   const toggle = setOpen && (() => setOpen(!open));
 
   const routeMatch = useRouteMatch({ path: to, exact: true });
+  const { openService } = useDataTreeServerContext();
+  const animateClose = openService.useAnimateClose();
+  const { searchService } = useDataTreeContext();
+  const search = searchService.useLowerSearch();
+
+  let nameWithMatch: ReactNode | undefined;
+  if (search) {
+    const index = name.toLocaleLowerCase().indexOf(search);
+    if (index !== -1) {
+      const len = search.length;
+      nameWithMatch = (
+        <>
+          {name.slice(0, index)}
+          <span className="text-yellow-1 underline">
+            {name.slice(index, index + len)}
+          </span>
+          {name.slice(index + len)}
+        </>
+      );
+    }
+  }
+
+  const titleContent = title(nameWithMatch || name);
 
   return (
     <div className={className}>
@@ -76,7 +102,7 @@ export default function TreeItem({
               )}
             >
               {icon(!!routeMatch)}
-              {title}
+              {titleContent}
             </Link>
           )}
           {!to && (
@@ -85,7 +111,7 @@ export default function TreeItem({
             >
               <div className="flex-grow py-1 pr-2 pl-0 duration-300 transition-all group-hover:pl-2 flex items-center whitespace-nowrap">
                 {icon(!!routeMatch)}
-                {title}
+                {titleContent}
               </div>
             </div>
           )}
@@ -121,11 +147,7 @@ export default function TreeItem({
         </div>
       </div>
       {open !== undefined && close && (
-        <Appear
-          open={open}
-          onClose={close}
-          animateClose={!DataTreeState.state.openChangedOnSearch}
-        >
+        <Appear open={open} onClose={close} animateClose={animateClose}>
           {children}
         </Appear>
       )}

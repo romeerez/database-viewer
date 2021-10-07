@@ -1,5 +1,5 @@
 type Query {
-  servers(urls: [String!]!): [Server!]!
+  server(url: String!): Server!
   executeQuery(url: String!, query: String!): QueryResult!
 }
 

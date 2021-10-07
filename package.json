@@ -7,9 +7,10 @@
     "@graphql-codegen/cli": "^1.21.4",
     "@graphql-codegen/typescript": "^1.22.0",
     "@graphql-codegen/typescript-operations": "^1.17.16",
-    "@graphql-codegen/typescript-react-apollo": "^2.2.4",
+    "@graphql-codegen/typescript-react-query": "^3.0.1",
     "@types/node": "^15.0.1",
     "dotenv": "^8.2.0",
     "graphql": "^15.5.0"
-  }
+  },
+  "dependencies": {}
 }

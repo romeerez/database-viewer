@@ -11,8 +11,8 @@ import { QueryInLocalStore } from '../types';
 import { IDisposable } from 'monaco-editor';
 import { getSourceUrlAndDatabaseNameFromUrl } from '../../../lib/sourceUrl';
 import { QueryFieldsAndRowsQuery } from 'types';
-import { useAPIContext } from '../../../lib/apiContext';
 import ErrorAlert from '../../Common/ErrorAlert';
+import { useFieldsAndRowsLazyQuery } from '../../../api/query';
 
 export default function QueryPage() {
   const { name } = useParams<{ name: string }>();
@@ -68,12 +68,10 @@ const QueryPageInner = React.memo(
     data: QueryFieldsAndRowsQuery | undefined;
     setData(data: QueryFieldsAndRowsQuery | undefined): void;
   }) => {
-    const { useQueryFieldsAndRowsLazyQuery } = useAPIContext();
     const [error, setError] = useState<string>();
 
-    const [performQuery] = useQueryFieldsAndRowsLazyQuery({
-      fetchPolicy: 'no-cache',
-      onCompleted(data) {
+    const [performQuery] = useFieldsAndRowsLazyQuery({
+      onSuccess(data) {
         editorRef.current?.resize();
         setData(data);
         setError(undefined);
@@ -88,10 +86,8 @@ const QueryPageInner = React.memo(
         return toast('Database not specified', { type: 'error' });
       }
       performQuery({
-        variables: {
-          url: query.databaseUrl,
-          query: queryString,
-        },
+        url: query.databaseUrl,
+        query: queryString,
       });
     };
 

@@ -1,4 +1,6 @@
-import { mapDataTree } from './dataTree.service';
+// import { mapDataTree } from './dataTree.service';
+
+import { GetDataTreeQuery } from 'types';
 
 export enum Folder {
   tables = 'tables',
@@ -8,10 +10,7 @@ export enum Folder {
   aggregates = 'aggregates',
 }
 
-export type ServerTree = Exclude<
-  ReturnType<typeof mapDataTree>,
-  undefined
->[number];
+export type ServerTree = GetDataTreeQuery['server'];
 export type DatabaseTree = ServerTree['databases'][number];
 export type SchemaTree = DatabaseTree['schemas'][number];
 export type TableTree = SchemaTree['tables'][number];

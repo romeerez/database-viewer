@@ -22,12 +22,19 @@ export const executeQuery = async (
       QueryResult['rows']
     >(query);
 
+    if (fields.length === 0) {
+      return {
+        fields: [],
+        rows: result,
+      };
+    }
+
     const ids = fields.map((field) => field.dataTypeID);
 
     const types = await db.arrays<[string][]>(`
       SELECT typname
       FROM unnest(array[${ids.join(', ')}]) as typeId
-      JOIN pg_type ON oid = typeId
+             JOIN pg_type ON oid = typeId
     `);
 
     return {

@@ -33,6 +33,7 @@
     "react-hook-form": "^6.15.5",
     "react-is": "^17.0.2",
     "react-popper-tooltip": "^4.3.0",
+    "react-query": "^3.25.1",
     "react-router-dom": "^5.2.0",
     "react-toastify": "8.0.1",
     "react-use": "^17.2.4",
@@ -40,7 +41,6 @@
     "vite-react-jsx": "^1.1.2"
   },
   "devDependencies": {
-    "@apollo/client": "^3.4.1",
     "@types/history": "^4.7.8",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.2",

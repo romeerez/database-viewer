@@ -23,7 +23,8 @@ export default function Procedure({
           <Functions size={16} className="text-accent" />
         </div>
       )}
-      title={
+      name={name}
+      title={(name) => (
         <div className="flex-center">
           {name}
           <div className="text-sm ml-2 text-light-6">
@@ -39,7 +40,7 @@ export default function Procedure({
             ): {returnSet ? `setof ${returnType}` : returnType}
           </div>
         </div>
-      }
+      )}
     />
   );
 }
